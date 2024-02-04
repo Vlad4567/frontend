@@ -1,7 +1,7 @@
 {
   "files": {
     "main.css": "/static/css/main.72100666.css",
-    "main.js": "/static/js/main.bb3bcb06.js",
+    "main.js": "/static/js/main.411bd071.js",
     "static/media/bg.png": "/static/media/bg.2d7c5a12492468f34248.png",
     "static/media/Kharkiv-Tone.ttf": "/static/media/Kharkiv-Tone.6606d31e8d8c3e9f194b.ttf",
     "static/media/Urbanist-Black.ttf": "/static/media/Urbanist-Black.5f1f14f5f25adfb3ff24.ttf",
@@ -10,10 +10,10 @@
     "static/media/Urbanist-Bold.ttf": "/static/media/Urbanist-Bold.28937b70005aac17035d.ttf",
     "index.html": "/index.html",
     "main.72100666.css.map": "/static/css/main.72100666.css.map",
-    "main.bb3bcb06.js.map": "/static/js/main.bb3bcb06.js.map"
+    "main.411bd071.js.map": "/static/js/main.411bd071.js.map"
   },
   "entrypoints": [
     "static/css/main.72100666.css",
-    "static/js/main.bb3bcb06.js"
+    "static/js/main.411bd071.js"
   ]
 }
