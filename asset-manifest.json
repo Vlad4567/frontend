@@ -1,18 +1,18 @@
 {
   "files": {
-    "main.css": "./static/css/main.9d53d817.css",
-    "main.js": "./static/js/main.10537b33.js",
-    "static/media/Kharkiv-Tone.ttf": "./static/media/Kharkiv-Tone.6606d31e8d8c3e9f194b.ttf",
-    "static/media/Urbanist-Black.ttf": "./static/media/Urbanist-Black.5f1f14f5f25adfb3ff24.ttf",
-    "static/media/Urbanist-Medium.ttf": "./static/media/Urbanist-Medium.5f9e53103764bd328f6c.ttf",
-    "static/media/Urbanist-Regular.ttf": "./static/media/Urbanist-Regular.64ab880a68030133bbf7.ttf",
-    "static/media/Urbanist-Bold.ttf": "./static/media/Urbanist-Bold.28937b70005aac17035d.ttf",
-    "index.html": "./index.html",
-    "main.9d53d817.css.map": "./static/css/main.9d53d817.css.map",
-    "main.10537b33.js.map": "./static/js/main.10537b33.js.map"
+    "main.css": "/static/css/main.01be344e.css",
+    "main.js": "/static/js/main.10537b33.js",
+    "static/media/Kharkiv-Tone.ttf": "/static/media/Kharkiv-Tone.6606d31e8d8c3e9f194b.ttf",
+    "static/media/Urbanist-Black.ttf": "/static/media/Urbanist-Black.5f1f14f5f25adfb3ff24.ttf",
+    "static/media/Urbanist-Medium.ttf": "/static/media/Urbanist-Medium.5f9e53103764bd328f6c.ttf",
+    "static/media/Urbanist-Regular.ttf": "/static/media/Urbanist-Regular.64ab880a68030133bbf7.ttf",
+    "static/media/Urbanist-Bold.ttf": "/static/media/Urbanist-Bold.28937b70005aac17035d.ttf",
+    "index.html": "/index.html",
+    "main.01be344e.css.map": "/static/css/main.01be344e.css.map",
+    "main.10537b33.js.map": "/static/js/main.10537b33.js.map"
   },
   "entrypoints": [
-    "static/css/main.9d53d817.css",
+    "static/css/main.01be344e.css",
     "static/js/main.10537b33.js"
   ]
 }
