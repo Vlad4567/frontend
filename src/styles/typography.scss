@@ -1,3 +1,5 @@
+@use '../styles/mixin.scss' as mixin;
+
 * {
   box-sizing: border-box;
 }
@@ -5,41 +7,45 @@
 h1 {
   font-family: Urbanist;
   font-weight: 400;
-  font-size: 64pt;
-  line-height: 64pt;
+  font-size: 64px;
+  line-height: 64px;
 }
 
 h2 {
   font-family: Kharkiv-Tone;
   font-weight: 400;
-  font-size: 55pt;
-  line-height: 55pt;
+  font-size: 55px;
+  line-height: 55px;
 }
 
 h3 {
   font-family: Urbanist;
   font-weight: 400;
-  font-size: 55pt;
-  line-height: 55pt;
+  font-size: 24px;
+  line-height: 28px;
 }
 
 h4 {
   font-family: Kharkiv-Tone;
   font-weight: 400;
-  font-size: 22pt;
-  line-height: 22pt;
+  font-size: 22px;
+  line-height: 22px;
 }
 
 body {
-  font-family: Urbanist;
+  @include mixin.content-padding;
+  @include mixin.main-text;
+
   font-weight: 400;
-  font-size: 16pt;
-  line-height: 20pt;
+  line-height: 20px;
+
+  max-width: mixin.$desktop-min-width;
+  background-image: url(../img/bg.png);
 }
 
 small {
   font-family: Urbanist;
   font-weight: 400;
-  font-size: 12pt;
-  line-height: 15pt;
+  font-size: 12px;
+  line-height: 15px;
 }

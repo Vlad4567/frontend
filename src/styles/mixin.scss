@@ -1,0 +1,55 @@
+$error: #f43e34;
+$info: #417eff;
+$warning: #feb600;
+$success: #00c662;
+//
+$gray100: #ffffff;
+$gray80: #f5f7f9;
+$gray70: #edeff3;
+$gray50: #d0d1d8;
+$gray30: #a09fa6;
+$gray20: #5c5c60;
+$gray15: #323232;
+$gray10: #1a1b1e;
+//
+$pink: rgb(255, 219, 219);
+$blue: rgb(214, 240, 250);
+//
+$primary100: rgb(255, 75, 75);
+//
+$effect-duration: 300ms;
+//
+$tablet-min-width: 1024px;
+$desktop-min-width: 1440px;
+
+@mixin on-tablet {
+  @media (min-width: $tablet-min-width) {
+    @content;
+  }
+}
+
+@mixin on-desktop {
+  @media (min-width: $desktop-min-width) {
+    @content;
+  }
+}
+
+@mixin content-padding {
+  padding: 20px;
+
+  @include on-tablet {
+    padding-inline: 40px;
+    padding-block: 25px 15px;
+  }
+
+  @include on-desktop {
+    padding-inline: 80px;
+    padding-block: 30px;
+    margin-inline: auto;
+  }
+}
+
+@mixin main-text {
+  font-family: Urbanist;
+  font-size: 16px;
+}

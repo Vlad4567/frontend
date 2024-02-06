@@ -1,0 +1,95 @@
+@use '../../styles/mixin.scss' as mixin;
+
+.rectangle-button {
+  @include mixin.main-text;
+
+  width: 140px;
+  height: 40px;
+  position: relative;
+  padding: 0;
+
+  background: none;
+  border: none;
+  border-radius: 111px;
+
+  font-weight: medium;
+  text-align: center;
+  line-height: 24px;
+
+  cursor: pointer;
+
+  transition: background mixin.$effect-duration;
+
+  &:hover &__first-rectangle, &:hover &__second-rectangle {
+    transform: rotate(0);
+  }
+
+  &__first-rectangle, &__second-rectangle {
+    position: absolute;
+    inset: 0;
+    border: 1.5px solid;
+    border-radius: 111px;
+
+    transition: transform mixin.$effect-duration;
+  }
+
+  &__first-rectangle {
+    transform: rotate(8deg);
+  }
+
+  &__second-rectangle {
+    transform: rotate(-3deg);
+  }
+
+  &--light {
+    color: mixin.$gray100;
+
+    &-active {
+      color: mixin.$gray10;
+      background-color: mixin.$pink;
+    }
+
+    &:active {
+      background-color: mixin.$pink;
+    }
+
+    & .rectangle-button__first-rectangle {
+      border-color: mixin.$gray100;
+    }
+
+    & .rectangle-button__second-rectangle {
+      border-color: mixin.$pink;
+    }
+  }
+
+  &--dark {
+    color: mixin.$gray10;
+
+    &-active {
+      color: mixin.$gray10;
+      background-color: mixin.$gray100;
+    }
+
+    &:active {
+      background-color: mixin.$gray50;
+    }
+
+    & .rectangle-button__first-rectangle {
+      border-color: mixin.$gray50;
+    }
+
+    & .rectangle-button__second-rectangle {
+      border-color: mixin.$gray10;
+    }
+  }
+
+  &--dark-active, &--light-active {
+    cursor: default;
+
+    transition: background mixin.$effect-duration;
+
+    & .rectangle-button__first-rectangle, & .rectangle-button__second-rectangle {
+      display: none;
+    }
+  }
+}
