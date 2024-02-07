@@ -1,0 +1,16 @@
+.stars {
+  position: absolute;
+  bottom: 50%;
+  right: 0;
+  transform: translateX(100%);
+
+  &--small {
+    width: 25px;
+    height: 25px;
+  }
+
+  &--large {
+    width: 46px;
+    height: 42px;
+  }
+}

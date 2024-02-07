@@ -1,9 +1,18 @@
+import { Outlet } from 'react-router-dom';
 import './App.scss';
+import { Footer } from './components/Footer/Footer';
+import { Header } from './components/Header/Header';
 
 export const App: React.FC = () => {
   return (
-    <div className="App">
-      <h1>App</h1>
-    </div>
+    <>
+      <Header />
+
+      <main className="main">
+        <Outlet />
+      </main>
+
+      <Footer />
+    </>
   );
 };

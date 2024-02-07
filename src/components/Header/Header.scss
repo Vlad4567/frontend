@@ -1,0 +1,78 @@
+@use '../../styles/mixin.scss' as mixin;
+
+.header {
+  display: flex;
+  align-items: center;
+  flex-direction: column;
+
+  &__nav {
+    width: 100%;
+  }
+
+  &__nav-list {
+    display: flex;
+    justify-content: space-between;
+
+    @include mixin.on-tablet {
+      min-height: 58px;
+    }
+  }
+
+  &__nav-left-side,
+  &__nav-right-side {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+
+  &__nav-item {
+    list-style: none;
+  }
+
+  &__nav-item-link {
+    text-decoration: none;
+  }
+
+  &__website-title {
+    position: relative;
+
+    font-family: Kharkiv-Tone, sans-serif;
+    font-size: 22px;
+    color: mixin.$gray10;
+
+    @include mixin.on-tablet {
+      font-size: 24px;
+    }
+  }
+
+  &__login {
+    display: none;
+
+    @include mixin.on-tablet {
+      display: block;
+    }
+  }
+
+  &__account-icon {
+    background: none;
+    border: none;
+
+    @include mixin.on-tablet {
+      display: none;
+    }
+  }
+
+  &__hr {
+    width: 100%;
+    height: mixin.$line-width;
+    margin: 0;
+    margin-top: 15px;
+
+    border: none;
+    background-color: mixin.$gray10;
+
+    @include mixin.on-tablet {
+      margin-top: 0;
+    }
+  }
+}

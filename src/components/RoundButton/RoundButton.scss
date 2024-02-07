@@ -1,0 +1,42 @@
+@use '../../styles/mixin.scss' as mixin;
+
+.round-button {
+  width: 100px;
+  height: 100px;
+  padding: 0;
+  position: relative;
+  
+  border: none;
+  border-radius: 50%;
+  background-color: mixin.$gray100;
+
+  font-family: Kharkiv-Tone;
+  font-size: 16px;
+  line-height: 125%;
+  color: mixin.$gray10;
+
+  cursor: pointer;
+
+  &:hover .round-button__border {
+    width: calc(100% - 14px);
+    padding-top: calc(100% - 14px);
+
+    border-color: mixin.$gray10;
+  }
+
+  &__border {
+    width: calc(100% + 18px);
+    padding-top: calc(100% + 18px);
+
+    border: mixin.$line-width solid mixin.$gray100;
+    border-radius: 50%;
+
+    position: absolute;
+    top: 50%;
+    left: 50%;
+
+    transform: translate(-50%, -50%);
+
+    transition-duration: mixin.$effect-duration;
+  }
+}
