@@ -1,19 +1,21 @@
 {
   "files": {
-    "main.css": "/frontend/static/css/main.7f791f3b.css",
-    "main.js": "/frontend/static/js/main.bb3bcb06.js",
-    "static/media/bg.png": "/frontend/static/media/bg.2d7c5a12492468f34248.png",
+    "main.css": "/frontend/static/css/main.5d60b30e.css",
+    "main.js": "/frontend/static/js/main.fb6e6177.js",
+    "static/media/bg.png": "/frontend/static/media/bg.ce9b09dd6370bc374274.png",
     "static/media/Kharkiv-Tone.ttf": "/frontend/static/media/Kharkiv-Tone.6606d31e8d8c3e9f194b.ttf",
     "static/media/Urbanist-Black.ttf": "/frontend/static/media/Urbanist-Black.5f1f14f5f25adfb3ff24.ttf",
     "static/media/Urbanist-Medium.ttf": "/frontend/static/media/Urbanist-Medium.5f9e53103764bd328f6c.ttf",
     "static/media/Urbanist-Regular.ttf": "/frontend/static/media/Urbanist-Regular.64ab880a68030133bbf7.ttf",
     "static/media/Urbanist-Bold.ttf": "/frontend/static/media/Urbanist-Bold.28937b70005aac17035d.ttf",
+    "static/media/error.svg": "/frontend/static/media/error.e5f5af2068d13b65d7f0113d1faba9a6.svg",
     "index.html": "/frontend/index.html",
-    "main.7f791f3b.css.map": "/frontend/static/css/main.7f791f3b.css.map",
-    "main.bb3bcb06.js.map": "/frontend/static/js/main.bb3bcb06.js.map"
+    "static/media/account-icon.svg": "/frontend/static/media/account-icon.9adb5c178c3dd43047255d370d33d0d7.svg",
+    "main.5d60b30e.css.map": "/frontend/static/css/main.5d60b30e.css.map",
+    "main.fb6e6177.js.map": "/frontend/static/js/main.fb6e6177.js.map"
   },
   "entrypoints": [
-    "static/css/main.7f791f3b.css",
-    "static/js/main.bb3bcb06.js"
+    "static/css/main.5d60b30e.css",
+    "static/js/main.fb6e6177.js"
   ]
 }
