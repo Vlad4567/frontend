@@ -27,7 +27,7 @@
   &__first-rectangle, &__second-rectangle {
     position: absolute;
     inset: 0;
-    border: 1.5px solid;
+    border: mixin.$line-width solid;
     border-radius: 111px;
 
     transition: transform mixin.$effect-duration;

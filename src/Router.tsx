@@ -15,7 +15,8 @@ export const Router = () => {
         <Route path="/" element={<App />}>
           <Route index element={<HomePage />} />
           <Route path="home" element={<Navigate to="/" replace />} />
-          <Route path="*" element={<NotFoundPage />} />
+          <Route path="404" element={<NotFoundPage />} />
+          <Route path="*" element={<Navigate to="404" replace />} />
         </Route>
       </Routes>
     </HashRouter>

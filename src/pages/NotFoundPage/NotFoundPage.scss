@@ -1,0 +1,63 @@
+@use '../../styles/mixin.scss' as mixin;
+
+.not-found-page {
+  margin-top: 80px;
+
+  display: flex;
+  align-items: center;
+  flex-direction: column;
+  gap: 60px;
+
+  &__error {
+    width: 284px;
+    margin-inline: auto;
+
+    display: flex;
+    align-items: center;
+    flex-direction: column;
+
+    @include mixin.on-tablet {
+      width: 365px;
+      gap: 15px;
+    }
+  }
+
+  &__error-img {
+    width: 170px;
+    height: 280px;
+
+    @include mixin.on-tablet {
+      width: 296px;
+      height: 486px;
+    }
+  }
+
+  &__error-text {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+
+    text-align: center;
+    gap: 10px;
+  }
+
+  &__error-title {
+    margin: 0;
+    color: mixin.$primary100;
+  }
+
+  &__error-subtitle {
+    @include mixin.main-text;
+
+    font-weight: 500;
+    line-height: 150%;
+  }
+
+  &__button-go-back {
+    @include mixin.on-tablet {
+      position: absolute;
+      top: 45px;
+      right: 20%;
+    }
+  }
+}

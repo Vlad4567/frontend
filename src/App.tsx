@@ -8,7 +8,7 @@ export const App: React.FC = () => {
     <>
       <Header />
 
-      <main>
+      <main className="main">
         <Outlet />
       </main>
 
