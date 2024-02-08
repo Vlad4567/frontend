@@ -1,6 +1,6 @@
 {
   "files": {
-    "main.css": "/frontend/static/css/main.768a820d.css",
+    "main.css": "/frontend/static/css/main.5592536c.css",
     "main.js": "/frontend/static/js/main.fb6e6177.js",
     "static/media/bg.png": "/frontend/static/media/bg.ce9b09dd6370bc374274.png",
     "static/media/Kharkiv-Tone.ttf": "/frontend/static/media/Kharkiv-Tone.6606d31e8d8c3e9f194b.ttf",
@@ -11,11 +11,11 @@
     "static/media/error.svg": "/frontend/static/media/error.e5f5af2068d13b65d7f0113d1faba9a6.svg",
     "index.html": "/frontend/index.html",
     "static/media/account-icon.svg": "/frontend/static/media/account-icon.9adb5c178c3dd43047255d370d33d0d7.svg",
-    "main.768a820d.css.map": "/frontend/static/css/main.768a820d.css.map",
+    "main.5592536c.css.map": "/frontend/static/css/main.5592536c.css.map",
     "main.fb6e6177.js.map": "/frontend/static/js/main.fb6e6177.js.map"
   },
   "entrypoints": [
-    "static/css/main.768a820d.css",
+    "static/css/main.5592536c.css",
     "static/js/main.fb6e6177.js"
   ]
 }
