@@ -1,2 +1,32 @@
+@use './styles/mixin.scss' as mixin;
 @import './styles/typography';
 @import './fonts/fonts';
+
+* {
+  box-sizing: border-box;
+  scroll-behavior: smooth;
+}
+
+input,
+textarea,
+button,
+select,
+a {
+  -webkit-tap-highlight-color: transparent;
+}
+
+body {
+  @include mixin.content-padding;
+
+  min-height: 100vh;
+  max-width: mixin.$desktop-min-width;
+  background-image: url(./img/bg.png);
+
+  display: flex;
+}
+
+#root {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+}

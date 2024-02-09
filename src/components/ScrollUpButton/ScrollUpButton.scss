@@ -1,0 +1,39 @@
+@use '../../styles/mixin.scss' as mixin;
+
+.scroll-up-button {
+  padding: 0;
+  border: mixin.$line-width solid mixin.$gray15;
+  border-radius: 30px;
+  background-color: rgba(255, 255, 255, 0.2);
+  background-position: center;
+  background-repeat: no-repeat;
+  backdrop-filter: blur(10px);
+
+  transition-duration: mixin.$effect-duration;
+
+  cursor: pointer;
+
+  &:hover {
+    background-color: mixin.$pink;
+  }
+
+  &:active {
+    background-color: #fcb3b3;
+  }
+
+  &:active, &:hover {
+    border: none;
+  }
+
+  &--large {
+    width: 80px;
+    height: 220px;
+    background-image: url(../../img/icons/arrow-up-large.svg);
+  }
+
+  &--small {
+    width: 60px;
+    height: 100px;
+    background-image: url(../../img/icons/arrow-up-small.svg);
+  }
+}
