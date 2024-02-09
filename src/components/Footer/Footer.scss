@@ -1,1 +1,135 @@
-// not empty
+@use '../../styles/mixin.scss' as mixin;
+
+.footer, .footer__block {
+  gap: 20px;
+  display: flex;
+  flex-direction: column;
+
+  @include mixin.on-tablet {
+    gap: 15px;
+  }
+}
+
+.footer {
+  display: flex;
+  flex-direction: column;
+
+  &__block {
+    @include mixin.on-tablet {
+      flex-direction: row;
+    }
+  }
+
+  &__contact-us {
+    height: 232px;
+    padding: 40px;
+    border-radius: 30px;
+    background-color: mixin.$gray100;
+
+    display: flex;
+    justify-content: space-between;
+    align-items: end;
+    flex-direction: column;
+
+    @include mixin.on-tablet {
+      height: 100%;
+      flex: 1;
+    }
+  }
+
+  &__contact-us-paragraph {
+    @include mixin.main-text;
+
+    width: 100%;
+    text-align: left;
+    line-height: 125%;
+    font-family: Kharkiv-Tone, sans-serif;
+  }
+
+  &__contact-us-button-link {
+    @include mixin.main-text;
+
+    width: min-content;
+    font-weight: 500;
+    line-height: 150%;
+  }
+
+  &__contacts {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+
+    border: mixin.$line-width solid mixin.$gray10;
+    border-radius: 30px;
+    padding: 40px;
+    height: 532px;
+
+    @include mixin.on-tablet {
+      height: 100%;
+      flex: 2;
+
+      flex-direction: row;
+    }
+  }
+
+  &__contacts-block {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+
+    @include mixin.on-tablet {
+      gap: 30px;
+    }
+  }
+
+  &__contacts-block-list {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+  }
+
+  &__contacts-link {
+    color: mixin.$gray10;
+    text-decoration: none;
+
+    &:hover {
+      text-decoration: underline;
+    }
+  }
+
+  &__info {
+    display: flex;
+    justify-content: space-between;
+  }
+
+  &__info-left-block {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+
+    @include mixin.on-tablet {
+      width: 86.5%;
+      align-items: center;
+      flex-direction: row-reverse;
+    }
+  }
+
+  &__info-text {
+    width: fit-content;
+    color: mixin.$gray20;
+  }
+
+  &__scroll-up-button {
+    @include mixin.on-tablet {
+      display: none;
+    }
+  }
+
+  &__scroll-up-button-large {
+    display: none;
+
+    @include mixin.on-tablet {
+      display: block;
+    }
+  }
+}
