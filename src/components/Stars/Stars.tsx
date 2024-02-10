@@ -1,10 +1,10 @@
 import './Stars.scss';
-import blackStars from '../../img/stars/large-stars.png';
-import whiteStars from '../../img/stars/small-stars.png';
+import darkStars from '../../img/stars/large-stars.png';
+import lightStars from '../../img/stars/small-stars.png';
 
 interface Props {
   className?: string;
-  type: 'black' | 'white';
+  type: 'dark' | 'light';
   size: 'large' | 'small';
 }
 
@@ -13,7 +13,7 @@ export const Stars: React.FC<Props> = ({
   className = '',
   size,
 }) => {
-  const pathStars = type === 'black' ? blackStars : whiteStars;
+  const pathStars = type === 'dark' ? darkStars : lightStars;
 
   return (
     <img
