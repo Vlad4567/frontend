@@ -1,7 +1,7 @@
 {
   "files": {
-    "main.css": "/frontend/static/css/main.ab8ed8e2.css",
-    "main.js": "/frontend/static/js/main.a627b159.js",
+    "main.css": "/frontend/static/css/main.41b76ecc.css",
+    "main.js": "/frontend/static/js/main.ade8a39f.js",
     "static/media/bg.png": "/frontend/static/media/bg.ce9b09dd6370bc374274.png",
     "static/media/Kharkiv-Tone.ttf": "/frontend/static/media/Kharkiv-Tone.6606d31e8d8c3e9f194b.ttf",
     "static/media/Urbanist-Black.ttf": "/frontend/static/media/Urbanist-Black.5f1f14f5f25adfb3ff24.ttf",
@@ -11,13 +11,14 @@
     "static/media/error.svg": "/frontend/static/media/error.e5f5af2068d13b65d7f0113d1faba9a6.svg",
     "static/media/arrow-up-large.svg": "/frontend/static/media/arrow-up-large.1a56e54d370bfa48c4bd.svg",
     "index.html": "/frontend/index.html",
-    "static/media/account-icon.svg": "/frontend/static/media/account-icon.9adb5c178c3dd43047255d370d33d0d7.svg",
+    "static/media/account-icon-dark.svg": "/frontend/static/media/account-icon-dark.9adb5c178c3dd43047255d370d33d0d7.svg",
+    "static/media/account-icon-light.svg": "/frontend/static/media/account-icon-light.3965917d9a3fd4ccbbdb05115b2601b5.svg",
     "static/media/arrow-up-small.svg": "/frontend/static/media/arrow-up-small.074e99239e9119bb6bfd.svg",
-    "main.ab8ed8e2.css.map": "/frontend/static/css/main.ab8ed8e2.css.map",
-    "main.a627b159.js.map": "/frontend/static/js/main.a627b159.js.map"
+    "main.41b76ecc.css.map": "/frontend/static/css/main.41b76ecc.css.map",
+    "main.ade8a39f.js.map": "/frontend/static/js/main.ade8a39f.js.map"
   },
   "entrypoints": [
-    "static/css/main.ab8ed8e2.css",
-    "static/js/main.a627b159.js"
+    "static/css/main.41b76ecc.css",
+    "static/js/main.ade8a39f.js"
   ]
 }
