@@ -1,16 +1,10 @@
-import { Link, useLocation } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import './Footer.scss';
 import { RectangleButton } from '../RectangleButton/RectangleButton';
 import { websiteName } from '../../helpers/variables';
 import { ScrollUpButton } from '../ScrollUpButton/ScrollUpButton';
 
 export const Footer: React.FC = () => {
-  const { pathname } = useLocation();
-
-  if (pathname === '/404') {
-    return null;
-  }
-
   return (
     <footer className="footer">
       <div className="footer__block">
