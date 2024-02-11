@@ -4,21 +4,24 @@ import {
   Route,
   Routes,
 } from 'react-router-dom';
+import { Provider } from 'react-redux';
 import { NotFoundPage } from './pages/NotFoundPage/NotFoundPage';
 import { App } from './App';
 import { HomePage } from './pages/HomePage/HomePage';
+import { store } from './app/store';
 
 export const Router = () => {
   return (
-    <HashRouter>
-      <Routes>
-        <Route path="/" element={<App />}>
-          <Route index element={<HomePage />} />
-          <Route path="home" element={<Navigate to="/" replace />} />
-          <Route path="404" element={<NotFoundPage />} />
-          <Route path="*" element={<Navigate to="404" replace />} />
-        </Route>
-      </Routes>
-    </HashRouter>
+    <Provider store={store}>
+      <HashRouter>
+        <Routes>
+          <Route path="/" element={<App />}>
+            <Route index element={<HomePage />} />
+            <Route path="home" element={<Navigate to="/" replace />} />
+            <Route path="*" element={<NotFoundPage />} />
+          </Route>
+        </Routes>
+      </HashRouter>
+    </Provider>
   );
 };
