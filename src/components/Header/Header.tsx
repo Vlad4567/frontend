@@ -1,13 +1,19 @@
+/* eslint-disable jsx-a11y/control-has-associated-label */
 import { Link } from 'react-router-dom';
 import './Header.scss';
 import { websiteName } from '../../helpers/variables';
 import { Stars } from '../Stars/Stars';
 import { RectangleButton } from '../RectangleButton/RectangleButton';
-import accountIcon from '../../img/icons/account-icon.svg';
+import { AccountIcon } from '../AccountIcon/AccountIcon';
 
-export const Header: React.FC = () => {
+interface Props {
+  type: 'light' | 'dark'
+  className?: string
+}
+
+export const Header: React.FC<Props> = ({ type, className = '' }) => {
   return (
-    <header className="header">
+    <header className={`header header--${type} ${className}`}>
       <nav className="header__nav">
         <ul className="header__nav-list">
           <div className="header__nav-left-side">
@@ -15,7 +21,7 @@ export const Header: React.FC = () => {
               <Link className="header__nav-item-link" to="/">
                 <h3 className="header__website-title">
                   {websiteName}
-                  <Stars type="black" size="small" />
+                  <Stars type={type} size="small" />
                 </h3>
               </Link>
             </li>
@@ -24,12 +30,12 @@ export const Header: React.FC = () => {
           <div className="header__nav-right-side">
             <li className="header__nav-item">
               <Link className="header__nav-item-link" to="login">
-                <RectangleButton className="header__login" type="dark">
+                <RectangleButton className="header__login" type={type}>
                   Sign up
                 </RectangleButton>
 
                 <button type="button" className="header__account-icon">
-                  <img src={accountIcon} alt="Account icon" />
+                  <AccountIcon type={type} />
                 </button>
               </Link>
             </li>

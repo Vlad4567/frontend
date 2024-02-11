@@ -22,6 +22,8 @@ $line-width: 2px;
 //
 $tablet-min-width: 1024px;
 $desktop-min-width: 1440px;
+$on-phone-header-height: 47px;
+$on-tablet-header-height: 65px;
 
 @mixin on-tablet {
   @media (min-width: $tablet-min-width) {
