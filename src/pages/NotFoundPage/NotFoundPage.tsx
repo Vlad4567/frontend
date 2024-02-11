@@ -23,7 +23,7 @@ export const NotFoundPage: React.FC = () => {
   };
 
   return (
-    <div className="not-found-page">
+    <main className="not-found-page">
       <article className="not-found-page__error">
         <img
           className="not-found-page__error-img"
@@ -46,6 +46,6 @@ export const NotFoundPage: React.FC = () => {
           Go back
         </RoundButton>
       </div>
-    </div>
+    </main>
   );
 };

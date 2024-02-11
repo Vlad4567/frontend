@@ -1,1 +1,16 @@
-// not empty
+@use '../../styles/mixin.scss' as mixin;
+
+.home-page {
+  gap: 80px;
+  margin-bottom: 80px;
+
+  @include mixin.on-tablet {
+    gap: 100px;
+    margin-bottom: 100px;
+  }
+
+  @include mixin.on-desktop {
+    gap: 160px;
+    margin-bottom: 160px;
+  }
+}
