@@ -1,9 +1,36 @@
 @use '../../styles/mixin.scss' as mixin;
 
 .header {
+  height: mixin.$on-phone-header-height;
+
   display: flex;
+  justify-content: space-between;
   align-items: center;
   flex-direction: column;
+
+  @include mixin.on-tablet {
+    height: mixin.$on-tablet-header-height;
+  }
+
+  &--dark {
+    & .header__website-title {
+      color: mixin.$gray10;
+    }
+
+    & .header__hr {
+      background-color: mixin.$gray10;
+    }
+  }
+
+  &--light {
+    & .header__website-title {
+      color: mixin.$gray100;
+    }
+
+    & .header__hr {
+      background-color: mixin.$gray100;
+    }
+  }
 
   &__nav {
     width: 100%;
@@ -38,7 +65,6 @@
 
     font-family: Kharkiv-Tone, sans-serif;
     font-size: 22px;
-    color: mixin.$gray10;
 
     @include mixin.on-tablet {
       font-size: 24px;
@@ -69,7 +95,6 @@
     margin-top: 15px;
 
     border: none;
-    background-color: mixin.$gray10;
 
     @include mixin.on-tablet {
       margin-top: 0;
