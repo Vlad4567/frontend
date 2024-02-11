@@ -1,7 +1,7 @@
 {
   "files": {
-    "main.css": "/frontend/static/css/main.41b76ecc.css",
-    "main.js": "/frontend/static/js/main.ade8a39f.js",
+    "main.css": "/frontend/static/css/main.fc7d61ce.css",
+    "main.js": "/frontend/static/js/main.caff8b7c.js",
     "static/media/bg.png": "/frontend/static/media/bg.ce9b09dd6370bc374274.png",
     "static/media/Kharkiv-Tone.ttf": "/frontend/static/media/Kharkiv-Tone.6606d31e8d8c3e9f194b.ttf",
     "static/media/Urbanist-Black.ttf": "/frontend/static/media/Urbanist-Black.5f1f14f5f25adfb3ff24.ttf",
@@ -14,11 +14,11 @@
     "static/media/account-icon-dark.svg": "/frontend/static/media/account-icon-dark.9adb5c178c3dd43047255d370d33d0d7.svg",
     "static/media/account-icon-light.svg": "/frontend/static/media/account-icon-light.3965917d9a3fd4ccbbdb05115b2601b5.svg",
     "static/media/arrow-up-small.svg": "/frontend/static/media/arrow-up-small.074e99239e9119bb6bfd.svg",
-    "main.41b76ecc.css.map": "/frontend/static/css/main.41b76ecc.css.map",
-    "main.ade8a39f.js.map": "/frontend/static/js/main.ade8a39f.js.map"
+    "main.fc7d61ce.css.map": "/frontend/static/css/main.fc7d61ce.css.map",
+    "main.caff8b7c.js.map": "/frontend/static/js/main.caff8b7c.js.map"
   },
   "entrypoints": [
-    "static/css/main.41b76ecc.css",
-    "static/js/main.ade8a39f.js"
+    "static/css/main.fc7d61ce.css",
+    "static/js/main.caff8b7c.js"
   ]
 }
