@@ -7,6 +7,10 @@
   scroll-behavior: smooth;
 }
 
+:root {
+  --content-padding: 20px;
+}
+
 main {
   position: relative;
   flex: 1;
@@ -38,4 +42,6 @@ body {
   display: flex;
   flex-direction: column;
   flex: 1;
+
+  width: calc(100vw - var(--content-padding) * 2);
 }

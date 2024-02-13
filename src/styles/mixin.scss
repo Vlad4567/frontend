@@ -38,15 +38,16 @@ $on-tablet-header-height: 65px;
 }
 
 @mixin content-padding {
-  padding: 20px;
+  padding-block: 20px;
+  padding-inline: var(--content-padding);
 
   @include on-tablet {
-    padding-inline: 40px;
+    --content-padding: 40px;
     padding-block: 25px 15px;
   }
 
   @include on-desktop {
-    padding-inline: 80px;
+    --content-padding: 80px;
     padding-block: 30px;
     margin-inline: auto;
   }
