@@ -19,14 +19,14 @@
 
   &:hover .round-button__border {
     width: calc(100% - 14px);
-    padding-top: calc(100% - 14px);
+    height: calc(100% - 14px);
 
     border-color: mixin.$gray10;
   }
 
   &__border {
     width: calc(100% + 18px);
-    padding-top: calc(100% + 18px);
+    height: calc(100% + 18px);
 
     border: mixin.$line-width solid mixin.$gray100;
     border-radius: 50%;
