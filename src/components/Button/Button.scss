@@ -1,0 +1,57 @@
+@use '../../styles/mixin.scss' as mixin;
+
+.button {
+  width: 130px;
+  border: none;
+  border-radius: 100px;
+
+  font-family: Urbanist, sans-serif;
+  font-size: 16px;
+  line-height: 150%;
+  transition: background mixin.$effect-duration;
+
+  cursor: pointer;
+
+  &--large {
+    height: 50px;
+    background-color: mixin.$gray10;
+    color: mixin.$gray100;
+
+    &:hover {
+      background-color: mixin.$primary100;
+    }
+
+    &:enabled:active {
+      width: 120px;
+      height: 45px;
+      box-shadow: inset 1px 1px 10px 0 rgba(0, 0, 0, 0.25);
+    }
+
+    &:disabled {
+      background-color: mixin.$gray50;
+      cursor: default;
+    }
+  }
+
+  &--small {
+    height: 40px;
+    background-color: mixin.$primary100;
+    color: mixin.$gray100;
+
+    &:hover {
+      background-color: mixin.$gray10;
+    }
+
+    &:enabled:active {
+      width: 120px;
+      height: 35px;
+      background-color: mixin.$gray15;
+      box-shadow: inset 1px 1px 10px 0 rgba(0, 0, 0, 0.25);
+    }
+
+    &:disabled {
+      background-color: mixin.$gray50;
+      cursor: default;
+    }
+  }
+}
