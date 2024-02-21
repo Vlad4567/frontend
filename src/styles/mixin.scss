@@ -38,17 +38,20 @@ $on-tablet-header-height: 65px;
 }
 
 @mixin content-padding {
-  padding-block: 20px;
+  padding-block-start: var(--content-padding-top);
+  padding-block-end: var(--content-padding-bottom);
   padding-inline: var(--content-padding);
 
   @include on-tablet {
     --content-padding: 40px;
-    padding-block: 25px 15px;
+    --content-padding-top: 25px;
+    --content-padding-bottom: 15px;
   }
 
   @include on-desktop {
     --content-padding: 80px;
-    padding-block: 30px;
+    --content-padding-top: 30px;
+    --content-padding-bottom: 30px;
     margin-inline: auto;
   }
 }
@@ -56,4 +59,9 @@ $on-tablet-header-height: 65px;
 @mixin main-text {
   font-family: Urbanist;
   font-size: 16px;
+}
+
+@mixin full-width {
+  width: calc(var(--content-padding) * 2 + 100%);
+  margin-left: calc(var(--content-padding) * -1);
 }
