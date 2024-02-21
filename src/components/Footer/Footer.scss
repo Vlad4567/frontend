@@ -14,6 +14,8 @@
   display: flex;
   flex-direction: column;
 
+  z-index: 9999;
+
   &__block {
     @include mixin.on-tablet {
       flex-direction: row;
