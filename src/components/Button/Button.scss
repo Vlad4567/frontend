@@ -22,7 +22,6 @@
     }
 
     &:enabled:active {
-      width: 120px;
       height: 45px;
       box-shadow: inset 1px 1px 10px 0 rgba(0, 0, 0, 0.25);
     }
@@ -43,7 +42,6 @@
     }
 
     &:enabled:active {
-      width: 120px;
       height: 35px;
       background-color: mixin.$gray15;
       box-shadow: inset 1px 1px 10px 0 rgba(0, 0, 0, 0.25);
