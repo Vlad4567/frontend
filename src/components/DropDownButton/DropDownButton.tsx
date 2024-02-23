@@ -24,9 +24,13 @@ interface Props
   ) => void
   size: 'large' | 'small'
   onClick?: (
-    event: React.MouseEvent<HTMLButtonElement, MouseEvent>
+    event: React.MouseEvent<HTMLButtonElement, MouseEvent>,
+    active: boolean
   ) => void
   dropDownMenuRef?: React.RefObject<HTMLDivElement>
+  state?: boolean
+  active?: boolean
+  setActive?: React.Dispatch<React.SetStateAction<boolean>>
 }
 
 export const DropDownButton: React.FC<Props> = ({
@@ -39,31 +43,33 @@ export const DropDownButton: React.FC<Props> = ({
   onChange = () => {},
   onClick = () => {},
   dropDownMenuRef,
+  state = true,
+  active = false,
+  setActive = () => {},
   ...rest
 }) => {
-  const [isActive, setIsActive] = useState(false);
   const [inputValue, setInputValue] = useState('');
   const buttonRef = useRef<HTMLButtonElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
 
   const pathToIcon
-    = (isActive && (input ? iconClose : iconOpenWhite)) || iconOpenBlack;
+    = (active && (input ? iconClose : iconOpenWhite)) || iconOpenBlack;
 
   const handleOnClick = (
     event: React.MouseEvent<HTMLButtonElement, MouseEvent>,
   ) => {
     if (!dropDownMenuRef?.current?.contains(event.target as Node)) {
-      setIsActive(e => !e);
+      setActive(e => state && !e);
     }
 
-    onClick(event);
+    onClick(event, active);
   };
 
   useEffect(() => {
     if (input) {
       inputRef.current?.focus();
     }
-  }, [input, isActive]);
+  }, [input, active]);
 
   const handleInputOnChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setInputValue(e.target.value);
@@ -73,7 +79,7 @@ export const DropDownButton: React.FC<Props> = ({
   const handleInputOnKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
     switch (e.key) {
       case 'Escape':
-        setIsActive(false);
+        setActive(false);
         break;
 
       default:
@@ -92,7 +98,9 @@ export const DropDownButton: React.FC<Props> = ({
   };
 
   useOnClickOutside(buttonRef, () => {
-    setIsActive(false);
+    if (icon) {
+      setActive(false);
+    }
   });
 
   return (
@@ -101,14 +109,14 @@ export const DropDownButton: React.FC<Props> = ({
       className={classNames(
         `drop-down-button drop-down-button--${size} ${className}`, {
           'drop-down-button--icon': icon,
-          'drop-down-button--active': isActive,
+          'drop-down-button--active': active,
         },
       )}
       onClick={handleOnClick}
       {...rest}
     >
       {
-        (isActive && icon && input)
+        (active && icon && input)
           ? (
             <input
               ref={inputRef}
@@ -126,7 +134,7 @@ export const DropDownButton: React.FC<Props> = ({
             </p>
           )
       }
-      {icon && isActive && children}
+      {icon && active && children}
       {icon && (
         <img
           className="drop-down-button__icon"

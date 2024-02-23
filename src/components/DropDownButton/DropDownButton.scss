@@ -69,6 +69,12 @@ $icon-size: 15px;
     }
   }
 
+  &--active:is(:not(.drop-down-button--icon)) {
+    background-color: mixin.$pink;
+    color: mixin.$gray10;
+    border-color: #ffffff00;
+  }
+
   &--active:is(.drop-down-button--icon) {
     background-color: mixin.$gray10;
     color: mixin.$gray70;
