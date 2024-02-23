@@ -1,7 +1,8 @@
 {
   "files": {
-    "main.css": "/frontend/static/css/main.10997571.css",
-    "main.js": "/frontend/static/js/main.30db4f6e.js",
+    "main.css": "/frontend/static/css/main.1ce46ce5.css",
+    "main.js": "/frontend/static/js/main.8a0dbb52.js",
+    "static/media/home-page-header.jpg": "/frontend/static/media/home-page-header.ba847476165f5a751bb7.jpg",
     "static/media/three.png": "/frontend/static/media/three.4a4e5654aba6332f82a4.png",
     "static/media/two.png": "/frontend/static/media/two.a804ac932595386dc41c.png",
     "static/media/one.png": "/frontend/static/media/one.92ca3defea48d4e167a8.png",
@@ -14,17 +15,25 @@
     "static/media/error.svg": "/frontend/static/media/error.e5f5af2068d13b65d7f0113d1faba9a6.svg",
     "static/media/double-subtract.svg": "/frontend/static/media/double-subtract.f0d889c648acf40f055cf9775207081f.svg",
     "static/media/star.svg": "/frontend/static/media/star.0e83aa3f35111cdea4b72726d1556bba.svg",
+    "static/media/icon-star-rate.svg": "/frontend/static/media/icon-star-rate.46de3117274240398d925c7750c5877f.svg",
+    "static/media/icon-search.svg": "/frontend/static/media/icon-search.6a518efbb77881d2f828e59903ba136d.svg",
     "static/media/arrow-up-large.svg": "/frontend/static/media/arrow-up-large.1a56e54d370bfa48c4bd.svg",
     "index.html": "/frontend/index.html",
     "static/media/account-icon-dark.svg": "/frontend/static/media/account-icon-dark.9adb5c178c3dd43047255d370d33d0d7.svg",
     "static/media/account-icon-light.svg": "/frontend/static/media/account-icon-light.3965917d9a3fd4ccbbdb05115b2601b5.svg",
     "static/media/arrow-up-small.svg": "/frontend/static/media/arrow-up-small.074e99239e9119bb6bfd.svg",
     "static/media/subtract.svg": "/frontend/static/media/subtract.85d7584673d9cf4d96ce215a60e4615d.svg",
-    "main.10997571.css.map": "/frontend/static/css/main.10997571.css.map",
-    "main.30db4f6e.js.map": "/frontend/static/js/main.30db4f6e.js.map"
+    "static/media/left-arrow-button.svg": "/frontend/static/media/left-arrow-button.c6bfa7120919af68e38f0b8a7ba7115c.svg",
+    "static/media/arrow-button.svg": "/frontend/static/media/arrow-button.4b02e009b4a30106857825d71deb3196.svg",
+    "static/media/right-arrow-button.svg": "/frontend/static/media/right-arrow-button.563f956b572fd3165ee40f37fc82d493.svg",
+    "static/media/icon-dropdown-down-black.svg": "/frontend/static/media/icon-dropdown-down-black.398d3434e1b0dbeb11dcbc98dd8bf3c4.svg",
+    "static/media/icon-dropdown-close.svg": "/frontend/static/media/icon-dropdown-close.c760d79ed3dd862f454c17983c817d17.svg",
+    "static/media/icon-dropdown-up-white.svg": "/frontend/static/media/icon-dropdown-up-white.4f45b58d0e441047359772b19302a061.svg",
+    "main.1ce46ce5.css.map": "/frontend/static/css/main.1ce46ce5.css.map",
+    "main.8a0dbb52.js.map": "/frontend/static/js/main.8a0dbb52.js.map"
   },
   "entrypoints": [
-    "static/css/main.10997571.css",
-    "static/js/main.30db4f6e.js"
+    "static/css/main.1ce46ce5.css",
+    "static/js/main.8a0dbb52.js"
   ]
 }
