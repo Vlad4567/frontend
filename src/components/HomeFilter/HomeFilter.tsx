@@ -3,10 +3,10 @@ import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Category } from '../../types/category';
 import { DropDownButton } from '../DropDownButton/DropDownButton';
-import searchIcon from '../../img/icons/icon-search.svg';
 import { RoundButton } from '../RoundButton/RoundButton';
 import './HomeFilter.scss';
 import { getCategories } from '../../api/categories';
+import { FilterSearchInput } from '../FilterSearchInput/FilterSearchInput';
 
 interface Props {
   className?: string
@@ -50,33 +50,24 @@ export const HomeFilter: React.FC<Props> = ({
         ))}
       </div>
 
-      <label
-        className="home-filter__search-block"
-        htmlFor="homeFilterInput"
-      >
-        <div className="home-filter__search">
-          <img src={searchIcon} alt="Search icon" />
-          <input
-            value={searchInputValue}
-            onChange={(e) => setSearchInputValue(e.target.value)}
-            className="home-filter__search-input"
-            type="text"
-            id="homeFilterInput"
-            placeholder="Search by Services, Master, Studio"
-          />
-          <RoundButton
-            className="home-filter__search-submit"
-            onClick={() => navigate('search', {
-              state: {
-                text: searchInputValue,
-                category: activeCategory,
-              },
-            })}
-          >
-            Search
-          </RoundButton>
-        </div>
-      </label>
+      <div className="home-filter__search">
+        <FilterSearchInput
+          value={searchInputValue}
+          onChange={(e) => setSearchInputValue(e.target.value)}
+          placeholder="Enter the name of the service"
+        />
+        <RoundButton
+          className="home-filter__search-submit"
+          onClick={() => navigate('search', {
+            state: {
+              text: searchInputValue,
+              category: activeCategory,
+            },
+          })}
+        >
+          Search
+        </RoundButton>
+      </div>
     </div>
   );
 };
