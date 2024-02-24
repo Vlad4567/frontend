@@ -1,0 +1,74 @@
+@use '../../styles/mixin.scss' as mixin;
+
+$bg-border-radius: 60px;
+$top-space-phone: calc(var(--content-padding-top) + mixin.$on-phone-header-height);
+$top-space-tablet: calc(var(--content-padding-top) + mixin.$on-tablet-header-height);
+
+.home-header {
+  --header-description-height: 144px;
+
+  @include mixin.full-width;
+
+  min-height: calc(100vh + $bg-border-radius);
+  padding-inline: var(--content-padding);
+  padding-block: calc($top-space-phone + 23px) $bg-border-radius;
+  margin-top: calc($top-space-phone * -1);
+
+  background-image: url(../../img/home-page-header.jpg);
+  background-position: center;
+  background-size: cover;
+
+
+  border-radius: 0 0 $bg-border-radius $bg-border-radius;
+
+  @include mixin.on-tablet {
+    --header-description-height: 72px;
+
+    padding-top: calc($top-space-tablet + 13px);
+    margin-top: calc($top-space-tablet * -1);
+  }
+
+  @include mixin.on-desktop {
+    padding-top: calc($top-space-tablet + 30px);
+  }
+
+  &__description {
+    @include mixin.main-text;
+
+    width: 250px;
+    height: var(--header-description-height);
+    margin-left: auto;
+    line-height: 150%;
+
+    color: mixin.$gray100;
+
+    @include mixin.on-tablet {
+      width: 460px;
+    }
+
+    @include mixin.on-desktop {
+      width: 500px;
+    }
+  }
+
+  &__description-care-services {
+    color: mixin.$pink;
+    font-weight: 900;
+  }
+
+  &__description-beauticians {
+    border-bottom: mixin.$line-width solid mixin.$gray100;
+  }
+
+  &__description-studios {
+    font-weight: 900;
+  }
+
+  &__home-filter {
+    margin-top: max(0px, calc(50vh - $top-space-phone - var(--header-description-height)));
+
+    @include mixin.on-tablet {
+      margin-top: max(0px, calc(50vh - $top-space-tablet - var(--header-description-height)));
+    }
+  }
+}

@@ -1,0 +1,180 @@
+@use '../../styles/mixin.scss' as mixin;
+
+.what-is {
+  display: flex;
+  align-items: center;
+  flex-direction: column;
+  gap: 40px;
+
+  @include mixin.on-tablet {
+    @include mixin.full-width;
+
+    gap: 50px;
+
+    overflow-x: hidden;
+  }
+
+  @media (min-width: 1650px) {
+    overflow-x: visible;
+  }
+
+  &__title {
+    width: 100%;
+    text-align: end;
+    font-size: 28px;
+    margin-right: 45px;
+
+    @include mixin.on-tablet {
+      margin-right: calc(86px + var(--content-padding) * 2);
+      font-size: 48px;
+      line-height: 44px;
+    }
+
+    @include mixin.on-desktop {
+      font-size: 64px;
+      line-height: 64px;
+    }
+
+    &-website-name {
+      position: relative;
+      font-family: Kharkiv-Tone, sans-serif;
+      color: mixin.$primary100;
+      line-height: 44px;
+
+      &-stars {
+        @include mixin.on-tablet {
+          width: 46px;
+          height: 42px;
+        }
+      }
+    }
+  }
+
+  &__content {
+    @include mixin.on-tablet {
+      width: calc(100% + var(--content-padding) * 2);
+
+      display: flex;
+      justify-content: center;
+    }
+
+    &-round {
+      width: 270px;
+      height: 270px;
+
+      position: relative;
+
+      border: 1px solid mixin.$gray10;
+      border-radius: 50%;
+
+      @include mixin.on-tablet {
+        padding-left: calc(30% - var(--content-padding));
+        padding-bottom: calc(30% - var(--content-padding));
+      }
+
+      &:nth-of-type(even) {
+        transform: translate(25%);
+
+        @include mixin.on-tablet {
+          transform: translate(0);
+        }
+      }
+
+      &:nth-of-type(n+2) {
+        margin-top: -25%;
+
+        @include mixin.on-tablet {
+          margin-top: 0;
+
+          margin-left: -90px;
+        }
+      }
+
+      &:nth-of-type(odd) {
+        transform: translate(-25%);
+
+        @include mixin.on-tablet {
+          transform: translate(0);
+
+          margin-top: 200px;
+        }
+      }
+
+      &-text {
+        @include mixin.main-text;
+
+        font-size: 12px;
+        line-height: 125%;
+
+        position: absolute;
+        top: 50%;
+        left: 50%;
+
+        transform: translate(-50%, -50%);
+
+        @include mixin.on-tablet {
+          font-size: 16px;
+        }
+      }
+
+      &-star-first {
+        width: 190px;
+        height: 190px;
+        position: absolute;
+        z-index: -1;
+
+        top: -10%;
+        left: -5%;
+
+        @include mixin.on-tablet {
+          display: none;
+        }
+      }
+
+      &-star-second {
+        position: absolute;
+        z-index: -1;
+        display: none;
+
+        @include mixin.on-tablet {
+          width: 232px;
+          height: 232px;
+
+          top: 0;
+          left: 0;
+
+          transform: translate(-18%, -23%);
+
+          display: block;
+        }
+      }
+
+      &-double-subtract {
+        width: 128px;
+        height: 146px;
+        position: absolute;
+        top: 50%;
+        left: 50%;
+
+        transform: translate(-80%, -50%);
+        z-index: -1;
+
+        @include mixin.on-desktop {
+          width: 142px;
+          height: 163px;
+
+
+        }
+      }
+
+      &-subtract {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+
+        transform: translate(-50%, -50%);
+        z-index: -1;
+      }
+    }
+  }
+}

@@ -1,0 +1,16 @@
+@use '../../styles/mixin.scss' as mixin;
+
+.arrow-button {
+  width: 52px;
+  height: 52px;
+
+  background: none;
+  border: none;
+  border-radius: 50%;
+
+  cursor: pointer;
+
+  &:hover {
+    border: mixin.$line-width solid mixin.$gray10;
+  }
+}

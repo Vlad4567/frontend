@@ -1,0 +1,34 @@
+@use '../../styles/mixin.scss' as mixin;
+
+.button-with-arrow {
+  width: 100px;
+  height: 100px;
+  position: relative;
+
+  background: none;
+  border: mixin.$line-width solid mixin.$gray10;
+  border-radius: 100px;
+  transition: background mixin.$effect-duration,
+    color mixin.$effect-duration;
+
+  cursor: pointer;
+
+  &:active {
+    background-color: mixin.$gray10;
+    color: mixin.$gray100;
+  }
+
+  &__arrow {
+    position: absolute;
+    left: -35%;
+    top: 50%;
+    transform: translateY(-50%);
+
+    pointer-events: none;
+    transition: left mixin.$effect-duration;
+  }
+
+  &:hover .button-with-arrow__arrow {
+    left: -65%;
+  }
+}

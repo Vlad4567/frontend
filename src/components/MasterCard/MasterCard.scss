@@ -1,0 +1,91 @@
+@use '../../styles/mixin.scss' as mixin;
+
+.master-card {
+  width: 300px;
+  padding: 15px;
+
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+
+  color: mixin.$gray10;
+  border: mixin.$line-width solid;
+  border-radius: 30px;
+
+  transition-duration: mixin.$effect-duration;
+
+  &__img {
+    object-fit: cover;
+    height: 200px;
+    width: 100%;
+    border-radius: 20px;
+  }
+
+  &__rating {
+    @include mixin.main-text;
+
+    height: 40px;
+    width: 65px;
+    padding: 8px;
+
+    color: mixin.$gray100;
+    background-color: rgba(160, 159, 166, 0.3);
+    backdrop-filter: blur(5px);
+    line-height: 24px;
+    border-radius: 30px;
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 3px;
+
+    position: absolute;
+    top: 25px;
+    left: 25px;
+  }
+
+  &__info-name {
+    font-size: 24px;
+    line-height: 28px;
+
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    overflow: hidden;
+  }
+
+  &__info-subcategories {
+    font-size: 12px;
+    font-weight: 700;
+    line-height: 15px;
+
+    display: flex;
+    gap: 5px;
+
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    overflow: hidden;
+  }
+
+  &__address {
+    font-size: 16px;
+    line-height: 24px;
+
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    overflow: hidden;
+  }
+
+  &__buttons {
+    height: 50px;
+    display: flex;
+    justify-content: space-between;
+    gap: 10px;
+    align-items: center;
+  }
+
+  &:hover {
+    background-color: mixin.$gray100;
+    border-color: #ffffff00;
+  }
+}

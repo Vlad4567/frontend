@@ -1,0 +1,118 @@
+@use '../../styles/mixin.scss' as mixin;
+
+$padding-inline: 20px;
+$icon-size: 15px;
+
+@mixin button-size($height) {
+  height: $height;
+
+  &:enabled:active {
+    height: calc($height - 5px);
+  }
+
+  &.drop-down-button--icon {
+    &:enabled:active {
+      height: $height;
+    }
+  }
+}
+
+.drop-down-button {
+  width: 130px;
+  padding-inline: 20px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+
+  color: mixin.$gray10;
+  background: none;
+  border: mixin.$line-width solid mixin.$gray10;
+  border-radius: 100px;
+
+  transition: background mixin.$effect-duration;
+  cursor: pointer;
+
+  &:hover:not(.drop-down-button--icon), &:hover:is(.drop-down-button--icon):not(.drop-down-button--active) {
+    background-color: mixin.$pink;
+    padding-inline: calc($padding-inline + mixin.$line-width);
+    border: none;
+  }
+
+  &:enabled:active {
+    box-shadow: inset 1px 1px 10px 0 rgba(0, 0, 0, 0.25);
+  }
+
+  &:disabled {
+    background-color: mixin.$gray50;
+    color: mixin.$gray30;
+  }
+
+  &--large {
+    padding-block: 13px;
+
+    @include button-size(50px)
+  }
+
+  &--small {
+    padding-block: 8px;
+
+    @include button-size(40px);
+  }
+
+  &--icon {
+    justify-content: space-between;
+
+    &:enabled:active {
+      box-shadow: none;
+    }
+  }
+
+  &--active:is(:not(.drop-down-button--icon)) {
+    background-color: mixin.$pink;
+    color: mixin.$gray10;
+    border-color: #ffffff00;
+  }
+
+  &--active:is(.drop-down-button--icon) {
+    background-color: mixin.$gray10;
+    color: mixin.$gray70;
+  }
+
+  &--active:has(.drop-down-button__input) {
+    background: none;
+  }
+
+  &__icon {
+    width: $icon-size;
+    height: $icon-size;
+  }
+
+  &__input, &__input::placeholder {
+    @include mixin.main-text;
+
+    font-weight: 400;
+
+    padding: 0;
+    width: 100%;
+    height: calc(100%);
+
+    outline: none;
+    border: none;
+    background: none;
+    color: mixin.$gray10;
+
+    flex: 1;
+  }
+
+  &__text {
+    @include mixin.main-text;
+
+    width: 100%;
+
+    font-weight: 500;
+    text-align: center;
+    overflow: hidden;
+  }
+}

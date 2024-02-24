@@ -15,9 +15,7 @@ export const App: React.FC = () => {
     <>
       {headerShown && <Header type={headerType} />}
 
-      <main>
-        <Outlet />
-      </main>
+      <Outlet />
 
       {footerShown && <Footer />}
     </>
