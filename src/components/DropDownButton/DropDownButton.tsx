@@ -106,6 +106,7 @@ export const DropDownButton: React.FC<Props> = ({
   return (
     <button
       ref={buttonRef}
+      type="button"
       className={classNames(
         `drop-down-button drop-down-button--${size} ${className}`, {
           'drop-down-button--icon': icon,

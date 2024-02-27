@@ -7,7 +7,7 @@ $icon-size: 15px;
   height: $height;
 
   &:enabled:active {
-    height: calc($height - 5px);
+    transform: scale(0.95);
   }
 
   &.drop-down-button--icon {
@@ -41,6 +41,7 @@ $icon-size: 15px;
   }
 
   &:enabled:active {
+    transform: scale(0.95);
     box-shadow: inset 1px 1px 10px 0 rgba(0, 0, 0, 0.25);
   }
 
@@ -96,7 +97,7 @@ $icon-size: 15px;
 
     padding: 0;
     width: 100%;
-    height: calc(100%);
+    height: 100%;
 
     outline: none;
     border: none;
