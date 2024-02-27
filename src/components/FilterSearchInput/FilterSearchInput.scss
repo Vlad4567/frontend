@@ -2,6 +2,7 @@
 
 .filter-search-input {
   display: flex;
+  justify-content: center;
   flex-direction: column;
   gap: 5px;
 
@@ -9,10 +10,33 @@
     gap: 10px;
   }
 
+  &--light::after {
+    background-color: mixin.$gray100;
+  }
+
+  &--light &__search-input {
+    color: mixin.$gray100;
+
+    &::placeholder {
+      color: mixin.$gray100;
+    }
+  }
+
+  &--dark::after {
+    background-color: mixin.$gray10;
+  }
+
+  &--dark &__search-input {
+    color: mixin.$gray10;
+
+    &::placeholder {
+      color: mixin.$gray10;
+    }
+  }
+
   &::after {
     content: "";
     height: mixin.$line-width;
-    background-color: mixin.$gray100;
   }
 
   &__block {
@@ -33,10 +57,5 @@
     border: none;
     outline: none;
     background: none;
-    color: mixin.$gray100;
-
-    &::placeholder {
-      color: mixin.$gray100;
-    }
   }
 }
