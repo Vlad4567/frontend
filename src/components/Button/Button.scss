@@ -22,7 +22,7 @@
     }
 
     &:enabled:active {
-      height: 45px;
+      transform: scale(0.95);
       box-shadow: inset 1px 1px 10px 0 rgba(0, 0, 0, 0.25);
     }
 
@@ -42,7 +42,7 @@
     }
 
     &:enabled:active {
-      height: 35px;
+      transform: scale(0.95);
       background-color: mixin.$gray15;
       box-shadow: inset 1px 1px 10px 0 rgba(0, 0, 0, 0.25);
     }
