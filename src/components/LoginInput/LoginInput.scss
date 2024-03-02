@@ -1,0 +1,84 @@
+@use '../../styles/mixin.scss' as mixin;
+
+$padding-left: 5px;
+$padding-bottom: 10px;
+$icon-width: 25px;
+$border-bottom: 2px;
+
+.login-input {
+  margin-top: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+
+  &__block {
+    height: 50px;
+    position: relative;
+    display: flex;
+    flex-direction: column;
+
+    color: mixin.$gray30;
+  }
+
+  &__title {
+    padding-left: $padding-left;
+    font-weight: 700;
+    transition: opacity mixin.$effect-duration;
+    opacity: 0;
+
+    &--show {
+      opacity: 1;
+    }
+  }
+
+  &__input {
+    @include mixin.main-text;
+
+    height: 100%;
+    padding: 0 calc($icon-width + 15px) $padding-bottom $padding-left;
+
+    display: flex;
+    flex-direction: column;
+
+    line-height: 24px;
+
+    border: none;
+    border-bottom: mixin.$line-width solid mixin.$gray30;
+    outline: none;
+    background: none;
+
+    &:focus {
+      color: mixin.$gray10;
+      border-color: mixin.$gray10;
+    }
+  }
+
+  &__image {
+    width: $icon-width;
+    height: 25px;
+
+    position: absolute;
+    right: 0;
+    bottom: 50%;
+    transform: translateY(50%);
+    cursor: pointer;
+  }
+
+  &__error {
+    display: flex;
+    gap: 5px;
+  }
+
+  &__error-icon {
+    height: 15px;
+    min-width: 15px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+
+    color: mixin.$gray100;
+    background-color: mixin.$primary100;
+    border-radius: 50%;
+  }
+}

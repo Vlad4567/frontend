@@ -1,0 +1,31 @@
+@use '../../styles/mixin.scss' as mixin;
+
+.rating-stars {
+  display: flex;
+  justify-content: start;
+  flex-direction: row-reverse;
+  gap: 2px;
+
+  &__star {
+    display: block;
+    width: 15px;
+    height: 15px;
+    background-position: center;
+    background-repeat: no-repeat;
+    cursor: pointer;
+    font-size: 20px;
+    background-image: url(../../img/icons/empty-star-rating.svg);
+
+    &:hover {
+      background-image: url(../../img/icons/full-star-rating.svg);
+    }
+
+    &:hover ~ * {
+      background-image: url(../../img/icons/full-star-rating.svg);
+    }
+  }
+}
+
+input[type='radio'] {
+  display: none;
+}

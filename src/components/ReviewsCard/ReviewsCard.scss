@@ -1,0 +1,107 @@
+@use '../../styles/mixin.scss' as mixin;
+
+.reviews-card {
+  max-width: 206px;
+  padding: 20px;
+  border-radius: 30px;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  background-color: mixin.$gray100;
+
+  @include mixin.on-tablet {
+    max-width: 300px;
+    padding: 40px;
+  }
+
+  &__header {
+    display: flex;
+    gap: 10px;
+  }
+
+  &__header-avatar {
+    width: 44px;
+    height: 44px;
+    display: block;
+  }
+
+  &__header-title {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+  }
+
+  &__header-title-name {
+    @include mixin.main-text;
+
+    font-weight: 500;
+  }
+
+  &__header-title-date {
+    font-weight: 700;
+    line-height: 15px;
+  }
+
+  &__hr {
+    border: 1.5px solid mixin.$gray70;
+    width: 100%;
+  }
+
+  &__main {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  &__main-stars {
+    display: flex;
+  }
+
+  &__main-stars-star {
+    height: 15px;
+    width: 15px;
+  }
+
+  &__main-info {
+    @include mixin.main-text;
+
+    min-height: 144px;
+    overflow: hidden;
+
+    @include mixin.on-tablet {
+      min-height: 96px;
+    }
+  }
+
+  &__main-read-more {
+    @include mixin.main-text;
+
+    width: fit-content;
+    color: mixin.$error;
+    cursor: pointer;
+    position: relative;
+    transition: all mixin.$effect-duration ease;
+
+    &:hover {
+      &::after {
+        content: '';
+        width: 100%;
+        height: 1.5px;
+        position: absolute;
+        background-color: mixin.$error;
+        bottom: -3px;
+        left: 0;
+      }
+    }
+  }
+
+  &__swiper {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+
+    @include mixin.on-desktop {
+      gap: 30px;
+    }
+  }
+}
