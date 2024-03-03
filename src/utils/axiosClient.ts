@@ -1,8 +1,4 @@
-import axios from 'axios';
-
-const instance = axios.create({
-  baseURL: './api',
-});
+import instance from './axiosInterceptors';
 
 export const client = {
   async get<T>(url: string) {
@@ -11,14 +7,26 @@ export const client = {
     return response.data;
   },
 
-  async post<T>(url: string, data: never) {
+  async post<T>(url: string, data?: unknown) {
+    if (typeof data === 'undefined') {
+      const response = await instance.post<T>(url);
+
+      return response.data;
+    }
+
     const response = await instance.post<T>(url, data);
 
     return response.data;
   },
 
-  async patch<T>(url: string, data: never) {
-    const response = await instance.patch<T>(url, data);
+  async patch<T>(url: string, data?: unknown) {
+    if (typeof data === 'undefined') {
+      const response = await instance.post<T>(url);
+
+      return response.data;
+    }
+
+    const response = await instance.post<T>(url, data);
 
     return response.data;
   },
