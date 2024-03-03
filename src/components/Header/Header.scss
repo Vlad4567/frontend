@@ -73,6 +73,11 @@
     }
   }
 
+  &__account {
+    background-color: mixin.$gray100;
+    border-color: #ffffff00;
+  }
+
   &__login {
     display: none;
 
