@@ -9,7 +9,7 @@ import { NotFoundPage } from './pages/NotFoundPage/NotFoundPage';
 import { App } from './App';
 import { HomePage } from './pages/HomePage/HomePage';
 import { store } from './app/store';
-import { SearchPage } from './pages/SearchPage/SearchPage';
+import { LoginPage } from './pages/LoginPage/LoginPage';
 
 export const Router = () => {
   return (
@@ -19,7 +19,7 @@ export const Router = () => {
           <Route path="/" element={<App />}>
             <Route index element={<HomePage />} />
             <Route path="home" element={<Navigate to="/" replace />} />
-            <Route path="search" element={<SearchPage />} />
+            <Route path="login" element={<LoginPage />} />
             <Route path="*" element={<NotFoundPage />} />
           </Route>
         </Routes>
