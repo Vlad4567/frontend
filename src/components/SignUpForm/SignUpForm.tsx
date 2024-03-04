@@ -60,7 +60,7 @@ export const SignUpForm: React.FC<Props> = ({
     if (debouncedUsername) {
       checkUsername(debouncedUsername)
         .then(res => typeof res === 'boolean' && (res ? changeObjectStateKey(
-          'This email already exists',
+          'This username already exists',
           'username',
           setFormErrors,
         ) : changeObjectStateKey(
