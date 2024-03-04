@@ -1,0 +1,37 @@
+@use '../../styles/mixin.scss' as mixin;
+
+.drop-down-sort-button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  border: mixin.$line-width solid mixin.$gray10;
+  border-radius: 50%;
+  background-color: #ffffff00;
+  background-image: url(../../img/icons/icon-sort-dark.svg);
+  background-position: center;
+  background-repeat: no-repeat;
+
+  transition: all mixin.$effect-duration;
+  cursor: pointer;
+
+  &--large {
+    width: 50px;
+    height: 50px;
+  }
+
+  &--small {
+    width: 40px;
+    height: 40px;
+  }
+
+  &--active {
+    background-color: mixin.$gray10;
+    background-image: url(../../img/icons/icon-sort-white.svg);
+  }
+  
+  &:hover {
+    background-color: mixin.$pink;
+    border-color: #ffffff00;
+  }
+}

@@ -1,0 +1,57 @@
+@use '../../styles/mixin.scss' as mixin;
+
+.login-form {
+  &__form-header {
+    display: none;
+
+    @include mixin.on-tablet {
+      display: flex;
+      flex-direction: row;
+      justify-content: space-between;
+    }
+  }
+
+  &__body {
+    display: flex;
+    flex-direction: column;
+    gap: 60px;
+
+    @include mixin.on-tablet {
+      gap: 45px;
+    }
+  }
+
+  &__main {
+    display: flex;
+    flex-direction: column;
+  }
+
+  &__reset-link {
+    display: flex;
+    justify-content: flex-end;
+    cursor: pointer;
+
+    &:hover {
+      color: mixin.$link;
+      text-decoration: underline;
+    }
+  }
+
+  &__checkbox-label {
+    @include mixin.main-text;
+
+    width: fit-content;
+    padding-bottom: 20px;
+
+    display: flex;
+    align-items: center;
+    position: relative;
+
+    line-height: 24px;
+    cursor: pointer;
+  }
+
+  &__login {
+    width: 100%;
+  }
+}

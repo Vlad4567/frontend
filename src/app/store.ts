@@ -1,9 +1,15 @@
 import { configureStore, ThunkAction, Action } from '@reduxjs/toolkit';
 import appSlice from '../features/appSlice';
+import notificationSlice from '../features/notificationSlice';
+import { listenerMiddleware } from './listenerMiddleware';
 
 export const store = configureStore({
   reducer: {
     appSlice,
+    notificationSlice,
+  },
+  middleware: (getDefaultMiddleware) => {
+    return getDefaultMiddleware().prepend(listenerMiddleware.middleware);
   },
 });
 

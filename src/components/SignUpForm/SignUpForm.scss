@@ -1,0 +1,57 @@
+@use '../../styles/mixin.scss' as mixin;
+
+.sign-up-form {
+  &__header {
+    display: none;
+
+    @include mixin.on-tablet {
+      display: flex;
+      flex-direction: row;
+      justify-content: space-between;
+    }
+  }
+
+  &__body {
+    display: flex;
+    flex-direction: column;
+    gap: 38px;
+  }
+
+  &__main {
+    display: flex;
+    flex-direction: column;
+  }
+
+  &__main {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+  }
+
+  &__footer {
+    display: flex;
+    flex-direction: column;
+  }
+
+  &__policy-text {
+    padding-bottom: 10px;
+  }
+
+  &__checkbox-label {
+    @include mixin.main-text;
+
+    width: fit-content;
+    padding-bottom: 20px;
+
+    display: flex;
+    align-items: center;
+    position: relative;
+
+    line-height: 24px;
+    cursor: pointer;
+  }
+
+  &__button {
+    width: 100%;
+  }
+}

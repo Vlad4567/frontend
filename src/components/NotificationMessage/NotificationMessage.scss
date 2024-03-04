@@ -1,0 +1,38 @@
+@use '../../styles/mixin.scss' as mixin;
+
+.notification-message {
+  width: 467px;
+  padding: 30px;
+
+  display: flex;
+  align-items: flex-start;
+  gap: 20px;
+
+  border-radius: 30px;
+  box-shadow: 12px 12px 15px 0 rgba(0, 0, 0, 0.25);
+  background-color: mixin.$gray100;
+
+  @include mixin.on-tablet {
+    gap: 40px;
+  }
+
+  &__wrapper {
+    flex: 1;
+  }
+
+  &__title {
+    @include mixin.main-text;
+
+    color: mixin.$gray10;
+    font-weight: 500;
+  }
+
+  &__description {
+    color: mixin.$gray30;
+    font-weight: 500;
+  }
+
+  &__close {
+    cursor: pointer;
+  }
+}

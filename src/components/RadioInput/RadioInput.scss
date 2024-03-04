@@ -1,0 +1,50 @@
+@use '../../styles/mixin.scss' as mixin;
+
+.radio-input {
+  width: 20px;
+  height: 20px;
+
+  position: relative;
+
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  cursor: pointer;
+
+  &:before {
+    content: "";
+    
+    width: 60%;
+    height: 60%;
+    
+    position: absolute;
+    transform: scale(0);
+    z-index: 1;
+
+    background: mixin.$gray20;
+    border-radius: 50%;
+    
+    transition: transform mixin.$effect-duration cubic-bezier(.45,1.8,.5,.75);
+  }
+
+  &:checked {
+    &:before {
+      transform: scale(1,1);
+    }
+  }
+
+  &:after {
+    width: 100%;
+    height: 100%;
+    
+    position: absolute;
+    
+    background: #fff;
+    border: mixin.$line-width solid mixin.$gray50;
+    border-radius: 50%;
+    
+    box-sizing: border-box;
+    content: "";
+  }
+}

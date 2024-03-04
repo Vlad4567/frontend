@@ -1,0 +1,18 @@
+@use '../../styles/mixin.scss' as mixin;
+
+.modal {
+  position: fixed;
+  z-index: 10000;
+  inset: 0;
+
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  backdrop-filter: blur(10px);
+  overflow: auto;
+
+  @include mixin.on-tablet {
+    display: none;
+  }
+}
