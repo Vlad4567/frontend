@@ -28,6 +28,8 @@ export const MasterCard: React.FC<Props> = ({
     id,
   } = master;
 
+  window.console.dir(master);
+
   return (
     <article className={`master-card ${className}`}>
       <img
@@ -47,7 +49,7 @@ export const MasterCard: React.FC<Props> = ({
         </div>
       )}
 
-      {firstName && lastName && firstName && lastName && (
+      {(firstName || lastName) && (
         <div className="master-card__info">
           {firstName && lastName && (
             <h3 className="master-card__info-name">
@@ -76,7 +78,7 @@ export const MasterCard: React.FC<Props> = ({
         </div>
       )}
 
-      {address.houseNumber && address.street && address.city && (
+      {(address.houseNumber || address.street || address.city) && (
         <p className="master-card__address">
           {address.houseNumber && address.houseNumber}
           {' '}

@@ -47,8 +47,6 @@
   }
 
   &__error-subtitle {
-    @include mixin.main-text;
-
     font-weight: 500;
     line-height: 150%;
   }

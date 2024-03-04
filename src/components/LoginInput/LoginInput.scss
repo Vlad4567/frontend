@@ -32,8 +32,6 @@ $border-bottom: 2px;
   }
 
   &__input {
-    @include mixin.main-text;
-
     height: 100%;
     padding: 0 calc($icon-width + 15px) $padding-bottom $padding-left;
 

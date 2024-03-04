@@ -33,8 +33,6 @@ $top-space-tablet: calc(var(--content-padding-top) + mixin.$on-tablet-header-hei
   }
 
   &__description {
-    @include mixin.main-text;
-
     width: 250px;
     height: var(--header-description-height);
     margin-left: auto;

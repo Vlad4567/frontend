@@ -5,16 +5,18 @@ import arrow from '../../img/icons/arrow-button.svg';
 /* eslint-disable react/button-has-type */
 interface Props extends React.ButtonHTMLAttributes<HTMLButtonElement> {
   children: React.ReactNode
+  className?: string
 }
 
 export const ButtonWithArrow: React.FC<Props> = ({
   children,
+  className = '',
   ...rest
 }) => {
   return (
     <button
       className={
-        `button-with-arrow ${rest.className}`
+        `button-with-arrow ${className}`
       }
       {...rest}
     >

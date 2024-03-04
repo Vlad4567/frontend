@@ -19,7 +19,7 @@ $blue: rgb(214, 240, 250);
 $primary100: rgb(255, 75, 75);
 //
 $effect-duration: 300ms;
-$line-width: 2px;
+$line-width: 1.5px;
 //
 $tablet-min-width: 1024px;
 $desktop-min-width: 1440px;
@@ -55,11 +55,6 @@ $on-tablet-header-height: 65px;
     --content-padding-bottom: 30px;
     margin-inline: auto;
   }
-}
-
-@mixin main-text {
-  font-family: Urbanist;
-  font-size: 16px;
 }
 
 @mixin full-width {

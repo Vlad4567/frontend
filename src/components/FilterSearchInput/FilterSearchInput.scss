@@ -49,8 +49,6 @@
   }
 
   &__search-input {
-    @include mixin.main-text;
-
     width: 100%;
     padding: 0;
 

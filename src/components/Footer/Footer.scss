@@ -30,7 +30,7 @@
 
     display: flex;
     justify-content: space-between;
-    align-items: end;
+    align-items: flex-end;
     flex-direction: column;
 
     @include mixin.on-tablet {
@@ -40,8 +40,6 @@
   }
 
   &__contact-us-paragraph {
-    @include mixin.main-text;
-
     width: 100%;
     text-align: left;
     line-height: 125%;
@@ -49,8 +47,6 @@
   }
 
   &__contact-us-button-link {
-    @include mixin.main-text;
-
     width: min-content;
     font-weight: 500;
     line-height: 150%;
