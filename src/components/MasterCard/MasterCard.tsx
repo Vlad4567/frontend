@@ -28,8 +28,6 @@ export const MasterCard: React.FC<Props> = ({
     id,
   } = master;
 
-  window.console.dir(master);
-
   return (
     <article className={`master-card ${className}`}>
       <img
