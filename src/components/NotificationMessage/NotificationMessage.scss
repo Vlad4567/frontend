@@ -21,8 +21,6 @@
   }
 
   &__title {
-    @include mixin.main-text;
-
     color: mixin.$gray10;
     font-weight: 500;
   }

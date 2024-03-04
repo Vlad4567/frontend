@@ -7,15 +7,12 @@
   gap: 20px;
 
   &__description {
-    @include mixin.main-text;
-
     display: flex;
     gap: 5px;
     line-height: 24px;
   }
 
   &__description-link {
-    @include mixin.main-text;
     position: relative;
 
     color: mixin.$link;

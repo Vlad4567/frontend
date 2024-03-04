@@ -23,8 +23,6 @@
   }
 
   &__rating {
-    @include mixin.main-text;
-
     height: 40px;
     width: 65px;
     padding: 8px;

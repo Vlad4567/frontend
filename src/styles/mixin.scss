@@ -57,11 +57,6 @@ $on-tablet-header-height: 65px;
   }
 }
 
-@mixin main-text {
-  font-family: Urbanist;
-  font-size: 16px;
-}
-
 @mixin full-width {
   width: calc(var(--content-padding) * 2 + 100%);
   margin-left: calc(var(--content-padding) * -1);
