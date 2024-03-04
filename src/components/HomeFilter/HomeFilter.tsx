@@ -33,8 +33,19 @@ export const HomeFilter: React.FC<Props> = ({
     setActiveCategory(categories.find(category => category.id === id) || null);
   };
 
+  const handleOnSubmit = (e: React.FormEvent<HTMLButtonElement>) => {
+    e.preventDefault();
+
+    navigate('search', {
+      state: {
+        text: searchInputValue,
+        category: activeCategory,
+      },
+    });
+  };
+
   return (
-    <div className={`home-filter ${className}`}>
+    <form className={`home-filter ${className}`}>
       <div className="home-filter__categories">
         {categories.map(category => (
           <DropDownButton
@@ -57,17 +68,13 @@ export const HomeFilter: React.FC<Props> = ({
           placeholder="Enter the name of the service"
         />
         <RoundButton
+          type="submit"
           className="home-filter__search-submit"
-          onClick={() => navigate('search', {
-            state: {
-              text: searchInputValue,
-              category: activeCategory,
-            },
-          })}
+          onSubmit={handleOnSubmit}
         >
           Search
         </RoundButton>
       </div>
-    </div>
+    </form>
   );
 };
