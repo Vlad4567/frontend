@@ -31,8 +31,8 @@ instance.interceptors.response.use(
     if (error.code === 'ECONNABORTED') {
       store.dispatch(notificationSlice.addNotification({
         id: +new Date(),
-        title: 'Oops...',
-        description: 'Something went wrong...',
+        title: 'Oops something went wrong',
+        description: 'Reload the page or try again later',
       }));
     }
 
