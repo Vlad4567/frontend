@@ -14,9 +14,9 @@ export interface MasterCard {
   firstName: string;
   lastName: string;
   address: MasterAddress;
-  subcategories: MasterSubcategory[];
+  subcategories: MasterSubcategory[] | null;
   rating: number;
-  mainPhoto: string;
+  mainPhoto: string | null;
 }
 
 export interface FilterMasterCard {
@@ -31,4 +31,13 @@ export interface FilterMasterCard {
   totalPages: number;
   numberOfElements: number;
   empty: boolean;
+}
+
+export interface ServiceCard {
+  id: number;
+  name: string,
+  price: number,
+  masterCard: Pick<
+  MasterCard, 'id' | 'address' | 'firstName' | 'lastName' | 'rating'>
+  photo: string | null;
 }
