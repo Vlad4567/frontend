@@ -5,9 +5,13 @@
   z-index: 10000;
   inset: 0;
 
-  display: flex;
-  justify-content: center;
-  align-items: center;
+  & > * {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    right: 0;
+    transform: translate(-50%, -50%);
+  }
 
   backdrop-filter: blur(10px);
   overflow: auto;
