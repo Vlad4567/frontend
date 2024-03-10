@@ -5,6 +5,7 @@ import starRate from '../../img/icons/icon-star-rate.svg';
 import './MasterCard.scss';
 import { Button } from '../Button/Button';
 import { DropDownButton } from '../DropDownButton/DropDownButton';
+import defaultAvatar from '../../img/default-avatar.svg';
 
 interface Props {
   className?: string
@@ -30,10 +31,11 @@ export const MasterCard: React.FC<Props> = ({
   return (
     <article className={`master-card ${className}`}>
       <img
-        src={mainPhoto}
+        src={mainPhoto === null ? defaultAvatar : mainPhoto}
         alt="Master"
         className="master-card__img"
       />
+
       <div className="master-card__rating">
         <img
           src={starRate}
@@ -43,29 +45,44 @@ export const MasterCard: React.FC<Props> = ({
         {rating.toFixed(1)}
       </div>
 
-      <div className="master-card__info">
-        <h3 className="master-card__info-name">
-          {`${firstName} ${lastName}`}
-        </h3>
-        <small className="master-card__info-subcategories">
-          {subcategories.map((subcategory, index) => (
-            <div
-              className="master-card__info-subcategory"
-              key={subcategory.categoryId}
-            >
-              {
-                subcategories.length === index + 1
-                  ? `${subcategory.name}`
-                  : `${subcategory.name},`
-              }
-            </div>
-          ))}
-        </small>
-      </div>
+      {(firstName || lastName) && (
+        <div className="master-card__info">
+          {firstName && lastName && (
+            <h3 className="master-card__info-name">
+              {firstName && firstName}
+              {' '}
+              {lastName && lastName}
+            </h3>
+          )}
 
-      <p className="master-card__address">
-        {`${address.houseNumber} ${address.street} ${address.city}`}
-      </p>
+          {subcategories && (
+            <small className="master-card__info-subcategories">
+              {subcategories.map((subcategory, index) => (
+                <div
+                  className="master-card__info-subcategory"
+                  key={subcategory.categoryId}
+                >
+                  {
+                    subcategories.length === index + 1
+                      ? `${subcategory.name}`
+                      : `${subcategory.name},`
+                  }
+                </div>
+              ))}
+            </small>
+          )}
+        </div>
+      )}
+
+      {(address.houseNumber || address.street || address.city) && (
+        <p className="master-card__address">
+          {address.houseNumber && address.houseNumber}
+          {' '}
+          {address.street && address.street}
+          {' '}
+          {address.city && address.city}
+        </p>
+      )}
 
       <div className="master-card__buttons">
         <Button
