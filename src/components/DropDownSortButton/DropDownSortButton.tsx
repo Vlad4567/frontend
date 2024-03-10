@@ -1,4 +1,5 @@
 import classNames from 'classnames';
+import { forwardRef } from 'react';
 import './DropDownSortButton.scss';
 
 interface Props
@@ -8,19 +9,20 @@ interface Props
   active?: boolean
 }
 
-export const DropDownSortButton: React.FC<Props> = ({
+export const DropDownSortButton = forwardRef<HTMLButtonElement, Props>(({
   className = '',
   size = 'large',
   active = false,
   ...rest
-}) => {
+}, ref) => {
   return (
     <button
       type="button"
       className={classNames(`drop-down-sort-button drop-down-sort-button--${size} ${className}`, {
         'drop-down-sort-button--active': active,
       })}
+      ref={ref}
       {...rest}
     />
   );
-};
+});
