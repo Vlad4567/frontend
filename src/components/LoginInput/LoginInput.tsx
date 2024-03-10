@@ -1,10 +1,10 @@
 /* eslint-disable jsx-a11y/no-noninteractive-element-interactions */
 /* eslint-disable jsx-a11y/click-events-have-key-events */
 import React from 'react';
-import './LoginInput.scss';
 import classNames from 'classnames';
 import eyePasswordHide from '../../img/icons/eye-password-hide.svg';
 import eyePasswordShow from '../../img/icons/eye-password-show.svg';
+import './LoginInput.scss';
 
 interface Props extends React.InputHTMLAttributes<HTMLInputElement> {
   className?: string

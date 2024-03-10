@@ -2,80 +2,76 @@ import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import * as types from '../../types/master';
 import starRate from '../../img/icons/icon-star-rate.svg';
-import './MasterCard.scss';
 import { Button } from '../Button/Button';
 import { DropDownButton } from '../DropDownButton/DropDownButton';
 import defaultAvatar from '../../img/default-avatar.svg';
+import './ServiceCard.scss';
 
 interface Props {
   className?: string
-  master: types.MasterCard
+  service: types.ServiceCard
 }
 
-export const MasterCard: React.FC<Props> = ({
+export const ServiceCard: React.FC<Props> = ({
   className = '',
-  master,
+  service,
 }) => {
   const navigate = useNavigate();
 
   const {
+    name,
+    photo,
+    price,
+    id,
+  } = service;
+
+  const {
     firstName,
     lastName,
-    subcategories,
-    mainPhoto,
     address,
     rating,
-    id,
-  } = master;
+  } = service.masterCard;
 
   return (
-    <article className={`master-card ${className}`}>
+    <article className={`service-card ${className}`}>
       <img
-        src={mainPhoto === null ? defaultAvatar : mainPhoto}
-        alt="Master"
-        className="master-card__img"
+        src={photo || defaultAvatar}
+        alt="Service"
+        className="service-card__img"
       />
 
-      <div className="master-card__rating">
+      <div className="service-card__rating">
         <img
           src={starRate}
           alt="Star rate"
-          className="master-card__img-star"
+          className="service-card__img-star"
         />
         {rating.toFixed(1)}
       </div>
 
       {(firstName || lastName) && (
-        <div className="master-card__info">
+        <div className="service-card__info">
           {firstName && lastName && (
-            <h3 className="master-card__info-name">
+            <h3 className="service-card__info-name">
               {firstName && firstName}
               {' '}
               {lastName && lastName}
             </h3>
           )}
 
-          {subcategories && (
-            <small className="master-card__info-subcategories">
-              {subcategories.map((subcategory, index) => (
-                <div
-                  className="master-card__info-subcategory"
-                  key={subcategory.categoryId}
-                >
-                  {
-                    subcategories.length === index + 1
-                      ? `${subcategory.name}`
-                      : `${subcategory.name},`
-                  }
-                </div>
-              ))}
+          {name && (
+            <small className="service-card__info-subcategory">
+              {name}
+              <span className="service-card__info-subcategory-split">|</span>
+              {price}
             </small>
           )}
+
         </div>
       )}
 
       {(address.houseNumber || address.street || address.city) && (
-        <p className="master-card__address">
+        <p className="service-card__address">
           {address.houseNumber && address.houseNumber}
           {' '}
           {address.street && address.street}
@@ -84,11 +80,11 @@ export const MasterCard: React.FC<Props> = ({
         </p>
       )}
 
-      <div className="master-card__buttons">
+      <div className="service-card__buttons">
         <Button
           size="large"
-          className="master-card__buttons-chat"
-          onClick={() => navigate(`master/${id}`)}
+          className="service-card__buttons-chat"
+          onClick={() => navigate(`/master/${id}`)}
         >
           Chat
         </Button>
@@ -96,7 +92,7 @@ export const MasterCard: React.FC<Props> = ({
         <DropDownButton
           size="large"
           placeholder="Details"
-          onClick={() => navigate(`master/${id}`)}
+          onClick={() => navigate(`/master/${id}`)}
         />
       </div>
     </article>

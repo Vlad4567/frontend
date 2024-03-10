@@ -1,119 +1,69 @@
 /* eslint-disable jsx-a11y/no-noninteractive-element-interactions */
 /* eslint-disable jsx-a11y/click-events-have-key-events */
-import React, { useEffect, useRef, useState } from 'react';
-import './DropDownButton.scss';
+import React, { forwardRef } from 'react';
 import classNames from 'classnames';
-import { useOnClickOutside } from 'usehooks-ts';
 import iconOpenWhite from '../../img/icons/icon-dropdown-up-white.svg';
 import iconOpenBlack from '../../img/icons/icon-dropdown-down-black.svg';
 import iconClose from '../../img/icons/icon-dropdown-close.svg';
+import iconGrey from '../../img/icons/icon-dropdown-down-grey.svg';
+import './DropDownButton.scss';
 
-/* eslint-disable react/button-has-type */
 interface Props
   extends Omit<
   React.ButtonHTMLAttributes<HTMLButtonElement>,
-  'onClick' | 'onChange'
+  'onChange'
+  | 'className'
   > {
   className?: string
-  children?: React.ReactNode
   icon?: boolean
   input?: boolean
+  size: 'large' | 'small'
   placeholder: string
   onChange?: (
     e: React.ChangeEvent<HTMLInputElement>
   ) => void
-  size: 'large' | 'small'
-  onClick?: (
-    event: React.MouseEvent<HTMLButtonElement, MouseEvent>,
-    active: boolean
+  handleIconOnClick?: (
+    e: React.MouseEvent<HTMLImageElement, MouseEvent>
   ) => void
-  dropDownMenuRef?: React.RefObject<HTMLDivElement>
-  state?: boolean
   active?: boolean
-  setActive?: React.Dispatch<React.SetStateAction<boolean>>
+  value?: string
+  inputRef?: React.Ref<HTMLInputElement>
 }
 
-export const DropDownButton: React.FC<Props> = ({
+export const DropDownButton = forwardRef<HTMLButtonElement, Props>(({
   className = '',
   icon = false,
   input = false,
   size,
-  children,
   placeholder = '',
-  onChange = () => {},
-  onClick = () => {},
-  dropDownMenuRef,
-  state = true,
+  onChange = () => { },
+  handleIconOnClick = () => { },
   active = false,
-  setActive = () => {},
+  value = '',
+  inputRef,
   ...rest
-}) => {
-  const [inputValue, setInputValue] = useState('');
-  const buttonRef = useRef<HTMLButtonElement>(null);
-  const inputRef = useRef<HTMLInputElement>(null);
-
+}, ref) => {
   const pathToIcon
-    = (active && (input ? iconClose : iconOpenWhite)) || iconOpenBlack;
+    = (active && (input ? iconClose : iconOpenWhite))
+    || (rest.disabled ? iconGrey : iconOpenBlack);
 
-  const handleOnClick = (
-    event: React.MouseEvent<HTMLButtonElement, MouseEvent>,
-  ) => {
-    if (!dropDownMenuRef?.current?.contains(event.target as Node)) {
-      setActive(e => state && !e);
-    }
-
-    onClick(event, active);
-  };
-
-  useEffect(() => {
-    if (input) {
-      inputRef.current?.focus();
-    }
-  }, [input, active]);
-
-  const handleInputOnChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setInputValue(e.target.value);
-    onChange(e);
-  };
-
-  const handleInputOnKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
-    switch (e.key) {
-      case 'Escape':
-        setActive(false);
-        break;
-
-      default:
-        break;
-    }
-  };
-
-  const handleIconOnClick = (
-    e: React.MouseEvent<HTMLImageElement, MouseEvent>,
-  ) => {
+  const handleIcon = (e: React.MouseEvent<HTMLImageElement, MouseEvent>) => {
     if (pathToIcon === iconClose) {
-      e.stopPropagation();
-      setInputValue('');
-      inputRef.current?.focus();
+      handleIconOnClick(e);
     }
   };
-
-  useOnClickOutside(buttonRef, () => {
-    if (icon) {
-      setActive(false);
-    }
-  });
 
   return (
     <button
-      ref={buttonRef}
       type="button"
       className={classNames(
         `drop-down-button drop-down-button--${size} ${className}`, {
           'drop-down-button--icon': icon,
           'drop-down-button--active': active,
+          'drop-down-button--scale': !(icon && active && input),
         },
       )}
-      onClick={handleOnClick}
+      ref={ref}
       {...rest}
     >
       {
@@ -123,27 +73,25 @@ export const DropDownButton: React.FC<Props> = ({
               ref={inputRef}
               className="drop-down-button__input"
               type="text"
-              placeholder={inputValue || placeholder}
-              value={inputValue}
+              placeholder={placeholder}
+              value={value}
               onClick={(e) => e.stopPropagation()}
-              onChange={handleInputOnChange}
-              onKeyDown={handleInputOnKeyDown}
+              onChange={onChange}
             />
           ) : (
             <p className="drop-down-button__text">
-              {inputValue || placeholder}
+              {placeholder}
             </p>
           )
       }
-      {icon && active && children}
       {icon && (
         <img
           className="drop-down-button__icon"
           src={pathToIcon}
-          onClick={handleIconOnClick}
+          onClick={handleIcon}
           alt="icon"
         />
       )}
     </button>
   );
-};
+});

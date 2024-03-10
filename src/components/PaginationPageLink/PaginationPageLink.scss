@@ -1,0 +1,27 @@
+@use '../../styles/mixin.scss' as mixin;
+
+.pagination-page-link {
+  padding: 6px 5px;
+  cursor: pointer;
+
+  &.active {
+    color: mixin.$link;
+    position: relative;
+
+    &::after {
+      content: '';
+      width: 100%;
+      height: 1px;
+      background-color: mixin.$link;
+      position: absolute;
+      left: 0;
+      right: 0;
+      bottom: -3px;
+    }
+  }
+
+  &.disabled {
+    color: mixin.$gray10;
+    pointer-events: none;
+  }
+}

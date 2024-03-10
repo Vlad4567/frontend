@@ -29,12 +29,8 @@ export const CreateModal: React.FC<Props> = ({
   const onPhone = !(onTablet || onDesktop);
 
   const checkMedia = (media.onPhone && onPhone)
-  || (media.onTablet && onTablet)
-  || (media.onDesktop && onDesktop);
-
-  useEffect(() => {
-    window.console.log(onPhone, onTablet, onDesktop);
-  }, [onDesktop, onPhone, onTablet]);
+    || (media.onTablet && onTablet)
+    || (media.onDesktop && onDesktop);
 
   useEffect(() => {
     setLocked(typeof checkMedia === 'undefined' ? false : checkMedia);

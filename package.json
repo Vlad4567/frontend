@@ -17,7 +17,7 @@
     "reset-css": "^5.0.2",
     "sass": "^1.70.0",
     "swiper": "^11.0.5",
-    "usehooks-ts": "^2.12.1"
+    "usehooks-ts": "^2.15.1"
   },
   "devDependencies": {
     "@types/node": "^20.11.16",

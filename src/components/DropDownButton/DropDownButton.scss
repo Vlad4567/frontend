@@ -1,6 +1,5 @@
 @use '../../styles/mixin.scss' as mixin;
 
-$padding-inline: 20px;
 $icon-size: 15px;
 
 @mixin button-size($height) {
@@ -34,32 +33,41 @@ $icon-size: 15px;
   transition: background mixin.$effect-duration;
   cursor: pointer;
 
-  &:hover:not(.drop-down-button--icon), &:hover:is(.drop-down-button--icon):not(.drop-down-button--active) {
+  &:not(:disabled):hover:not(.drop-down-button--icon),
+  &:not(:disabled):hover:is(.drop-down-button--icon):not(
+      .drop-down-button--active
+    ) {
     background-color: mixin.$pink;
-    padding-inline: calc($padding-inline + mixin.$line-width);
-    border: none;
+    border-color: #ffffff00;
   }
 
   &:enabled:active {
-    transform: scale(0.95);
+    &:is(.drop-down-button--scale) {
+      transform: scale(0.95);
+    }
     box-shadow: inset 1px 1px 10px 0 rgba(0, 0, 0, 0.25);
   }
 
   &:disabled {
     background-color: mixin.$gray50;
     color: mixin.$gray30;
+    border-color: #ffffff00;
   }
 
   &--large {
     padding-block: 13px;
 
-    @include button-size(50px)
+    &:is(.drop-down-button--scale) {
+      @include button-size(50px);
+    }
   }
 
   &--small {
     padding-block: 8px;
 
-    @include button-size(40px);
+    &:is(.drop-down-button--scale) {
+      @include button-size(40px);
+    }
   }
 
   &--icon {
