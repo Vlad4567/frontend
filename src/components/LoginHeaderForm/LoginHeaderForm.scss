@@ -1,0 +1,33 @@
+@use '../../styles/mixin.scss' as mixin;
+
+.login-header-form {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 20px;
+
+  &__description {
+    display: flex;
+    gap: 5px;
+    line-height: 24px;
+  }
+
+  &__description-link {
+    position: relative;
+
+    color: mixin.$link;
+    line-height: 24px;
+    font-weight: 500;
+    cursor: pointer;
+
+    &:hover::after {
+      content: '';
+      height: mixin.$line-width;
+      background: mixin.$link;
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      right: 0;
+    }
+  }
+}

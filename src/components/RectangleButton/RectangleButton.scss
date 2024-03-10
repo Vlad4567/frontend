@@ -1,8 +1,6 @@
 @use '../../styles/mixin.scss' as mixin;
 
 .rectangle-button {
-  @include mixin.main-text;
-
   width: 140px;
   height: 40px;
   position: relative;

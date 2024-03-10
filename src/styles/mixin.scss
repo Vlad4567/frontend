@@ -12,6 +12,7 @@ $gray30: #a09fa6;
 $gray20: #5c5c60;
 $gray15: #323232;
 $gray10: #1a1b1e;
+$gray5: #141414;
 //
 $pink: rgb(255, 219, 219);
 $blue: rgb(214, 240, 250);
@@ -19,7 +20,7 @@ $blue: rgb(214, 240, 250);
 $primary100: rgb(255, 75, 75);
 //
 $effect-duration: 300ms;
-$line-width: 2px;
+$line-width: 1.5px;
 //
 $tablet-min-width: 1024px;
 $desktop-min-width: 1440px;
@@ -55,11 +56,6 @@ $on-tablet-header-height: 65px;
     --content-padding-bottom: 30px;
     margin-inline: auto;
   }
-}
-
-@mixin main-text {
-  font-family: Urbanist;
-  font-size: 16px;
 }
 
 @mixin full-width {

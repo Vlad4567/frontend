@@ -149,10 +149,6 @@
     text-align: left;
   }
 
-  &__dropdown-sort-category-paragraph {
-    @include mixin.main-text;
-  }
-
   &__dropdown-sort-category-radio {
     display: flex;
     align-items: center;

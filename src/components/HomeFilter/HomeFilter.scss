@@ -46,10 +46,16 @@
   }
 
   &__search-submit {
-    position: absolute;
-    right: 0;
-    top: 0;
+    display: none;
 
-    transform: translateX(110%);
+    @include mixin.on-tablet {
+      display: block;
+
+      position: absolute;
+      right: 0;
+      top: 0;
+
+      transform: translateX(110%);
+    }
   }
 }
