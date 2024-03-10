@@ -1,21 +1,16 @@
 import axios from 'axios';
-import { store } from '../app/store';
-import * as notificationSlice from '../features/notificationSlice';
 import globalRouter from '../globalRouter';
+import { showNotification } from '../helpers/notifications';
 /* eslint-disable no-param-reassign */
 const instance = axios.create({
-  baseURL: '/api',
+  baseURL: './api',
   timeout: 5000,
 });
 
 const redirectToLogin = () => {
   localStorage.removeItem('token');
   localStorage.removeItem('refreshToken');
-  store.dispatch(notificationSlice.addNotification({
-    id: +new Date(),
-    title: 'Oops...',
-    description: 'Something went wrong...',
-  }));
+  showNotification('error');
   if (globalRouter.navigate) {
     globalRouter.navigate('/login');
   }
@@ -29,11 +24,7 @@ instance.interceptors.response.use(
     const originalRequest = error.config;
 
     if (error.code === 'ECONNABORTED') {
-      store.dispatch(notificationSlice.addNotification({
-        id: +new Date(),
-        title: 'Oops something went wrong',
-        description: 'Reload the page or try again later',
-      }));
+      showNotification('error');
     }
 
     if (error.response?.status === 401) {
@@ -58,7 +49,7 @@ instance.interceptors.response.use(
       }
     }
 
-    return error;
+    return Promise.reject(error);
   },
 );
 
@@ -72,7 +63,7 @@ instance.interceptors.request.use(
 
     return config;
   },
-  (error) => error,
+  (error) => Promise.reject(error),
 );
 
 export default instance;
