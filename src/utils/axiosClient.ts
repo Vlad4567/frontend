@@ -31,6 +31,18 @@ export const client = {
     return response.data;
   },
 
+  async put<T>(url: string, data?: unknown) {
+    if (typeof data === 'undefined') {
+      const response = await instance.put<T>(url);
+
+      return response.data;
+    }
+
+    const response = await instance.put<T>(url, data);
+
+    return response.data;
+  },
+
   async delete(url: string) {
     return instance.delete(url);
   },

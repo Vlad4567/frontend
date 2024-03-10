@@ -1,0 +1,10 @@
+@use '../../styles/mixin.scss' as mixin;
+
+.underlined-small {
+  cursor: pointer;
+  text-decoration: underline;
+
+  &:hover {
+    color: mixin.$link;
+  }
+}
