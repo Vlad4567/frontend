@@ -14,11 +14,10 @@ import { DropDownSortButton }
 import { FilterSearchInput }
   from '../../components/FilterSearchInput/FilterSearchInput';
 import { RadioInput } from '../../components/RadioInput/RadioInput';
-import './SearchPage.scss';
 import closeIcon from '../../img/icons/icon-dropdown-close.svg';
 import { Category, SubCategory } from '../../types/category';
 import { getCategories } from '../../api/categories';
-import { Checkbox } from '../../components/CheckBox/Checkbox';
+import { Checkbox } from '../../components/Checkbox/Checkbox';
 import variables from '../../styles/variables.module.scss';
 import { debounceDelay } from '../../helpers/variables';
 import {
@@ -34,6 +33,7 @@ import { Page, TypeCard } from '../../types/main';
 import { SearchWithParams } from '../../types/searchWith';
 import { MasterCard } from '../../components/MasterCard/MasterCard';
 import { ServiceCard } from '../../components/ServiceCard/ServiceCard';
+import './SearchPage.scss';
 
 type ActiveDropDown = 'Category' | 'Price' | 'City' | 'Sort';
 
