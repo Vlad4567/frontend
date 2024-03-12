@@ -1,7 +1,7 @@
 /* eslint-disable jsx-a11y/no-static-element-interactions */
 /* eslint-disable jsx-a11y/click-events-have-key-events */
 /* eslint-disable jsx-a11y/label-has-associated-control */
-import React, { SetStateAction, useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { AxiosError } from 'axios';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import { Button } from '../Button/Button';
@@ -12,14 +12,9 @@ import { objectKeys } from '../../helpers/functions';
 import { loginUser } from '../../api/login';
 import { ErrorData } from '../../types/main';
 import { useAppDispatch } from '../../app/hooks';
-import * as notificationSlice from '../../features/notificationSlice';
-import starsNotification from '../../img/icons/stars-notification.svg';
 import './LoginForm.scss';
-import { TypeLoginForm } from '../../types/login';
-
-interface Props {
-  setFormType: React.Dispatch<SetStateAction<TypeLoginForm>>
-}
+import { showNotification } from '../../helpers/notifications';
+import { UnderlinedSmall } from '../UnderlinedSmall/UnderlinedSmall';
 
 interface InitialErrors {
   email: string
@@ -43,9 +38,7 @@ const initialData: InitialData = {
   remember: false,
 };
 
-export const LoginForm: React.FC<Props> = ({
-  setFormType,
-}) => {
+export const LoginForm: React.FC = () => {
   const navigate = useNavigate();
   const dispatch = useAppDispatch();
   const [searchParams, setSearchParams] = useSearchParams();
@@ -64,28 +57,18 @@ export const LoginForm: React.FC<Props> = ({
 
       params.delete('notification');
       setSearchParams(params);
-      dispatch(notificationSlice.addNotification({
-        id: +new Date(),
-        title: 'You have successfully signed up!',
-        description: `You can now save beauticians to your
-          Favourites list and create a beautician profile`,
-      }));
+      showNotification('registration');
     }
   }, [dispatch, searchParams, setSearchParams]);
 
-  const handleButtonLogin = () => {
+  const handleButtonLogin = (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+
     loginUser(formData)
       .then((res) => {
         localStorage.setItem('token', res.token);
         localStorage.setItem('refreshToken', `${res.refreshToken}`);
-        dispatch(
-          notificationSlice.addNotification({
-            id: +new Date(),
-            icon: starsNotification,
-            title: 'You have successfully logged in!',
-            description: 'We are glad to see you again!',
-          }),
-        );
+        showNotification('login');
         navigate('/account');
       })
       .catch((err: AxiosError<ErrorData<string>>) => setFormErrors(c => {
@@ -116,13 +99,13 @@ export const LoginForm: React.FC<Props> = ({
   };
 
   return (
-    <>
+    <form className="login-form" onSubmit={handleButtonLogin}>
       <LoginHeaderForm
         className="login-form__form-header"
         title="Log in"
         description="New user?"
         textLink="Create an account"
-        onClick={() => setFormType('signUp')}
+        onClick={() => navigate('signup')}
       />
       <div className="login-form__body">
         <div className="login-form__main">
@@ -150,12 +133,12 @@ export const LoginForm: React.FC<Props> = ({
             showPassword={showPassword}
             setShowPassword={setShowPassword}
           />
-          <small
+          <UnderlinedSmall
             className="login-form__reset-link"
-            onClick={() => setFormType('resetPassword')}
+            onClick={() => navigate('reset-password')}
           >
             Forgotten password?
-          </small>
+          </UnderlinedSmall>
         </div>
         <div className="login-form__footer">
           <label
@@ -171,15 +154,14 @@ export const LoginForm: React.FC<Props> = ({
             Stay logged in
           </label>
           <Button
-            type="button"
+            type="submit"
             size="large"
             className="login-form__login"
-            onClick={handleButtonLogin}
           >
             Log in
           </Button>
         </div>
       </div>
-    </>
+    </form>
   );
 };

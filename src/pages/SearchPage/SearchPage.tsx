@@ -29,19 +29,17 @@ import { City } from '../../types/searchPage';
 import { Pagination } from '../../components/Pagination/Pagination';
 import { getSearchWith } from '../../helpers/functions';
 import * as typesMaster from '../../types/master';
-import { Page, TypeCard } from '../../types/main';
-import { SearchWithParams } from '../../types/searchWith';
+import { Page, TypeCard, SearchWithParams } from '../../types/main';
 import { MasterCard } from '../../components/MasterCard/MasterCard';
 import { ServiceCard } from '../../components/ServiceCard/ServiceCard';
+import { UnderlinedSmall }
+  from '../../components/UnderlinedSmall/UnderlinedSmall';
 import './SearchPage.scss';
 
 type ActiveDropDown = 'Category' | 'Price' | 'City' | 'Sort';
 
 export const SearchPage: React.FC = () => {
   const [searchParams, setSearchParams] = useSearchParams();
-  const text = searchParams.get('text') || '';
-  const minPrice = searchParams.get('minPrice') || '';
-  const maxPrice = searchParams.get('maxPrice') || '';
   const directionSort = searchParams.get('direction') || '';
   const propertySort = searchParams.get('property') || '';
 
@@ -51,7 +49,7 @@ export const SearchPage: React.FC = () => {
   const [cityList, setCityList] = useState<City[]>([]);
   const [categories, setCategories] = useState<Category[]>([]);
   const [activeCategory, setActiveCategory] = useState<Category | null>(null);
-  const [searchBy, setSearchBy] = useState<TypeCard>('servicecard');
+  const [searchBy, setSearchBy] = useState<TypeCard>('service');
   const [masterCards, setMasterCards]
     = useState<Page<typesMaster.MasterCard> | null>(null);
   const [serviceCards, setServiceCards]
@@ -195,6 +193,10 @@ export const SearchPage: React.FC = () => {
 
   const handleClearEverything = () => {
     setSearchParams(new URLSearchParams());
+
+    setCityValue('');
+    setActiveDropDown(null);
+    setActiveCategory(null);
   };
 
   useEffect(() => {
@@ -209,6 +211,14 @@ export const SearchPage: React.FC = () => {
   useEffect(() => {
     if (activeDropDown === 'City' && !isShownModalCityInput) {
       cityInputRef.current?.focus();
+
+      if (cityInputRef.current) {
+        cityInputRef.current.onblur = () => {
+          if (!isShownModalCityInput) {
+            handleToggleDropDown('City');
+          }
+        };
+      }
     }
   }, [activeDropDown, isShownModalCityInput]);
 
@@ -234,7 +244,7 @@ export const SearchPage: React.FC = () => {
           .then(setMasterCards);
         break;
 
-      case 'servicecard':
+      case 'service':
         getFilteredServiceCards(
           currentPage - 1, 16, debouncedSearchParams.toString(),
         )
@@ -259,8 +269,8 @@ export const SearchPage: React.FC = () => {
                 <div className="search-page__filter-search-by-button">
                   <RadioInput
                     name="card"
-                    onChange={() => handleSearchBy('servicecard')}
-                    checked={searchBy === 'servicecard'}
+                    onChange={() => handleSearchBy('service')}
+                    checked={searchBy === 'service'}
                   />
                   Services
                 </div>
@@ -280,10 +290,14 @@ export const SearchPage: React.FC = () => {
           </div>
 
           <FilterSearchInput
-            value={text}
+            value={searchParams.get('text') || ''}
             onChange={(e) => setSearchWith({ text: e.target.value })}
             className="search-page__filter-input"
-            placeholder="Enter the name of the service"
+            placeholder={
+              searchBy === 'service'
+                ? 'Enter the name of the service'
+                : 'Enter the name of the master'
+            }
             color="dark"
           />
         </div>
@@ -330,6 +344,7 @@ export const SearchPage: React.FC = () => {
                       icon
                       size="large"
                       placeholder="City"
+                      handleIconOnClick={handleCityIcon}
                       value={cityValue}
                       onChange={handleInputCity}
                       className="search-page__dropdown-city-search"
@@ -392,7 +407,7 @@ export const SearchPage: React.FC = () => {
                       </small>
 
                       <input
-                        value={minPrice}
+                        value={searchParams.get('minPrice') || ''}
                         onChange={handleChangeMinPrice}
                         type="text"
                         placeholder="85"
@@ -408,7 +423,7 @@ export const SearchPage: React.FC = () => {
                       </small>
 
                       <input
-                        value={maxPrice}
+                        value={searchParams.get('maxPrice') || ''}
                         onChange={handleChangeMaxPrice}
                         type="text"
                         placeholder="1000"
@@ -676,15 +691,16 @@ export const SearchPage: React.FC = () => {
       </form>
 
       <div className="search-page__info">
-        <p
+        <UnderlinedSmall
+          tag="p"
           className="search-page__info-clear-everything"
           onClick={handleClearEverything}
         >
           Clear everything
-        </p>
+        </UnderlinedSmall>
 
         {((searchBy === 'master' && !!masterCards?.content.length)
-          || (searchBy === 'servicecard' && !!serviceCards?.content.length)) ? (
+          || (searchBy === 'service' && !!serviceCards?.content.length)) ? (
             <p className="search-page__info-recommendations">
               Recommendations for you
             </p>
@@ -716,7 +732,7 @@ export const SearchPage: React.FC = () => {
       )}
 
       {((searchBy === 'master' && !!masterCards?.content.length)
-        || (searchBy === 'servicecard' && !!serviceCards?.content.length)) && (
+        || (searchBy === 'service' && !!serviceCards?.content.length)) && (
         <Pagination
           maxLength={7}
           lastPage={searchBy === 'master'

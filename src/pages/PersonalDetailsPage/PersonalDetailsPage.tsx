@@ -67,13 +67,6 @@ export const PersonalDetailsPage: React.FC = () => {
     === JSON.stringify(initialUserData)
     || JSON.stringify(errors) !== JSON.stringify(initialDataErrors);
 
-  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setUserData(c => ({
-      ...c,
-      [e.target.name]: e.target.value,
-    }));
-  };
-
   const handleResetPassword = () => {
     if (user.email) {
       forgotPassword(user.email)
@@ -122,8 +115,8 @@ export const PersonalDetailsPage: React.FC = () => {
 
               setErrors(c => ({
                 ...c,
-                currentPassword: res,
-                newPassword: res,
+                currentPassword: res || '',
+                newPassword: res || '',
               }));
             }
 
@@ -135,8 +128,8 @@ export const PersonalDetailsPage: React.FC = () => {
 
               setErrors(c => ({
                 ...c,
-                currentPassword: resErrorCurrentPassword,
-                newPassword: resErrorNewPassword,
+                currentPassword: resErrorCurrentPassword || '',
+                newPassword: resErrorNewPassword || '',
               }));
             }
           });
@@ -150,10 +143,13 @@ export const PersonalDetailsPage: React.FC = () => {
           email: userData.email,
           username: userData.username,
         })
-          .then(() => dispatch(userSlice.updateUser({
-            email: userData.email,
-            username: userData.username,
-          })))
+          .then(() => {
+            showNotification('confirmationEmail');
+
+            dispatch(userSlice.updateUser({
+              username: userData.username,
+            }));
+          })
           .catch((err: AxiosError<ErrorData<string>>) => {
             showNotification('error');
 
@@ -244,6 +240,22 @@ export const PersonalDetailsPage: React.FC = () => {
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [debouncedEmail]);
 
+  const handleInputOnChange = (
+    e: React.ChangeEvent<HTMLInputElement>,
+  ) => {
+    const { name, value } = e.target;
+
+    setErrors(c => ({ ...c, [name]: '' }));
+
+    changeObjectStateKey(
+      value,
+      name as keyof InitialDataErrors,
+      setUserData,
+    );
+  };
+
+  window.console.dir(errors);
+
   return (
     <div className="personal-details-page">
       <h1 className="personal-details-page__title">
@@ -255,7 +267,7 @@ export const PersonalDetailsPage: React.FC = () => {
           <LoginInput
             errorText={errors.username}
             value={userData.username}
-            onChange={handleInputChange}
+            onChange={handleInputOnChange}
             name="username"
             title="Username"
             placeholder="Username"
@@ -263,7 +275,7 @@ export const PersonalDetailsPage: React.FC = () => {
           <LoginInput
             errorText={errors.email}
             value={userData.email}
-            onChange={handleInputChange}
+            onChange={handleInputOnChange}
             type="email"
             name="email"
             title="Email address"
@@ -284,7 +296,7 @@ export const PersonalDetailsPage: React.FC = () => {
           </div>
           <LoginInput
             value={userData.currentPassword}
-            onChange={handleInputChange}
+            onChange={handleInputOnChange}
             errorText={errors.currentPassword}
             type="password"
             name="currentPassword"
@@ -305,7 +317,7 @@ export const PersonalDetailsPage: React.FC = () => {
           />
           <LoginInput
             value={userData.newPassword}
-            onChange={handleInputChange}
+            onChange={handleInputOnChange}
             errorText={errors.newPassword}
             type="password"
             name="newPassword"

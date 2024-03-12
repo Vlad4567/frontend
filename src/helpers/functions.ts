@@ -1,5 +1,5 @@
 import React from 'react';
-import { SearchWithParams } from '../types/searchWith';
+import { SearchWithParams } from '../types/main';
 
 export const getPaginationItems = (
   currentPage: number,

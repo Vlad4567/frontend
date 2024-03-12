@@ -1,12 +1,14 @@
 /* eslint-disable jsx-a11y/control-has-associated-label */
 import { useEffect, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useSearchParams } from 'react-router-dom';
 import { Category } from '../../types/category';
 import { DropDownButton } from '../DropDownButton/DropDownButton';
 import { RoundButton } from '../RoundButton/RoundButton';
-import './HomeFilter.scss';
 import { getCategories } from '../../api/categories';
 import { FilterSearchInput } from '../FilterSearchInput/FilterSearchInput';
+import { SearchWithParams } from '../../types/main';
+import { getSearchWith } from '../../helpers/functions';
+import './HomeFilter.scss';
 
 interface Props {
   className?: string
@@ -16,7 +18,7 @@ export const HomeFilter: React.FC<Props> = ({
   className = '',
 }) => {
   const navigate = useNavigate();
-  const [searchInputValue, setSearchInputValue] = useState('');
+  const [searchParams, setSearchParams] = useSearchParams();
   const [activeCategory, setActiveCategory] = useState<Category | null>(null);
   const [categories, setCategories] = useState<Category[]>([]);
 
@@ -27,25 +29,50 @@ export const HomeFilter: React.FC<Props> = ({
       });
   }, []);
 
-  const handleCategoryOnClick = (
-    id: number,
-  ) => {
-    setActiveCategory(categories.find(category => category.id === id) || null);
+  useEffect(() => {
+    const keys = Array.from(searchParams.entries());
+    const params = new URLSearchParams(searchParams);
+
+    keys.forEach(([key]) => {
+      if (params.get(key) === '') {
+        params.delete(key);
+      }
+    });
+
+    setSearchParams(params);
+  }, [searchParams, setSearchParams]);
+
+  const setSearchWith = (params: SearchWithParams) => {
+    const search = getSearchWith(params, searchParams);
+
+    setSearchParams(search);
   };
 
-  const handleOnSubmit = (e: React.FormEvent<HTMLButtonElement>) => {
+  const handleCategoryOnClick = (
+    category: Category,
+  ) => {
+    if (activeCategory !== category) {
+      setActiveCategory(category);
+      setSearchWith({
+        subCategories: category.subcategories.map((item) => item.id),
+      });
+    } else {
+      setActiveCategory(null);
+      setSearchWith({ subCategories: null });
+    }
+  };
+
+  const handleOnSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
-    navigate('search', {
-      state: {
-        text: searchInputValue,
-        category: activeCategory,
-      },
-    });
+    navigate(`search?${searchParams.toString()}`);
   };
 
   return (
-    <form className={`home-filter ${className}`}>
+    <form
+      onSubmit={handleOnSubmit}
+      className={`home-filter ${className}`}
+    >
       <div className="home-filter__categories">
         {categories.map(category => (
           <DropDownButton
@@ -53,7 +80,7 @@ export const HomeFilter: React.FC<Props> = ({
             size="small"
             key={category.id}
             onClick={() => {
-              handleCategoryOnClick(category.id);
+              handleCategoryOnClick(category);
             }}
             active={activeCategory?.id === category.id}
             className="home-filter__category"
@@ -63,14 +90,13 @@ export const HomeFilter: React.FC<Props> = ({
 
       <div className="home-filter__search">
         <FilterSearchInput
-          value={searchInputValue}
-          onChange={(e) => setSearchInputValue(e.target.value)}
+          value={searchParams.get('text') || ''}
+          onChange={(e) => setSearchWith({ text: e.target.value })}
           placeholder="Enter the name of the service"
         />
         <RoundButton
           type="submit"
           className="home-filter__search-submit"
-          onSubmit={handleOnSubmit}
         >
           Search
         </RoundButton>

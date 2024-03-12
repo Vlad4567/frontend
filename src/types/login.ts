@@ -1,5 +1,3 @@
-export type TypeLoginForm = 'login' | 'signUp' | 'resetPassword';
-
 export interface Login {
   email: string,
   password: string,

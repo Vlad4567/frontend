@@ -1,27 +1,22 @@
 /* eslint-disable jsx-a11y/no-static-element-interactions */
 /* eslint-disable jsx-a11y/click-events-have-key-events */
 /* eslint-disable jsx-a11y/label-has-associated-control */
-import React, { useState } from 'react';
+import React from 'react';
 import { useIsomorphicLayoutEffect } from 'usehooks-ts';
-import { useNavigate } from 'react-router-dom';
+import { Outlet, useLocation, useNavigate } from 'react-router-dom';
 import * as appSlice from '../../features/appSlice';
 import { useAppDispatch } from '../../app/hooks';
 import { ArrowButton } from '../../components/ArrowButton/ArrowButton';
 import { LoginHeaderForm }
   from '../../components/LoginHeaderForm/LoginHeaderForm';
 import './LoginPage.scss';
-import { SignUpForm } from '../../components/SignUpForm/SignUpForm';
-import { LoginForm } from '../../components/LoginForm/LoginForm';
-import { ResetPasswordForm }
-  from '../../components/ResetPasswordForm/ResetPasswordForm';
-import { TypeLoginForm } from '../../types/login';
 
 const renderLoginHeaderForm = (
-  formType: Omit<TypeLoginForm, 'resetPassword'>,
-  setFormType: React.Dispatch<React.SetStateAction<TypeLoginForm>>,
+  pathName: string,
+  navigate: ReturnType<typeof useNavigate>,
   className: string,
 ) => {
-  switch (formType) {
+  switch (pathName) {
     case 'login':
       return (
         <LoginHeaderForm
@@ -29,18 +24,18 @@ const renderLoginHeaderForm = (
           title="Log in"
           description="New user?"
           textLink="Create an account"
-          onClick={() => setFormType('signUp')}
+          onClick={() => navigate('sign-up', { replace: true })}
         />
       );
 
-    case 'signUp':
+    case 'sign-up':
       return (
         <LoginHeaderForm
           className={className}
           title="Sign up"
           description="Already have an account?"
           textLink="Log in"
-          onClick={() => setFormType('login')}
+          onClick={() => navigate('login', { replace: true })}
         />
       );
 
@@ -51,7 +46,7 @@ const renderLoginHeaderForm = (
           title=" "
           description=" "
           textLink=" "
-          onClick={() => setFormType('login')}
+          onClick={() => navigate(-1)}
         />
       );
   }
@@ -60,10 +55,10 @@ const renderLoginHeaderForm = (
 export const LoginPage: React.FC = () => {
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
+  const pathArray = useLocation().pathname.split('/');
+  const currentPathName = pathArray[pathArray.length - 1];
   const token = localStorage.getItem('token');
   const refreshToken = localStorage.getItem('refreshToken');
-
-  const [formType, setFormType] = useState<TypeLoginForm>('login');
 
   useIsomorphicLayoutEffect(() => {
     dispatch(appSlice.setShownFooter(false));
@@ -87,28 +82,12 @@ export const LoginPage: React.FC = () => {
         onClick={() => navigate(-1)}
       />
       {renderLoginHeaderForm(
-        formType,
-        setFormType,
+        currentPathName,
+        navigate,
         'login-page__header',
       )}
 
-      <form className="login-page__form">
-
-        {formType === 'signUp' && (
-          <SignUpForm setFormType={setFormType} />
-        )}
-
-        {formType === 'login' && (
-          <LoginForm
-            setFormType={setFormType}
-          />
-        )}
-
-        {formType === 'resetPassword' && (
-          <ResetPasswordForm setFormType={setFormType} />
-        )}
-
-      </form>
+      <Outlet />
     </main>
   );
 };

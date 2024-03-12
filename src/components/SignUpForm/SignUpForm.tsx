@@ -2,6 +2,7 @@
 import React, { useEffect, useState } from 'react';
 import { useDebounce } from 'usehooks-ts';
 import { AxiosError } from 'axios';
+import { useNavigate } from 'react-router-dom';
 import { Button } from '../Button/Button';
 import { LoginInput } from '../LoginInput/LoginInput';
 import { LoginHeaderForm } from '../LoginHeaderForm/LoginHeaderForm';
@@ -11,14 +12,8 @@ import {
 import { checkUserEmail, checkUsername, registrateUser }
   from '../../api/login';
 import { ErrorData } from '../../types/main';
-import * as notificationSlice from '../../features/notificationSlice';
 import './SignUpForm.scss';
-import { useAppDispatch } from '../../app/hooks';
-import { TypeLoginForm } from '../../types/login';
-
-interface Props {
-  setFormType: React.Dispatch<React.SetStateAction<TypeLoginForm>>
-}
+import { showNotification } from '../../helpers/notifications';
 
 export interface InitialData {
   username: string
@@ -46,10 +41,8 @@ export const initialErrors: InitialErrors = {
   password: '',
 };
 
-export const SignUpForm: React.FC<Props> = ({
-  setFormType,
-}) => {
-  const dispatch = useAppDispatch();
+export const SignUpForm: React.FC = () => {
+  const navigate = useNavigate();
   const [showPassword, setShowPassword] = useState(false);
   const [formErrors, setFormErrors] = useState<InitialErrors>(initialErrors);
   const [formData, setFormData] = useState<InitialData>(initialData);
@@ -113,13 +106,8 @@ export const SignUpForm: React.FC<Props> = ({
   const handleButtonRegistration = () => {
     registrateUser(formData)
       .then(() => {
-        dispatch(notificationSlice.addNotification({
-          id: +new Date(),
-          title: 'A confirmation email has been sent to your email address.',
-          description: `In addition to your inbox, check your spam folder.
-            The email may have ended up there`,
-        }));
-        setFormType('login');
+        showNotification('confirmationEmail');
+        navigate('/login');
       })
       .catch((err: AxiosError<ErrorData<string>>) => setFormErrors(c => {
         if (err.response?.data.error) {
@@ -175,14 +163,31 @@ export const SignUpForm: React.FC<Props> = ({
     repeatPassword,
   } = formData;
 
+  const handleInputOnChange = (
+    e: React.ChangeEvent<HTMLInputElement>,
+  ) => {
+    const { name, value } = e.target;
+
+    setFormErrors(c => ({ ...c, [name]: '' }));
+
+    changeObjectStateKey(
+      value,
+      name as keyof InitialData,
+      setFormData,
+    );
+  };
+
   return (
-    <>
+    <form
+      onSubmit={handleButtonRegistration}
+      className="sign-up-form"
+    >
       <LoginHeaderForm
         className="sign-up-form__header"
         title="Sign up"
         description="Already have an account?"
         textLink="Log in"
-        onClick={() => setFormType('login')}
+        onClick={() => navigate('/login')}
       />
       <div className="sign-up-form__body">
         <div className="sign-up-form__main">
@@ -191,11 +196,8 @@ export const SignUpForm: React.FC<Props> = ({
             placeholder="Username"
             title="Username"
             value={username}
-            onChange={(e) => changeObjectStateKey(
-              e.target.value,
-              'username',
-              setFormData,
-            )}
+            name="username"
+            onChange={handleInputOnChange}
             errorText={formErrors.username}
           />
 
@@ -203,12 +205,9 @@ export const SignUpForm: React.FC<Props> = ({
             type="email"
             placeholder="E-mail"
             title="E-mail"
+            name="email"
             value={email}
-            onChange={(e) => changeObjectStateKey(
-              e.target.value,
-              'email',
-              setFormData,
-            )}
+            onChange={handleInputOnChange}
             errorText={formErrors.email}
           />
 
@@ -217,11 +216,8 @@ export const SignUpForm: React.FC<Props> = ({
             placeholder="Password"
             title="Password"
             value={password}
-            onChange={(e) => changeObjectStateKey(
-              e.target.value,
-              'password',
-              setFormData,
-            )}
+            name="password"
+            onChange={handleInputOnChange}
             errorText={formErrors.password}
             showPassword={showPassword}
             setShowPassword={setShowPassword}
@@ -242,11 +238,8 @@ export const SignUpForm: React.FC<Props> = ({
             placeholder="Confirm password"
             title="Confirm password"
             value={repeatPassword}
-            onChange={(e) => changeObjectStateKey(
-              e.target.value,
-              'repeatPassword',
-              setFormData,
-            )}
+            name="repeatPassword"
+            onChange={handleInputOnChange}
             errorText={formErrors.password}
             showPassword={showPassword}
             setShowPassword={setShowPassword}
@@ -268,6 +261,7 @@ export const SignUpForm: React.FC<Props> = ({
             Terms of service and Privacy policy
           </small>
           <Button
+            type="submit"
             size="large"
             className="sign-up-form__button"
             onClick={handleButtonRegistration}
@@ -276,6 +270,6 @@ export const SignUpForm: React.FC<Props> = ({
           </Button>
         </div>
       </div>
-    </>
+    </form>
   );
 };

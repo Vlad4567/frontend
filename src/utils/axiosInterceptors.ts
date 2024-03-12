@@ -3,7 +3,7 @@ import globalRouter from '../globalRouter';
 import { showNotification } from '../helpers/notifications';
 /* eslint-disable no-param-reassign */
 const instance = axios.create({
-  baseURL: 'http://178.37.209.186:8080/api',
+  baseURL: '/api',
   timeout: 5000,
 });
 

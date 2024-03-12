@@ -20,6 +20,10 @@
     &::placeholder {
       color: mixin.$gray100;
     }
+
+    &:focus::placeholder {
+      color: mixin.$gray30;
+    }
   }
 
   &--dark::after {
@@ -31,6 +35,10 @@
 
     &::placeholder {
       color: mixin.$gray10;
+    }
+
+    &:focus::placeholder {
+      color: mixin.$gray30;
     }
   }
 
