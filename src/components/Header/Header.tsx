@@ -14,6 +14,7 @@ interface Props {
 
 export const Header: React.FC<Props> = ({ type, className = '' }) => {
   const token = localStorage.getItem('token');
+  const refreshToken = localStorage.getItem('refreshToken');
 
   return (
     <header className={`header header--${type} ${className}`}>
@@ -36,7 +37,7 @@ export const Header: React.FC<Props> = ({ type, className = '' }) => {
                 className="header__nav-item-link"
                 to={token ? '/account' : '/login'}
               >
-                {token ? (
+                {(token || refreshToken) ? (
                   <DropDownButton
                     className="header__account"
                     size="small"

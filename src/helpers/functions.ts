@@ -1,4 +1,5 @@
-import { SearchWithParams } from '../types/searchWith';
+import React from 'react';
+import { SearchWithParams } from '../types/main';
 
 export const getPaginationItems = (
   currentPage: number,
@@ -111,8 +112,7 @@ export const getSearchWith = (
   });
 
   return newParams.toString();
-=======
-import React from 'react';
+};
 
 export const changeObjectStateKey = <K>(
   value: K[keyof K],

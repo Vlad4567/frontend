@@ -13,6 +13,11 @@ import { LoginPage } from './pages/LoginPage/LoginPage';
 import { AccountPage } from './pages/AccountPage/AccountPage';
 import { PersonalDetailsPage }
   from './pages/PersonalDetailsPage/PersonalDetailsPage';
+import { SearchPage } from './pages/SearchPage/SearchPage';
+import { SignUpForm } from './components/SignUpForm/SignUpForm';
+import { ResetPasswordForm }
+  from './components/ResetPasswordForm/ResetPasswordForm';
+import { LoginForm } from './components/LoginForm/LoginForm';
 
 export const Router = () => {
   return (
@@ -21,8 +26,16 @@ export const Router = () => {
         <Routes>
           <Route path="/" element={<App />}>
             <Route index element={<HomePage />} />
-            <Route path="home" element={<Navigate to="/" replace />} />
-            <Route path="login" element={<LoginPage />} />
+            <Route
+              path="home"
+              element={<Navigate to="/" replace />}
+            />
+            <Route path="login" element={<LoginPage />}>
+              <Route index element={<LoginForm />} />
+              <Route path="reset-password" element={<ResetPasswordForm />} />
+              <Route path="signup" element={<SignUpForm />} />
+            </Route>
+            <Route path="search" element={<SearchPage />} />
             <Route path="account" element={<AccountPage />}>
               <Route
                 path="personal-details"

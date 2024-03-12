@@ -1,6 +1,27 @@
 @use '../../styles/mixin.scss' as mixin;
 
 .login-form {
+  max-width: 498px;
+  padding: 20px;
+  border-radius: 30px;
+
+  display: flex;
+  flex-direction: column;
+  position: relative;
+  left: 50%;
+  transform: translateX(-50%);
+  background-color: mixin.$gray100;
+
+  &:hover {
+    box-shadow: 0 0 11px rgba(33, 33, 33, 0.2);
+  }
+
+  @include mixin.on-tablet {
+    justify-content: space-between;
+
+    padding: 40px;
+  }
+
   &__form-header {
     display: none;
 
@@ -27,14 +48,7 @@
   }
 
   &__reset-link {
-    display: flex;
-    justify-content: flex-end;
-    cursor: pointer;
-
-    &:hover {
-      color: mixin.$link;
-      text-decoration: underline;
-    }
+    margin-left: auto;
   }
 
   &__checkbox-label {

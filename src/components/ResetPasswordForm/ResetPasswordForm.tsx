@@ -1,19 +1,14 @@
-import React, { SetStateAction, useState } from 'react';
+import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { AxiosError } from 'axios';
 import { Button } from '../Button/Button';
 import { LoginInput } from '../LoginInput/LoginInput';
 import { LoginHeaderForm } from '../LoginHeaderForm/LoginHeaderForm';
 import { forgotPassword } from '../../api/login';
-import { useAppDispatch } from '../../app/hooks';
-import * as notificationSlice from '../../features/notificationSlice';
 import { ErrorData } from '../../types/main';
 import { objectKeys } from '../../helpers/functions';
-import { TypeLoginForm } from '../../types/login';
 import './ResetPasswordForm.scss';
-
-interface Props {
-  setFormType: React.Dispatch<SetStateAction<TypeLoginForm>>
-}
+import { showNotification } from '../../helpers/notifications';
 
 interface InitialErrors {
   email: string
@@ -31,24 +26,19 @@ const initialData: InitialData = {
   email: '',
 };
 
-export const ResetPasswordForm: React.FC<Props> = ({
-  setFormType,
-}) => {
+export const ResetPasswordForm: React.FC = () => {
+  const navigate = useNavigate();
   const [formData, setFormData] = useState<InitialData>(initialData);
   const [formErrors, setFormErrors] = useState<InitialErrors>(initialErrors);
-  const dispatch = useAppDispatch();
 
   const { email } = formData;
 
-  const handleResetPassword = () => {
+  const handleResetPassword = (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+
     if (email) {
       forgotPassword(email)
-        .then(() => dispatch(notificationSlice.addNotification({
-          id: +new Date(),
-          title: 'A new password has been sent to your email address.',
-          description: `In addition to your inbox, check your spam folder.
-            The email may have ended up there.`,
-        })))
+        .then(() => showNotification('resetPassword'))
         .catch((err: AxiosError<ErrorData<string>>) => setFormErrors(c => {
           if (err.response?.data.error) {
             const objectErrors = { ...c };
@@ -83,13 +73,13 @@ export const ResetPasswordForm: React.FC<Props> = ({
   };
 
   return (
-    <>
+    <form className="reset-password-form" onSubmit={handleResetPassword}>
       <LoginHeaderForm
         className="reset-password-form__header"
         title="Reset password"
         description=" "
         textLink="Go back?"
-        onClick={() => setFormType('login')}
+        onClick={() => navigate('/login')}
       />
 
       <div className="reset-password-form__reset">
@@ -109,13 +99,13 @@ export const ResetPasswordForm: React.FC<Props> = ({
           errorText={formErrors.email}
         />
         <Button
+          type="submit"
           size="large"
           className="reset-password-form__reset-btn"
-          onClick={handleResetPassword}
         >
           Reset password
         </Button>
       </div>
-    </>
+    </form>
   );
 };

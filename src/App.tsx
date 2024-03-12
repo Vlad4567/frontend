@@ -1,10 +1,14 @@
-import { Outlet, useNavigate } from 'react-router-dom';
+import { useEffect } from 'react';
+import { useDocumentTitle } from 'usehooks-ts';
+import { Outlet, useLocation, useNavigate } from 'react-router-dom';
 import { Footer } from './components/Footer/Footer';
 import { Header } from './components/Header/Header';
 import { useAppSelector } from './app/hooks';
 import { Notifications } from './components/Notifications/Notifications';
 import globalRouter from './globalRouter';
+import { websiteName } from './helpers/variables';
 import './App.scss';
+import { convertHyphenToSpace } from './helpers/functions';
 
 export const App: React.FC = () => {
   const {
@@ -13,6 +17,14 @@ export const App: React.FC = () => {
     footerShown,
   } = useAppSelector(state => state.appSlice);
   const navigate = useNavigate();
+  const { pathname } = useLocation();
+  const lastPathName = pathname.split('/').pop();
+
+  useDocumentTitle(convertHyphenToSpace(lastPathName || '') || websiteName);
+
+  useEffect(() => {
+    window.scroll({ top: 0, behavior: 'smooth' });
+  }, [pathname]);
 
   globalRouter.navigate = navigate;
 

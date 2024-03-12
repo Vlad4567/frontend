@@ -63,7 +63,7 @@ export const ServiceCard: React.FC<Props> = ({
             <small className="service-card__info-subcategory">
               {name}
               <span className="service-card__info-subcategory-split">|</span>
-              {price}
+              {`${price}₴`}
             </small>
           )}
 
