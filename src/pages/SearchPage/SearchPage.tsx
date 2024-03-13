@@ -16,8 +16,6 @@ import { FilterSearchInput }
 import { RadioInput } from '../../components/RadioInput/RadioInput';
 import closeIcon from '../../img/icons/icon-dropdown-close.svg';
 import { Category, SubCategory } from '../../types/category';
-import { getCategories } from '../../api/categories';
-import { Checkbox } from '../../components/Checkbox/Checkbox';
 import variables from '../../styles/variables.module.scss';
 import { debounceDelay } from '../../helpers/variables';
 import {
@@ -25,7 +23,7 @@ import {
   getFilteredMasterCards,
   getFilteredServiceCards,
 } from '../../api/searchPage';
-import { City } from '../../types/searchPage';
+import { ActiveDropDown, City } from '../../types/searchPage';
 import { Pagination } from '../../components/Pagination/Pagination';
 import { getSearchWith } from '../../helpers/functions';
 import * as typesMaster from '../../types/master';
@@ -34,9 +32,9 @@ import { MasterCard } from '../../components/MasterCard/MasterCard';
 import { ServiceCard } from '../../components/ServiceCard/ServiceCard';
 import { UnderlinedSmall }
   from '../../components/UnderlinedSmall/UnderlinedSmall';
+import { ModalCategories }
+  from '../../components/ModalCategories/ModalCategories';
 import './SearchPage.scss';
-
-type ActiveDropDown = 'Category' | 'Price' | 'City' | 'Sort';
 
 export const SearchPage: React.FC = () => {
   const [searchParams, setSearchParams] = useSearchParams();
@@ -47,7 +45,6 @@ export const SearchPage: React.FC = () => {
     = useState<ActiveDropDown | null>(null);
   const [cityValue, setCityValue] = useState('');
   const [cityList, setCityList] = useState<City[]>([]);
-  const [categories, setCategories] = useState<Category[]>([]);
   const [activeCategory, setActiveCategory] = useState<Category | null>(null);
   const [searchBy, setSearchBy] = useState<TypeCard>('service');
   const [masterCards, setMasterCards]
@@ -66,7 +63,7 @@ export const SearchPage: React.FC = () => {
   const categoryButtonRef = useRef<HTMLButtonElement>(null);
   const priceButtonRef = useRef<HTMLButtonElement>(null);
   const sortButtonRef = useRef<HTMLButtonElement>(null);
-  const dropDownRef = useRef<HTMLButtonElement>(null);
+  const dropDownRef = useRef<HTMLDivElement>(null);
 
   const setSearchWith = (params: SearchWithParams) => {
     const search = getSearchWith(params, searchParams);
@@ -78,7 +75,7 @@ export const SearchPage: React.FC = () => {
     setActiveDropDown(null);
   };
 
-  useOnClickOutside([
+  useOnClickOutside<HTMLDivElement | HTMLButtonElement>([
     dropDownRef,
     cityButtonRef,
     categoryButtonRef,
@@ -92,8 +89,8 @@ export const SearchPage: React.FC = () => {
     });
   };
 
-  const handleToggleCategory = (category: Category) => {
-    setActiveCategory(c => (c === category ? null : category));
+  const handleToggleCategory = (category: Category | null) => {
+    setActiveCategory(c => (c?.id === category?.id ? null : category));
   };
 
   const handleInputCity = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -102,17 +99,6 @@ export const SearchPage: React.FC = () => {
     }
 
     setCityValue(e.target.value);
-  };
-
-  const handleClickOnCategory = () => {
-    handleToggleDropDown('Category');
-
-    if (activeDropDown !== 'Category') {
-      getCategories()
-        .then(res => {
-          setCategories(res);
-        });
-    }
   };
 
   const handleCityIcon = (
@@ -128,22 +114,6 @@ export const SearchPage: React.FC = () => {
     setSearchWith({ city: item.id });
 
     setActiveDropDown(null);
-  };
-
-  const handleChooseSubCategory = (
-    subCategory: SubCategory,
-    checked: boolean,
-  ) => {
-    const convertedSubCategories = searchParams
-      .getAll('subCategories')
-      .map(Number);
-
-    const newSubCategories = convertedSubCategories
-      .includes(subCategory.id) && !checked
-      ? convertedSubCategories.filter(id => id !== subCategory.id)
-      : [...convertedSubCategories, subCategory.id];
-
-    setSearchWith({ subCategories: newSubCategories });
   };
 
   const handleChangeMinPrice = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -183,12 +153,28 @@ export const SearchPage: React.FC = () => {
     setSearchBy(typeUser);
   };
 
-  const clearSortBy = () => {
-    setSearchWith({ direction: null, property: null });
+  const handleChooseSubCategory = (
+    subCategory: SubCategory,
+    checked: boolean,
+  ) => {
+    const convertedSubCategories = searchParams
+      .getAll('subCategories')
+      .map(Number);
+
+    const newSubCategories = convertedSubCategories
+      .includes(subCategory.id) && !checked
+      ? convertedSubCategories.filter(id => id !== subCategory.id)
+      : [...convertedSubCategories, subCategory.id];
+
+    setSearchWith({ subCategories: newSubCategories });
   };
 
   const clearSubCategories = () => {
     setSearchWith({ subCategories: null });
+  };
+
+  const clearSortBy = () => {
+    setSearchWith({ direction: null, property: null });
   };
 
   const handleClearEverything = () => {
@@ -313,9 +299,9 @@ export const SearchPage: React.FC = () => {
               placeholder={cityValue || 'City'}
               handleIconOnClick={handleCityIcon}
               value={cityValue}
-              onChange={handleInputCity}
               className="search-page__filter-dropdown-button"
               onClick={() => handleToggleDropDown('City')}
+              onChange={handleInputCity}
               ref={cityButtonRef}
             />
 
@@ -458,105 +444,24 @@ export const SearchPage: React.FC = () => {
               placeholder="Category"
               icon
               active={activeDropDown === 'Category'}
-              onClick={handleClickOnCategory}
+              onClick={() => handleToggleDropDown('Category')}
               ref={categoryButtonRef}
             />
+
             {activeDropDown === 'Category' && (
               <CreateModal media={{ onPhone: true }}>
-                <article
-                  className="search-page__categories"
+                <ModalCategories
+                  activeCategory={activeCategory}
                   ref={dropDownRef}
-                >
-                  <div className="search-page__dropdown-header">
-                    <h3 className="search-page__dropdown-header-title">
-                      Category
-                    </h3>
-                    <img
-                      src={closeIcon}
-                      alt="close"
-                      className="search-page__dropdown-header-close-icon"
-                      onClick={handleClickOutside}
-                    />
-                  </div>
-
-                  <div className="search-page__dropdown-categories-main">
-
-                    <div className="search-page__dropdown-categories-buttons">
-                      {categories.map((category) => {
-                        const { id, name } = category;
-
-                        return (
-                          <DropDownButton
-                            className="
-                              search-page__dropdown-categories-main-button
-                            "
-                            size="small"
-                            icon
-                            key={id}
-                            placeholder={name}
-                            active={activeCategory === category}
-                            onClick={() => handleToggleCategory(category)}
-                          />
-                        );
-                      })}
-                    </div>
-
-                    {activeCategory && (
-                      <ul className="search-page__dropdown-subcategories">
-                        {activeCategory.subcategories.map(subCategory => {
-                          const isSubCategoryChecked = searchParams
-                            .getAll('subCategories')
-                            .some(id => +id === subCategory.id);
-
-                          return (
-                            <li
-                              className="search-page__dropdown-subcategory-item"
-                              key={subCategory.id}
-                            >
-                              <label className="
-                                search-page__dropdown-subcategory
-                              "
-                              >
-                                <Checkbox
-                                  className="
-                                    search-page__dropdown-subcategory-check
-                                  "
-                                  checked={isSubCategoryChecked}
-                                  onChange={e => handleChooseSubCategory(
-                                    subCategory, e.target.checked,
-                                  )}
-                                />
-                                {subCategory.name}
-                              </label>
-                            </li>
-                          );
-                        })}
-                      </ul>
-                    )}
-
-                  </div>
-
-                  <hr className="search-page__dropdown-hr" />
-
-                  <div className="search-page__dropdown-buttons">
-                    <DropDownButton
-                      size="small"
-                      placeholder="Clean"
-                      className="search-page__dropdown-button"
-                      onClick={clearSubCategories}
-                    />
-                    <Button
-                      size="small"
-                      className="search-page__dropdown-button"
-                      onClick={() => setActiveDropDown(null)}
-                    >
-                      Apply
-                    </Button>
-                  </div>
-
-                </article>
+                  onClickCategory={handleToggleCategory}
+                  onApply={() => setActiveDropDown(null)}
+                  onClose={handleClickOutside}
+                  onClean={clearSubCategories}
+                  onClickSubcategory={handleChooseSubCategory}
+                  activeSubcategories={searchParams
+                    .getAll('subCategories').map(Number)}
+                />
               </CreateModal>
-
             )}
           </>
           <>
