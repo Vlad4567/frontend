@@ -59,10 +59,11 @@ export const DropDownButton = forwardRef<HTMLButtonElement, Props>(({
     <button
       type="button"
       className={classNames(
-        `drop-down-button drop-down-button--${size} ${className}`, {
+        `drop-down-button drop-down-button--${size}`, {
           'drop-down-button--icon': icon,
           'drop-down-button--active': active,
           'drop-down-button--scale': !(icon && active && input),
+          [className]: className,
         },
       )}
       ref={ref}
