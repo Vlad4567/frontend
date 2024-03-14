@@ -18,7 +18,7 @@ interface Props
   icon?: boolean
   input?: boolean
   size: 'large' | 'small'
-  placeholder: string
+  placeholder?: string
   onChange?: (
     e: React.ChangeEvent<HTMLInputElement>
   ) => void
@@ -28,6 +28,7 @@ interface Props
   active?: boolean
   value?: string
   inputRef?: React.Ref<HTMLInputElement>
+  children?: React.ReactNode
 }
 
 export const DropDownButton = forwardRef<HTMLButtonElement, Props>(({
@@ -41,6 +42,7 @@ export const DropDownButton = forwardRef<HTMLButtonElement, Props>(({
   active = false,
   value = '',
   inputRef,
+  children,
   ...rest
 }, ref) => {
   const pathToIcon
@@ -79,9 +81,13 @@ export const DropDownButton = forwardRef<HTMLButtonElement, Props>(({
               onChange={onChange}
             />
           ) : (
-            <p className="drop-down-button__text">
-              {placeholder}
-            </p>
+            <>
+              {children || (
+                <p className="drop-down-button__text">
+                  {placeholder}
+                </p>
+              )}
+            </>
           )
       }
       {icon && (
