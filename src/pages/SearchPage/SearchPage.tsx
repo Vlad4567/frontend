@@ -65,6 +65,8 @@ export const SearchPage: React.FC = () => {
   const sortButtonRef = useRef<HTMLButtonElement>(null);
   const dropDownRef = useRef<HTMLDivElement>(null);
 
+  window.console.dir(categoryButtonRef);
+
   const setSearchWith = (params: SearchWithParams) => {
     const search = getSearchWith(params, searchParams);
 
@@ -106,6 +108,7 @@ export const SearchPage: React.FC = () => {
   ) => {
     e.stopPropagation();
     setCityValue('');
+    setSearchWith({ city: null });
   };
 
   const handleChooseCity = (item: City) => {
@@ -197,14 +200,6 @@ export const SearchPage: React.FC = () => {
   useEffect(() => {
     if (activeDropDown === 'City' && !isShownModalCityInput) {
       cityInputRef.current?.focus();
-
-      if (cityInputRef.current) {
-        cityInputRef.current.onblur = () => {
-          if (!isShownModalCityInput) {
-            handleToggleDropDown('City');
-          }
-        };
-      }
     }
   }, [activeDropDown, isShownModalCityInput]);
 
@@ -307,51 +302,51 @@ export const SearchPage: React.FC = () => {
 
             {activeDropDown === 'City' && (
               <CreateModal media={{ onPhone: true }}>
-                {(isShownModalCityInput || !!cityList.length) && (
-                  <article
-                    className="search-page__dropdown-city"
-                    ref={dropDownRef}
-                  >
-                    <div className="search-page__dropdown-header">
-                      <h3 className="search-page__dropdown-header-title">
-                        City
-                      </h3>
-                      <img
-                        src={closeIcon}
-                        alt="close"
-                        className="search-page__dropdown-header-close-icon"
-                        onClick={handleClickOutside}
-                      />
-                    </div>
-
-                    <DropDownButton
-                      active
-                      input
-                      icon
-                      size="large"
-                      placeholder="City"
-                      handleIconOnClick={handleCityIcon}
-                      value={cityValue}
-                      onChange={handleInputCity}
-                      className="search-page__dropdown-city-search"
+                <article
+                  className="search-page__dropdown-city"
+                  style={!isShownModalCityInput
+                    && !cityList.length ? { display: 'none' } : {}}
+                  ref={dropDownRef}
+                >
+                  <div className="search-page__dropdown-header">
+                    <h3 className="search-page__dropdown-header-title">
+                      City
+                    </h3>
+                    <img
+                      src={closeIcon}
+                      alt="close"
+                      className="search-page__dropdown-header-close-icon"
+                      onClick={handleClickOutside}
                     />
+                  </div>
 
-                    {cityValue && (
-                      <ul className="search-page__dropdown-city-list">
-                        {cityList.map(item => (
-                          <li
-                            className="search-page__dropdown-city-item"
-                            key={item.id}
-                            onClick={() => handleChooseCity(item)}
-                          >
-                            {item.name}
-                          </li>
-                        ))}
-                      </ul>
-                    )}
+                  <DropDownButton
+                    active
+                    input
+                    icon
+                    size="large"
+                    placeholder="City"
+                    handleIconOnClick={handleCityIcon}
+                    value={cityValue}
+                    onChange={handleInputCity}
+                    className="search-page__dropdown-city-search"
+                  />
 
-                  </article>
-                )}
+                  {cityValue && (
+                    <ul className="search-page__dropdown-city-list">
+                      {cityList.map(item => (
+                        <li
+                          className="search-page__dropdown-city-item"
+                          key={item.id}
+                          onClick={() => handleChooseCity(item)}
+                        >
+                          {item.name}
+                        </li>
+                      ))}
+                    </ul>
+                  )}
+
+                </article>
               </CreateModal>
             )}
           </>
