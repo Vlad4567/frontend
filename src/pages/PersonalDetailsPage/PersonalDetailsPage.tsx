@@ -1,11 +1,10 @@
 /* eslint-disable jsx-a11y/label-has-associated-control */
-import { useLocation, useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import { useEffect, useState } from 'react';
 import { useDebounce } from 'usehooks-ts';
 import { AxiosError } from 'axios';
 import {
   changeObjectStateKey,
-  convertHyphenToSpace,
 } from '../../helpers/functions';
 import { Checkbox } from '../../components/Checkbox/Checkbox';
 import { DropDownButton } from '../../components/DropDownButton/DropDownButton';
@@ -45,8 +44,6 @@ export const PersonalDetailsPage: React.FC = () => {
   const dispatch = useAppDispatch();
   const { user } = useAppSelector(state => state.userSlice);
   const navigate = useNavigate();
-  const pathArray = useLocation().pathname.split('/');
-  const currentPath = pathArray[pathArray.length - 1];
 
   const initialUserData = {
     username: user.username,
@@ -254,14 +251,8 @@ export const PersonalDetailsPage: React.FC = () => {
     );
   };
 
-  window.console.dir(errors);
-
   return (
-    <div className="personal-details-page">
-      <h1 className="personal-details-page__title">
-        {convertHyphenToSpace(currentPath)}
-      </h1>
-
+    <>
       <div className="personal-details-page__main">
         <div className="personal-details-page__main-data">
           <LoginInput
@@ -351,7 +342,7 @@ export const PersonalDetailsPage: React.FC = () => {
             <div className="personal-details-page__footer-become-master">
               <Checkbox
                 checked={user.master}
-                onClick={() => navigate('../public-profile')}
+                onChange={() => navigate('../edit-public-profile')}
               />
               I am Master
             </div>
@@ -375,6 +366,6 @@ export const PersonalDetailsPage: React.FC = () => {
           />
         </div>
       </div>
-    </div>
+    </>
   );
 };

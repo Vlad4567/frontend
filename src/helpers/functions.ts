@@ -158,3 +158,10 @@ export const convertHyphenToSpace = (str: string) => {
       : word))
     .join(' ');
 };
+
+export const convertSpaceToHyphen = (str: string) => {
+  return str
+    .split(' ')
+    .map(word => word.toLowerCase())
+    .join('-');
+};

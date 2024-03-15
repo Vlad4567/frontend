@@ -1,5 +1,5 @@
 /* eslint-disable jsx-a11y/label-has-associated-control */
-import { useEffect, useState } from 'react';
+import { useEffect } from 'react';
 import { useIsomorphicLayoutEffect, useMediaQuery } from 'usehooks-ts';
 import {
   NavLink,
@@ -7,6 +7,7 @@ import {
   useLocation,
   useNavigate,
 } from 'react-router-dom';
+import classNames from 'classnames';
 import { useAppDispatch, useAppSelector } from '../../app/hooks';
 import * as appSlice from '../../features/appSlice';
 import defaultAvatar from '../../img/default-avatar.svg';
@@ -17,7 +18,11 @@ import { ArrowButton } from '../../components/ArrowButton/ArrowButton';
 import { convertHyphenToSpace } from '../../helpers/functions';
 import { UnderlinedSmall }
   from '../../components/UnderlinedSmall/UnderlinedSmall';
-import { deleteRefreshToken, getUser } from '../../api/account';
+import {
+  deleteRefreshToken,
+  getUser,
+  sendProfilePhoto,
+} from '../../api/account';
 import { showNotification } from '../../helpers/notifications';
 import * as userSlice from '../../features/userSlice';
 import './AccountPage.scss';
@@ -26,15 +31,11 @@ export const AccountPage: React.FC = () => {
   const dispatch = useAppDispatch();
   const { user } = useAppSelector(state => state.userSlice);
   const pathArray = useLocation().pathname.split('/');
-  const navigate = useNavigate();
   const currentPath = pathArray[pathArray.length - 1];
+  const pathAfterAccount
+    = pathArray[pathArray.findIndex(path => path === 'account') + 1] || '';
+  const navigate = useNavigate();
   const isNotPhone = useMediaQuery(`(min-width: ${styleVariables['tablet-min-width']})`);
-  const [inputAvatar, setInputAvatar]
-    = useState<string | null>(user.profilePhoto);
-
-  useEffect(() => {
-    setInputAvatar(user.profilePhoto);
-  }, [user.profilePhoto]);
 
   useEffect(() => {
     if (currentPath === 'account' && isNotPhone) {
@@ -61,16 +62,19 @@ export const AccountPage: React.FC = () => {
 
   const handleAvatarChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const avatarFile = e.target.files?.item(0);
-    const fr = new FileReader();
 
     if (avatarFile) {
-      fr.onload = (event) => {
-        if (typeof event.target?.result === 'string') {
-          setInputAvatar(event.target.result);
-        }
-      };
+      const formData = new FormData();
 
-      fr.readAsDataURL(avatarFile);
+      formData.append('file', avatarFile);
+
+      sendProfilePhoto(formData)
+        .then(photo => {
+          dispatch(userSlice.updateUser({
+            profilePhoto: photo,
+          }));
+        })
+        .catch(() => showNotification('error'));
     }
   };
 
@@ -94,7 +98,7 @@ export const AccountPage: React.FC = () => {
         />
 
         <h3 className="account-page__header-title">
-          {convertHyphenToSpace(currentPath)}
+          {convertHyphenToSpace(pathAfterAccount)}
         </h3>
       </div>
       <div className="account-page__main">
@@ -114,7 +118,7 @@ export const AccountPage: React.FC = () => {
                 />
                 <img
                   className="account-page__menu-avatar-img"
-                  src={inputAvatar || defaultAvatar}
+                  src={user.profilePhoto || defaultAvatar}
                   alt="Avatar"
                 />
                 <div className="account-page__menu-avatar-edit">
@@ -139,17 +143,41 @@ export const AccountPage: React.FC = () => {
               <ul className="account-page__menu-nav-list">
                 <li className="account-page__menu-nav-item">
                   <NavLink
-                    to="personal-details"
-                    className="account-page__menu-nav-link"
+                    to="./personal-details"
+                    className={({ isActive }) => {
+                      return classNames('account-page__menu-nav-link', {
+                        'account-page__menu-nav-link--active': isActive,
+                      });
+                    }}
                   >
                     <DropDownButton
                       className="account-page__menu-nav-button"
                       size="small"
                       placeholder="Personal details"
-                      active={currentPath === 'personal-details'}
+                      active={pathAfterAccount === 'personal-details'}
                     />
                   </NavLink>
                 </li>
+                {(user.master
+                  || pathAfterAccount === 'edit-public-profile') && (
+                  <li className="account-page__menu-nav-item">
+                    <NavLink
+                      to="./edit-public-profile"
+                      className={({ isActive }) => {
+                        return classNames('account-page__menu-nav-link', {
+                          'account-page__menu-nav-link--active': isActive,
+                        });
+                      }}
+                    >
+                      <DropDownButton
+                        className="account-page__menu-nav-button"
+                        size="small"
+                        placeholder="Public profile (Master)"
+                        active={pathAfterAccount === 'edit-public-profile'}
+                      />
+                    </NavLink>
+                  </li>
+                )}
               </ul>
             </nav>
 
@@ -180,7 +208,13 @@ export const AccountPage: React.FC = () => {
           </aside>
         )}
 
-        <Outlet />
+        <div className="account-page__main-content">
+          <h1 className="account-page__main-title">
+            {convertHyphenToSpace(pathAfterAccount)}
+          </h1>
+
+          <Outlet />
+        </div>
       </div>
     </main>
   );

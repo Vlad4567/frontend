@@ -18,6 +18,8 @@ import { SignUpForm } from './components/SignUpForm/SignUpForm';
 import { ResetPasswordForm }
   from './components/ResetPasswordForm/ResetPasswordForm';
 import { LoginForm } from './components/LoginForm/LoginForm';
+import { EditPublicProfilePage }
+  from './pages/EditPublicProfilePage/EditPublicProfilePage';
 
 export const Router = () => {
   return (
@@ -41,6 +43,12 @@ export const Router = () => {
                 path="personal-details"
                 element={<PersonalDetailsPage />}
               />
+              <Route
+                path="edit-public-profile"
+                element={<EditPublicProfilePage />}
+              >
+                <Route path="area-of-work" element={<p>fine</p>} />
+              </Route>
             </Route>
             <Route path="*" element={<NotFoundPage />} />
           </Route>

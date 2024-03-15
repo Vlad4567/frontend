@@ -1,7 +1,8 @@
 /* eslint-disable no-param-reassign */
 import { PayloadAction, createSlice } from '@reduxjs/toolkit';
 import { UserData } from '../types/account';
-import { objectKeys } from '../helpers/functions';
+import { listenerMiddleware } from '../app/listenerMiddleware';
+import { downloadPhoto } from '../api/account';
 
 const initialState: {
   user: UserData
@@ -19,15 +20,43 @@ const userSlice = createSlice({
   initialState,
   reducers: {
     updateUser: (state, action: PayloadAction<Partial<UserData>>) => {
-      objectKeys(action.payload).forEach(key => {
-        (state.user[key] as UserData[keyof UserData])
-          = action.payload[key] as UserData[keyof UserData];
-      });
+      return {
+        ...state,
+        user: {
+          ...state.user,
+          ...action.payload,
+        },
+      };
+    },
+    updateProfilePhoto: (state, action: PayloadAction<string>) => {
+      return {
+        ...state,
+        user: {
+          ...state.user,
+          profilePhoto: action.payload,
+        },
+      };
     },
   },
 });
 
 export const {
   updateUser,
+  updateProfilePhoto,
 } = userSlice.actions;
 export default userSlice.reducer;
+
+listenerMiddleware.startListening({
+  actionCreator: updateUser,
+  effect: async (action, listenerAPI) => {
+    if (action.payload.profilePhoto) {
+      await downloadPhoto(action.payload.profilePhoto)
+        .then(data => {
+          listenerAPI.dispatch(updateProfilePhoto(URL.createObjectURL(
+            new Blob([data],
+              { type: 'image/jpeg' }),
+          )));
+        });
+    }
+  },
+});

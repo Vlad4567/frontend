@@ -1,24 +1,6 @@
 @use '../../styles/mixin.scss' as mixin;
 
 .personal-details-page {
-  display: flex;
-  flex-direction: column;
-  gap: 20px;
-  flex: 1;
-
-  @include mixin.on-tablet {
-    gap: 30px;
-  }
-
-  &__title {
-    display: none;
-    margin: 0;
-
-    @include mixin.on-tablet {
-      display: block;
-    }
-  }
-
   &__main {
     display: flex;
     flex-direction: column;
@@ -83,6 +65,10 @@
 
     @include mixin.on-tablet {
       width: 130px;
+    }
+
+    &:disabled {
+      pointer-events: none;
     }
   }
 }
