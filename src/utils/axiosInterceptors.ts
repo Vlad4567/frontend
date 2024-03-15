@@ -1,6 +1,5 @@
 import axios from 'axios';
 import globalRouter from '../globalRouter';
-import { showNotification } from '../helpers/notifications';
 /* eslint-disable no-param-reassign */
 const instance = axios.create({
   baseURL: '/api',
@@ -10,7 +9,6 @@ const instance = axios.create({
 const redirectToLogin = () => {
   localStorage.removeItem('token');
   localStorage.removeItem('refreshToken');
-  showNotification('error');
   if (globalRouter.navigate) {
     globalRouter.navigate('/login');
   }
@@ -22,10 +20,6 @@ instance.interceptors.response.use(
   },
   async (error) => {
     const originalRequest = error.config;
-
-    if (error.code === 'ECONNABORTED') {
-      showNotification('error');
-    }
 
     if (error.response?.status === 401) {
       const refreshToken = localStorage.getItem('refreshToken');
