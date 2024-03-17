@@ -27,7 +27,7 @@ export const LoginInput: React.FC<Props> = ({
   const pathToPasswordIcon = showPassword ? eyePasswordShow : eyePasswordHide;
 
   return (
-    <label className="login-input">
+    <label className={`login-input ${className}`}>
       <div className="login-input__block">
         <small className={classNames('login-input__title', {
           'login-input__title--show': rest.value,
@@ -37,7 +37,7 @@ export const LoginInput: React.FC<Props> = ({
         </small>
         <input
           type={showPassword ? 'text' : type}
-          className={classNames('login-input__input', { className })}
+          className="login-input__input"
           {...rest}
         />
         {typePassword && (
