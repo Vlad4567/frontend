@@ -72,15 +72,23 @@ export const DropDownButton = forwardRef<HTMLButtonElement, Props>(({
       {
         (active && icon && input)
           ? (
-            <input
-              ref={inputRef}
-              className="drop-down-button__input"
-              type="text"
-              placeholder={placeholder}
-              value={value}
-              onClick={(e) => e.stopPropagation()}
-              onChange={onChange}
-            />
+            <>
+              {children ? (
+                <p className="drop-down-button__input">
+                  {children}
+                </p>
+              ) : (
+                <input
+                  ref={inputRef}
+                  className="drop-down-button__input"
+                  type="text"
+                  placeholder={placeholder}
+                  value={value}
+                  onClick={(e) => e.stopPropagation()}
+                  onChange={onChange}
+                />
+              )}
+            </>
           ) : (
             <>
               {children || (
