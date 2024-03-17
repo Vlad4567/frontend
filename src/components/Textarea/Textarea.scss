@@ -1,0 +1,32 @@
+@use '../../styles/mixin.scss' as mixin;
+
+.textarea {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+
+  &__title {
+    padding-left: 5px;
+    font-weight: 700;
+    color: mixin.$gray30;
+    transition: opacity mixin.$effect-duration;
+    opacity: 0;
+
+    &--show {
+      opacity: 1;
+    }
+  }
+
+  &__text {
+    padding: 10px;
+    border: mixin.$line-width solid mixin.$gray30;
+    border-radius: 20px;
+    overflow: hidden;
+    resize: none;
+    background: none;
+
+    &:focus {
+      border: mixin.$line-width solid mixin.$gray10;
+    }
+  }
+}

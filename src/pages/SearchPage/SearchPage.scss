@@ -10,6 +10,32 @@
     padding-block: 15px 30px;
   }
 
+  &__dropdown-categories {
+    @include mixin.on-tablet {
+      position: absolute;
+      bottom: -5px;
+      right: 0%;
+      transform: translateY(100%);
+    }
+  }
+
+  &__dropdown-categories-header {
+    display: flex;
+    justify-content: space-between;
+
+    @include mixin.on-tablet {
+      display: none;
+    }
+  }
+
+  &__dropdown-categories-title {
+    color: mixin.$gray15;
+  }
+
+  &__dropdown-categories-icon {
+    cursor: pointer;
+  }
+
   &__filter {
     padding: 20px;
 

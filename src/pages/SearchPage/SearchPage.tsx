@@ -65,8 +65,6 @@ export const SearchPage: React.FC = () => {
   const sortButtonRef = useRef<HTMLButtonElement>(null);
   const dropDownRef = useRef<HTMLDivElement>(null);
 
-  window.console.dir(categoryButtonRef);
-
   const setSearchWith = (params: SearchWithParams) => {
     const search = getSearchWith(params, searchParams);
 
@@ -89,10 +87,6 @@ export const SearchPage: React.FC = () => {
     setActiveDropDown(c => {
       return c === dropDown ? null : dropDown;
     });
-  };
-
-  const handleToggleCategory = (category: Category | null) => {
-    setActiveCategory(c => (c?.id === category?.id ? null : category));
   };
 
   const handleInputCity = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -446,16 +440,28 @@ export const SearchPage: React.FC = () => {
             {activeDropDown === 'Category' && (
               <CreateModal media={{ onPhone: true }}>
                 <ModalCategories
+                  className="search-page__dropdown-categories"
                   activeCategory={activeCategory}
                   ref={dropDownRef}
-                  onClickCategory={handleToggleCategory}
+                  onClickCategory={setActiveCategory}
                   onApply={() => setActiveDropDown(null)}
-                  onClose={handleClickOutside}
                   onClean={clearSubCategories}
                   onClickSubcategory={handleChooseSubCategory}
                   activeSubcategories={searchParams
                     .getAll('subCategories').map(Number)}
-                />
+                >
+                  <div className="search-page__dropdown-categories-header">
+                    <h3 className="search-page__dropdown-categories-title">
+                      Category
+                    </h3>
+                    <img
+                      alt="close"
+                      className="search-page__dropdown-categories-icon"
+                      src={closeIcon}
+                      onClick={handleClickOutside}
+                    />
+                  </div>
+                </ModalCategories>
               </CreateModal>
             )}
           </>

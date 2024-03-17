@@ -1,50 +1,22 @@
 @use '../../styles/mixin.scss' as mixin;
 
 .modal-categories {
-  &__categories {
-    padding: 20px;
-    max-width: 633px;
+  padding: 20px;
+  max-width: 633px;
 
-    z-index: 10000;
+  z-index: 10000;
 
-    display: flex;
-    justify-content: flex-start;
-    flex-direction: column;
-    gap: 20px;
+  display: flex;
+  justify-content: flex-start;
+  flex-direction: column;
+  gap: 20px;
 
-    background-color: mixin.$gray100;
-    border-radius: 30px;
-    box-shadow: -1px 4px 15px 0 rgba(0, 0, 0, 0.25);
+  background-color: mixin.$gray100;
+  border-radius: 30px;
+  box-shadow: -1px 4px 15px 0 rgba(0, 0, 0, 0.25);
 
-    @include mixin.on-tablet {
-      padding: 40px;
-      position: absolute;
-      bottom: -5px;
-      right: 0%;
-      transform: translateY(100%);
-    }
-  }
-
-  &__description {
-    color: mixin.$gray30;
-    font-weight: 700;
-  }
-
-  &__dropdown-header {
-    display: flex;
-    justify-content: space-between;
-
-    @include mixin.on-tablet {
-      display: none;
-    }
-  }
-
-  &__dropdown-header-title {
-    color: mixin.$gray15;
-  }
-
-  &__dropdown-header-close-icon {
-    cursor: pointer;
+  @include mixin.on-tablet {
+    padding: 40px;
   }
 
   &__dropdown-categories-main {
@@ -68,6 +40,16 @@
     display: flex;
     flex-direction: column;
     gap: 15px;
+
+    &--row {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+    }
+  }
+
+  &__dropdown-subcategory-item {
+    display: flex;
+    align-items: center;
   }
 
   &__dropdown-subcategory {

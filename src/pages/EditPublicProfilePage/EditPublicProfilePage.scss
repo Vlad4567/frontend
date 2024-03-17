@@ -1,15 +1,12 @@
 @use '../../styles/mixin.scss' as mixin;
 
 .edit-public-profile-page {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
 
-  &__content {
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
-
-    @include mixin.on-desktop {
-      gap: 15px;
-    }
+  @include mixin.on-desktop {
+    gap: 15px;
   }
 
   &__nav {
@@ -36,6 +33,7 @@
   }
 
   &__nav-link-btn {
+    width: fit-content;
     background: none;
     border: none;
   }
