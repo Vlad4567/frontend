@@ -9,7 +9,7 @@ import { useAppSelector } from '../../app/hooks';
 import './EditPublicProfilePage.scss';
 
 const navButtons
-  = ['Area of work', 'Contacts', 'Adress', 'Gallery', 'Services'];
+  = ['Area of work', 'Contacts', 'Address', 'Gallery', 'Services'];
 
 export const EditPublicProfilePage: React.FC = () => {
   const { user } = useAppSelector(state => state.userSlice);
