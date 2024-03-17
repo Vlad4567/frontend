@@ -20,6 +20,7 @@ import { ResetPasswordForm }
 import { LoginForm } from './components/LoginForm/LoginForm';
 import { EditPublicProfilePage }
   from './pages/EditPublicProfilePage/EditPublicProfilePage';
+import { EditAreaOfWork } from './components/EditAreaOfWork/EditAreaOfWork';
 
 export const Router = () => {
   return (
@@ -47,7 +48,11 @@ export const Router = () => {
                 path="edit-public-profile"
                 element={<EditPublicProfilePage />}
               >
-                <Route path="area-of-work" element={<p>fine</p>} />
+                <Route
+                  index
+                  element={<Navigate to="area-of-work" replace />}
+                />
+                <Route path="area-of-work" element={<EditAreaOfWork />} />
               </Route>
             </Route>
             <Route path="*" element={<NotFoundPage />} />

@@ -1,0 +1,51 @@
+@use '../../styles/mixin.scss' as mixin;
+
+.edit-area-of-work {
+  &__form {
+    padding: 30px;
+
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+
+    background-color: mixin.$gray100;
+    border-radius: 40px;
+  }
+
+  &__description {
+    display: flex;
+    flex-direction: column;
+    gap: 30px;
+  }
+
+  &__description-subcategories {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+  }
+
+  &__description-subcategory {
+    width: fit-content;
+  }
+
+  &__description-add-area-of-work {
+    width: fit-content;
+    border: none;
+    background-color: mixin.$secondary-pink;
+  }
+
+  &__description-modal-categories {
+    width: max-content;
+  }
+
+  &__description-categories-title {
+    color: mixin.$gray30;
+    font-weight: 700;
+  }
+
+  &__controls {
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
+  }
+}
