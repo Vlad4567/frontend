@@ -21,6 +21,7 @@ import { LoginForm } from './components/LoginForm/LoginForm';
 import { EditPublicProfilePage }
   from './pages/EditPublicProfilePage/EditPublicProfilePage';
 import { EditAreaOfWork } from './components/EditAreaOfWork/EditAreaOfWork';
+import { EditContacts } from './components/EditContacts/EditContacts';
 
 export const Router = () => {
   return (
@@ -53,6 +54,7 @@ export const Router = () => {
                   element={<Navigate to="area-of-work" replace />}
                 />
                 <Route path="area-of-work" element={<EditAreaOfWork />} />
+                <Route path="contacts" element={<EditContacts />} />
               </Route>
             </Route>
             <Route path="*" element={<NotFoundPage />} />

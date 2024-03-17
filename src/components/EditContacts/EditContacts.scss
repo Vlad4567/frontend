@@ -1,0 +1,62 @@
+@use '../../styles/mixin.scss' as mixin;
+
+.edit-contacts {
+  padding: 20px;
+  min-width: 335px;
+
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+
+  background-color: mixin.$gray100;
+  border-radius: 30px;
+  box-shadow: -1px 4px 15px 0 rgba(0, 0, 0, 0.25);
+
+  @include mixin.on-tablet {
+    gap: 20px;
+  }
+
+  &__main {
+    display: flex;
+    flex-direction: column;
+  }
+
+  &__main-block {
+    display: flex;
+    align-items: end;
+    gap: 5px;
+    flex: 1;
+  }
+
+  &__main-field {
+    flex: 1;
+  }
+
+  &__main-block-icon {
+    height: fit-content;
+    cursor: pointer;
+
+    &:hover {
+      transform: scale(1.1);
+    }
+  }
+
+  &__profile {
+    min-width: 335px;
+    display: flex;
+    justify-content: end;
+    gap: 5px;
+
+    @include mixin.on-tablet {
+      gap: 10px;
+    }
+  }
+
+  &__profile-button {
+    width: 100%;
+
+    @include mixin.on-tablet {
+      width: 170px;
+    }
+  }
+}

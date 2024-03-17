@@ -53,6 +53,20 @@ const createMasterSlice = createSlice({
         ...action.payload,
       };
     },
+
+    editContacts: (
+      state,
+      action: PayloadAction<Partial<CreateMasterState['contacts']>>,
+    ) => {
+      return {
+        ...state,
+        contacts: {
+          ...state.contacts,
+          ...action.payload,
+        },
+      };
+    },
+
     deleteSubcategory: (state, action: PayloadAction<SubCategory['id']>) => {
       if (state.subcategories) {
         state.subcategories = state.subcategories.filter(
@@ -65,6 +79,7 @@ const createMasterSlice = createSlice({
 
 export const {
   editCreateMaster,
+  editContacts,
   deleteSubcategory,
 } = createMasterSlice.actions;
 
