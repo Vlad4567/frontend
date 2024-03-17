@@ -7,12 +7,14 @@ import appSlice from '../features/appSlice';
 import notificationSlice from '../features/notificationSlice';
 import { listenerMiddleware } from './listenerMiddleware';
 import userSlice from '../features/userSlice';
+import createMasterSlice from '../features/createMasterSlice';
 
 export const store = configureStore({
   reducer: {
     appSlice,
     notificationSlice,
     userSlice,
+    createMasterSlice,
   },
   middleware: (getDefaultMiddleware) => {
     return getDefaultMiddleware().prepend(listenerMiddleware.middleware);
