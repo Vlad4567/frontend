@@ -6,12 +6,14 @@ interface Props extends React.TextareaHTMLAttributes<HTMLTextAreaElement> {
   className?: string
   placeholder?: string
   autoGrow?: boolean
+  title?: string
 }
 
 export const Textarea: React.FC<Props> = ({
   className = '',
   placeholder = '',
   autoGrow = false,
+  title = '',
   ...rest
 }) => {
   return (
@@ -20,7 +22,7 @@ export const Textarea: React.FC<Props> = ({
         'textarea__title--show': rest.value,
       })}
       >
-        {placeholder}
+        {title || placeholder}
       </small>
       <textarea
         className="textarea__text"
