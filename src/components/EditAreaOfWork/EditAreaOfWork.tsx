@@ -50,6 +50,7 @@ export const EditAreaOfWork: React.FC = () => {
 
         <div className="edit-area-of-work__name">
           <LoginInput
+            title="Name"
             value={createMaster.firstName || ''}
             onChange={handleInputChange}
             name="firstName"
@@ -58,6 +59,7 @@ export const EditAreaOfWork: React.FC = () => {
           />
 
           <LoginInput
+            title="Surname"
             value={createMaster.lastName || ''}
             onChange={handleInputChange}
             name="lastName"
@@ -68,6 +70,7 @@ export const EditAreaOfWork: React.FC = () => {
 
         <div className="edit-area-of-work__description">
           <Textarea
+            title="About you"
             // eslint-disable-next-line max-len
             placeholder="Enter information about yourself, such as work experience, training certificates, etc."
             value={createMaster.description || ''}
@@ -76,58 +79,70 @@ export const EditAreaOfWork: React.FC = () => {
             className="edit-area-of-work__description-textarea"
             autoGrow
           />
-          <div className="edit-area-of-work__description-subcategories">
-            {createMaster.subcategories?.map(item => (
-              <DropDownButton
-                key={item.id}
-                icon
-                input
-                active
-                size="large"
-                className="edit-area-of-work__description-subcategory"
-                onClick={() => dispatch(
-                  createMasterSlice.deleteSubcategory(item.id),
-                )}
+
+          <div
+            className="edit-area-of-work__description-subcategories-wrapper"
+          >
+            {createMaster.subcategories && (
+              <small
+                className="edit-area-of-work__description-subcategories-title"
               >
-                {item.name}
-              </DropDownButton>
-            ))}
-
-            <DropDownButton
-              size="large"
-              placeholder="+ Add area of work"
-              className="edit-area-of-work__description-add-area-of-work"
-              onClick={() => setIsModalCategoriesOpen(c => !c)}
-            />
-
-            {isModalCategoriesOpen && (
-              <CreateModal>
-                <ModalCategories
-                  subCategoriesStyle="row"
-                  onClean={() => dispatch(
-                    createMasterSlice.editCreateMaster({ subcategories: null }),
-                  )}
-                  onApply={handleOnClickOutside}
-                  onClickSubcategory={item => dispatch(
-                    createMasterSlice.editCreateMaster({
-                      subcategories: [...createMaster.subcategories
-                        || [], item],
-                    }),
-                  )}
-                  activeSubcategories={createMaster
-                    .subcategories
-                    ?.map(item => item.id) || []}
-                  className="edit-area-of-work__description-modal-categories"
-                  ref={modalCategoriesRef}
-                >
-                  <small
-                    className="edit-area-of-work__description-categories-title"
-                  >
-                    Select your area of work
-                  </small>
-                </ModalCategories>
-              </CreateModal>
+                Category
+              </small>
             )}
+            <div className="edit-area-of-work__description-subcategories">
+              {createMaster.subcategories?.map(item => (
+                <DropDownButton
+                  key={item.id}
+                  icon
+                  input
+                  active
+                  size="large"
+                  className="edit-area-of-work__description-subcategory"
+                  onClick={() => dispatch(
+                    createMasterSlice.deleteSubcategory(item.id),
+                  )}
+                >
+                  {item.name}
+                </DropDownButton>
+              ))}
+
+              <DropDownButton
+                size="large"
+                placeholder="+ Add area of work"
+                className="edit-area-of-work__description-add-area-of-work"
+                onClick={() => setIsModalCategoriesOpen(c => !c)}
+              />
+
+              {isModalCategoriesOpen && (
+                <CreateModal>
+                  <ModalCategories
+                    subCategoriesStyle="row"
+                    onClean={() => dispatch(
+                      createMasterSlice
+                        .editCreateMaster({ subcategories: null }),
+                    )}
+                    onApply={handleOnClickOutside}
+                    onClickSubcategory={item => dispatch(
+                      createMasterSlice.toggleSubcategory(item),
+                    )}
+                    activeSubcategories={createMaster
+                      .subcategories
+                      ?.map(item => item.id) || []}
+                    className="edit-area-of-work__description-modal-categories"
+                    ref={modalCategoriesRef}
+                  >
+                    <small
+                      className="
+                        edit-area-of-work__description-categories-title
+                      "
+                    >
+                      Select your area of work
+                    </small>
+                  </ModalCategories>
+                </CreateModal>
+              )}
+            </div>
           </div>
         </div>
       </form>
@@ -135,13 +150,13 @@ export const EditAreaOfWork: React.FC = () => {
         <DropDownButton
           placeholder="Cancel"
           size="large"
-          className="edit-area-of-work__controls-cancel"
+          className="edit-area-of-work__controls-button"
           onClick={handleCancel}
         />
 
         <Button
-          size="large"
-          className="edit-area-of-work__controls-continue"
+          size="small"
+          className="edit-area-of-work__controls-button"
           onClick={() => navigate('../contacts')}
         >
           Continue

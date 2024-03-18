@@ -178,5 +178,11 @@
 
   &__main-title {
     margin: 0;
+
+    display: none;
+
+    @include mixin.on-tablet {
+      display: block;
+    }
   }
 }

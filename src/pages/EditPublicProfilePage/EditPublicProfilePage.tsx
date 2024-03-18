@@ -1,3 +1,4 @@
+import { useState } from 'react';
 import { NavLink, Outlet } from 'react-router-dom';
 import classNames from 'classnames';
 import { useMediaQuery } from 'usehooks-ts';
@@ -14,6 +15,20 @@ const navButtons
 export const EditPublicProfilePage: React.FC = () => {
   const { user } = useAppSelector(state => state.userSlice);
   const isDesktop = useMediaQuery(`(min-width: ${styleVariables['desktop-min-width']})`);
+  const [activeNavButton, setActiveNavButton] = useState(navButtons[0]);
+
+  const setNavLinkClassName = (isActive: boolean, button: string) => {
+    if (isActive) {
+      setActiveNavButton(button);
+    }
+
+    return classNames(
+      'edit-public-profile-page__nav-link',
+      {
+        'edit-public-profile-page__nav-link--active': isActive,
+      },
+    );
+  };
 
   return (
     <div className="edit-public-profile-page">
@@ -21,12 +36,9 @@ export const EditPublicProfilePage: React.FC = () => {
         {navButtons.map((button, index) => (
           <>
             <NavLink
-              className={({ isActive }) => classNames(
-                'edit-public-profile-page__nav-link',
-                {
-                  'edit-public-profile-page__nav-link--active': isActive,
-                },
-              )}
+              className={({ isActive }) => {
+                return setNavLinkClassName(isActive, button);
+              }}
               to={`./${convertSpaceToHyphen(button)}`}
               key={button}
               style={user.master || index > 2
@@ -34,7 +46,7 @@ export const EditPublicProfilePage: React.FC = () => {
                 : {}}
             >
               <DropDownButton
-                placeholder={`${index + 1}${isDesktop ? ` ${button}` : ''}`}
+                placeholder={`${index + 1}${(isDesktop || activeNavButton === button) ? ` ${button}` : ''}`}
                 size="small"
                 className="edit-public-profile-page__nav-link-btn"
               />

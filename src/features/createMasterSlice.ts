@@ -67,6 +67,19 @@ const createMasterSlice = createSlice({
       };
     },
 
+    toggleSubcategory: (state, action: PayloadAction<SubCategory>) => {
+      if (state.subcategories?.find(item => item.id === action.payload.id)) {
+        state.subcategories = state.subcategories.filter(
+          item => item.id !== action.payload.id,
+        );
+      } else {
+        state.subcategories = [
+          ...(state.subcategories || []),
+          action.payload,
+        ];
+      }
+    },
+
     deleteSubcategory: (state, action: PayloadAction<SubCategory['id']>) => {
       if (state.subcategories) {
         state.subcategories = state.subcategories.filter(
@@ -80,6 +93,7 @@ const createMasterSlice = createSlice({
 export const {
   editCreateMaster,
   editContacts,
+  toggleSubcategory,
   deleteSubcategory,
 } = createMasterSlice.actions;
 
