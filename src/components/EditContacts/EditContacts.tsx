@@ -69,7 +69,7 @@ export const EditContacts: React.FC = () => {
 
   return (
     <>
-      <form className="edit-contacts">
+      <form className="edit-contacts__form">
         <h3 className="edit-contacts__title">Contacts</h3>
 
         <div className="edit-contacts__main">
@@ -160,7 +160,7 @@ export const EditContacts: React.FC = () => {
         />
 
         <Button
-          size="large"
+          size="small"
           className="edit-contacts__profile-button"
           onClick={() => navigate('../address')}
         >
@@ -168,7 +168,6 @@ export const EditContacts: React.FC = () => {
         </Button>
 
       </div>
-
     </>
   );
 };
