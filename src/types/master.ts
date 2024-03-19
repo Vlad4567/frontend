@@ -1,3 +1,6 @@
+import { SubCategory } from './category';
+import { City } from './searchPage';
+
 interface MasterSubcategory {
   categoryId: number;
   name: string;
@@ -24,4 +27,23 @@ export interface ServiceCard {
   masterCard: Pick<
   MasterCard, 'id' | 'address' | 'firstName' | 'lastName' | 'rating'>
   photo: string | null;
+}
+
+export interface CreateMaster {
+  firstName: string | null,
+  lastName: string | null,
+  contacts: {
+    instagram: string | null,
+    facebook: string | null,
+    telegram: string | null,
+    phone: string | null
+  },
+  address: {
+    cityId: City['id'] | null,
+    street: string | null,
+    houseNumber: string | null,
+    description: string | null
+  },
+  description: string | null,
+  subcategories: SubCategory['id'][] | null
 }
