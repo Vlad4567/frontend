@@ -1,6 +1,7 @@
 /* eslint-disable no-param-reassign */
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { SubCategory } from '../types/category';
+import { City } from '../types/searchPage';
 
 export interface CreateMasterState {
   firstName: string | null;
@@ -12,7 +13,7 @@ export interface CreateMasterState {
     phone: string | null;
   };
   address: {
-    cityId: number | null;
+    city: City | null;
     street: string | null;
     houseNumber: string | null;
     description: string | null;
@@ -31,7 +32,7 @@ const initialState: CreateMasterState = {
     phone: null,
   },
   address: {
-    cityId: null,
+    city: null,
     street: null,
     houseNumber: null,
     description: null,
@@ -67,6 +68,19 @@ const createMasterSlice = createSlice({
       };
     },
 
+    editAddress: (
+      state,
+      action: PayloadAction<Partial<CreateMasterState['address']>>,
+    ) => {
+      return {
+        ...state,
+        address: {
+          ...state.address,
+          ...action.payload,
+        },
+      };
+    },
+
     toggleSubcategory: (state, action: PayloadAction<SubCategory>) => {
       if (state.subcategories?.find(item => item.id === action.payload.id)) {
         state.subcategories = state.subcategories.filter(
@@ -93,6 +107,7 @@ const createMasterSlice = createSlice({
 export const {
   editCreateMaster,
   editContacts,
+  editAddress,
   toggleSubcategory,
   deleteSubcategory,
 } = createMasterSlice.actions;
