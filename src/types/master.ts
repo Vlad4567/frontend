@@ -29,7 +29,7 @@ export interface ServiceCard {
   photo: string | null;
 }
 
-export interface CreateMaster {
+export interface EditMaster {
   firstName: string | null,
   lastName: string | null,
   contacts: {
@@ -39,11 +39,11 @@ export interface CreateMaster {
     phone: string | null
   },
   address: {
-    cityId: City['id'] | null,
+    city: City | null,
     street: string | null,
     houseNumber: string | null,
     description: string | null
   },
   description: string | null,
-  subcategories: SubCategory['id'][] | null
+  subcategories: SubCategory[] | null
 }
