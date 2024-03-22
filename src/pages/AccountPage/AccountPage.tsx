@@ -1,5 +1,5 @@
 /* eslint-disable jsx-a11y/label-has-associated-control */
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { useIsomorphicLayoutEffect, useMediaQuery } from 'usehooks-ts';
 import {
   NavLink,
@@ -36,6 +36,7 @@ export const AccountPage: React.FC = () => {
     = pathArray[pathArray.findIndex(path => path === 'account') + 1] || '';
   const navigate = useNavigate();
   const isNotPhone = useMediaQuery(`(min-width: ${styleVariables['tablet-min-width']})`);
+  const [isShownTabs, setIsShownTabs] = useState(false);
 
   useEffect(() => {
     if (currentPath === 'account' && isNotPhone) {
@@ -47,7 +48,10 @@ export const AccountPage: React.FC = () => {
     dispatch(appSlice.setShownFooter(false));
 
     getUser()
-      .then(res => dispatch(userSlice.updateUser(res)))
+      .then(res => {
+        dispatch(userSlice.updateUser(res));
+        setIsShownTabs(true);
+      })
       .catch(() => showNotification('error'));
 
     return () => {
@@ -208,13 +212,18 @@ export const AccountPage: React.FC = () => {
           </aside>
         )}
 
-        <div className="account-page__main-content">
-          <h1 className="account-page__main-title">
-            {convertHyphenToSpace(pathAfterAccount)}
-          </h1>
+        {isShownTabs && (
+          <div className="account-page__main-content">
+            <div className="account-page__main-title-wrapper">
+              <h1 className="account-page__main-title">
+                {convertHyphenToSpace(pathAfterAccount)}
+              </h1>
+            </div>
 
-          <Outlet />
-        </div>
+            <Outlet />
+          </div>
+        )}
+
       </div>
     </main>
   );

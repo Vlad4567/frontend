@@ -11,6 +11,8 @@ import { Button } from '../Button/Button';
 import { useAppDispatch, useAppSelector } from '../../app/hooks';
 import * as createMasterSlice from '../../features/createMasterSlice';
 import './EditContacts.scss';
+import { getEditMaster, putEditMaster } from '../../api/master';
+import { showNotification } from '../../helpers/notifications';
 
 const getFormattedInputValue = (value: string) => {
   const digitsOnly = value.replace(/\D/g, '').slice(0, 12);
@@ -43,21 +45,73 @@ const getFormattedInputValue = (value: string) => {
 export const EditContacts: React.FC = () => {
   const navigate = useNavigate();
   const dispatch = useAppDispatch();
-
-  const handleCancel = () => {
-    dispatch(createMasterSlice.editContacts({
-      instagram: null,
-      facebook: null,
-      telegram: null,
-      phone: null,
-    }));
-  };
-
+  const { user } = useAppSelector(state => state.userSlice);
+  const createMaster = useAppSelector(state => state.createMasterSlice);
   const {
-    contacts: {
-      instagram, facebook, telegram, phone,
+    master: {
+      contacts: {
+        instagram, facebook, telegram, phone,
+      },
     },
   } = useAppSelector(state => state.createMasterSlice);
+
+  const handleCancel = () => {
+    if (createMaster.editMode) {
+      dispatch(createMasterSlice.deleteMaster());
+      getEditMaster()
+        .then(res => {
+          dispatch(createMasterSlice.editMaster({
+            firstName: res.firstName,
+            lastName: res.lastName,
+            contacts: {
+              instagram: res.contacts.instagram,
+              facebook: res.contacts.facebook,
+              telegram: res.contacts.telegram,
+              phone: res.contacts.phone,
+            },
+            address: {
+              city: res.address.city,
+              street: res.address.street,
+              houseNumber: res.address.houseNumber,
+              description: res.address.description,
+            },
+            description: res.description,
+            subcategories: res.subcategories,
+          }));
+          dispatch(createMasterSlice.editOptions({
+            hidden: res.hidden,
+            masterId: res.id,
+          }));
+        })
+        .catch(() => showNotification('error'));
+    } else {
+      navigate('..');
+    }
+  };
+
+  const handleSubmit = () => {
+    if (createMaster.editMode) {
+      putEditMaster({
+        ...createMaster.master,
+        address: {
+          ...createMaster.master.address,
+          cityId: createMaster.master.address.city?.id || null,
+        },
+        subcategories:
+          createMaster.master.subcategories?.map(item => item.id) || null,
+      })
+        .then(() => {
+          dispatch(createMasterSlice.editOptions({
+            editMode: false,
+          }));
+        })
+        .catch(() => {
+          showNotification('error');
+        });
+    } else {
+      navigate('../address');
+    }
+  };
 
   const handleSetPhoneValue = (
     e: React.ChangeEvent<HTMLInputElement>,
@@ -69,7 +123,16 @@ export const EditContacts: React.FC = () => {
 
   return (
     <>
-      <form className="edit-contacts__form">
+      <form
+        className="edit-contacts__form"
+        style={
+          user.master && !createMaster.editMode
+            ? {
+              pointerEvents: 'none',
+            }
+            : {}
+        }
+      >
         <h3 className="edit-contacts__title">Contacts</h3>
 
         <div className="edit-contacts__main">
@@ -150,24 +213,26 @@ export const EditContacts: React.FC = () => {
         </div>
       </form>
 
-      <div className="edit-contacts__profile">
+      {(!user.master || (user.master && createMaster.editMode)) && (
+        <div className="edit-contacts__profile">
 
-        <DropDownButton
-          size="large"
-          className="edit-contacts__profile-button"
-          placeholder="Cancel"
-          onClick={handleCancel}
-        />
+          <DropDownButton
+            size="large"
+            className="edit-contacts__profile-button"
+            placeholder="Cancel"
+            onClick={handleCancel}
+          />
 
-        <Button
-          size="small"
-          className="edit-contacts__profile-button"
-          onClick={() => navigate('../address')}
-        >
-          Continue
-        </Button>
+          <Button
+            size="small"
+            className="edit-contacts__profile-button"
+            onClick={handleSubmit}
+          >
+            Continue
+          </Button>
 
-      </div>
+        </div>
+      )}
     </>
   );
 };

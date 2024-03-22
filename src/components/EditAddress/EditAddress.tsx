@@ -13,48 +13,94 @@ import { City } from '../../types/searchPage';
 import './EditAddress.scss';
 import { getCities } from '../../api/searchPage';
 import { showNotification } from '../../helpers/notifications';
-import { createMaster } from '../../api/master';
+import { createMaster, getEditMaster, putEditMaster } from '../../api/master';
+
+type ActiveModal = '' | 'city' | 'cleanMaster';
 
 export const EditAddress: React.FC = () => {
+  const { user } = useAppSelector(state => state.userSlice);
   const navigate = useNavigate();
   const dispatch = useAppDispatch();
   const createMasterState = useAppSelector(state => state.createMasterSlice);
 
-  const { address } = createMasterState;
+  const { address } = createMasterState.master;
 
   const cityListRef = useRef<HTMLUListElement>(null);
   const [cityValue, setCityValue] = useState(address.city?.name || '');
   const [cityList, setCityList] = useState<City[]>([]);
-  const [isShownCityList, setIsShownCityList] = useState(false);
+  const [activeModal, setActiveModal] = useState<ActiveModal>('');
   const debouncedCityValue = useDebounce(cityValue, 500);
 
-  const handleContinue = () => {
-    createMaster({
-      ...createMasterState,
-      address: {
-        ...createMasterState.address,
-        cityId: createMasterState.address.city?.id || null,
-      },
-      subcategories:
-        createMasterState.subcategories?.map(item => item.id) || null,
-    })
-      .then(() => navigate('../gallery'))
-      .catch((e) => {
-        showNotification('error');
-        window.console.dir(e);
-      });
+  const handleSubmit = () => {
+    if (createMasterState.editMode) {
+      putEditMaster({
+        ...createMasterState.master,
+        address: {
+          ...address,
+          cityId: address.city?.id || null,
+        },
+        subcategories:
+        createMasterState.master.subcategories?.map(item => item.id) || null,
+      })
+        .then(() => {
+          dispatch(createMasterSlice.editOptions({
+            editMode: false,
+          }));
+        })
+        .catch(() => {
+          showNotification('error');
+        });
+    } else {
+      createMaster({
+        ...createMasterState.master,
+        address: {
+          ...createMasterState.master.address,
+          cityId: address.city?.id || null,
+        },
+        subcategories:
+        createMasterState.master.subcategories?.map(item => item.id) || null,
+      })
+        .then(() => {
+          if (createMasterState.master.subcategories?.length !== 0) {
+            navigate('../gallery');
+          }
+        })
+        .catch(() => showNotification('error'));
+    }
   };
 
   const handleCancel = () => {
-    dispatch(createMasterSlice.editCreateMaster({
-      address: {
-        street: null,
-        houseNumber: null,
-        description: null,
-        city: null,
-      },
-    }));
-    setCityValue('');
+    if (createMasterState.editMode) {
+      dispatch(createMasterSlice.deleteMaster());
+      getEditMaster()
+        .then(res => {
+          dispatch(createMasterSlice.editMaster({
+            firstName: res.firstName,
+            lastName: res.lastName,
+            contacts: {
+              instagram: res.contacts.instagram,
+              facebook: res.contacts.facebook,
+              telegram: res.contacts.telegram,
+              phone: res.contacts.phone,
+            },
+            address: {
+              city: res.address.city,
+              street: res.address.street,
+              houseNumber: res.address.houseNumber,
+              description: res.address.description,
+            },
+            description: res.description,
+            subcategories: res.subcategories,
+          }));
+          dispatch(createMasterSlice.editOptions({
+            hidden: res.hidden,
+            masterId: res.id,
+          }));
+        })
+        .catch(() => showNotification('error'));
+    } else {
+      navigate('..');
+    }
   };
 
   const handleCityClick = (item: City) => {
@@ -62,12 +108,12 @@ export const EditAddress: React.FC = () => {
       city: item,
     }));
     setCityValue(item.name);
-    setIsShownCityList(false);
+    setActiveModal('');
   };
 
   const handleCityInput = (e: React.ChangeEvent<HTMLInputElement>) => {
     setCityValue(e.target.value);
-    setIsShownCityList(!!e.target.value);
+    setActiveModal(e.target.value ? 'city' : '');
 
     if (!e.target.value) {
       dispatch(createMasterSlice.editAddress({
@@ -87,13 +133,22 @@ export const EditAddress: React.FC = () => {
   }, [debouncedCityValue]);
 
   useOnClickOutside(cityListRef, () => {
-    setCityValue(address.city?.name || '');
-    setIsShownCityList(false);
+    setCityValue(createMasterState.master.address.city?.name || '');
+    setActiveModal('');
   });
 
   return (
     <>
-      <form className="edit-address__form">
+      <form
+        className="edit-address__form"
+        style={
+          user.master && !createMasterState.editMode
+            ? {
+              pointerEvents: 'none',
+            }
+            : {}
+        }
+      >
         <div className="edit-address__header">
           <h3 className="edit-address__title">
             Address
@@ -112,7 +167,7 @@ export const EditAddress: React.FC = () => {
               onChange={handleCityInput}
             />
 
-            {isShownCityList && (
+            {activeModal === 'city' && (
               <ul
                 className="edit-address__inputs-city-list"
                 ref={cityListRef}
@@ -158,22 +213,28 @@ export const EditAddress: React.FC = () => {
         </div>
       </form>
 
-      <div className="edit-address__controls">
-        <DropDownButton
-          placeholder="Cancel"
-          size="large"
-          className="edit-address__controls-button"
-          onClick={handleCancel}
-        />
+      {(!user.master || (user.master && createMasterState.editMode)) && (
+        <div className="edit-address__controls">
+          <DropDownButton
+            placeholder="Cancel"
+            size="large"
+            className="edit-address__controls-button"
+            onClick={handleCancel}
+          />
 
-        <Button
-          size="small"
-          className="edit-address__controls-button"
-          onClick={handleContinue}
-        >
-          Continue
-        </Button>
-      </div>
+          <Button
+            size="small"
+            className="edit-address__controls-button"
+            onClick={handleSubmit}
+          >
+            {
+              createMasterState.master.subcategories?.length !== 0
+                ? 'Continue'
+                : 'Save changes'
+            }
+          </Button>
+        </div>
+      )}
     </>
   );
 };

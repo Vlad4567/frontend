@@ -10,25 +10,61 @@ import * as createMasterSlice from '../../features/createMasterSlice';
 import { ModalCategories } from '../ModalCategories/ModalCategories';
 import { CreateModal } from '../CreateModal/CreateModal';
 import './EditAreaOfWork.scss';
+import {
+  addMasterSubcategory,
+  deleteMasterSubcategory,
+  getEditMaster,
+  putEditMaster,
+} from '../../api/master';
+import { showNotification } from '../../helpers/notifications';
+import { SubCategory } from '../../types/category';
+
+type ActiveModal = '' | 'subcategories' | 'cleanMaster';
 
 export const EditAreaOfWork: React.FC = () => {
-  const dispatch = useAppDispatch();
+  const { user } = useAppSelector(state => state.userSlice);
   const createMaster = useAppSelector(state => state.createMasterSlice);
+  const dispatch = useAppDispatch();
   const navigate = useNavigate();
-  const [isModalCategoriesOpen, setIsModalCategoriesOpen] = useState(false);
+  const [activeModal, setActiveModal] = useState<ActiveModal>('');
   const modalCategoriesRef = useRef<HTMLDivElement>(null);
 
-  const handleOnClickOutside = () => setIsModalCategoriesOpen(false);
+  const handleOnClickOutside = () => setActiveModal('');
 
   useOnClickOutside(modalCategoriesRef, handleOnClickOutside);
 
   const handleCancel = () => {
-    dispatch(createMasterSlice.editCreateMaster({
-      firstName: null,
-      lastName: null,
-      description: null,
-      subcategories: null,
-    }));
+    if (createMaster.editMode) {
+      dispatch(createMasterSlice.deleteMaster());
+      getEditMaster()
+        .then(res => {
+          dispatch(createMasterSlice.editMaster({
+            firstName: res.firstName,
+            lastName: res.lastName,
+            contacts: {
+              instagram: res.contacts.instagram,
+              facebook: res.contacts.facebook,
+              telegram: res.contacts.telegram,
+              phone: res.contacts.phone,
+            },
+            address: {
+              city: res.address.city,
+              street: res.address.street,
+              houseNumber: res.address.houseNumber,
+              description: res.address.description,
+            },
+            description: res.description,
+            subcategories: res.subcategories,
+          }));
+          dispatch(createMasterSlice.editOptions({
+            hidden: res.hidden,
+            masterId: res.id,
+          }));
+        })
+        .catch(() => showNotification('error'));
+    } else {
+      navigate('..');
+    }
   };
 
   const handleInputChange = (
@@ -36,14 +72,73 @@ export const EditAreaOfWork: React.FC = () => {
     | React.ChangeEvent<HTMLInputElement>
     | React.ChangeEvent<HTMLTextAreaElement>,
   ) => {
-    dispatch(createMasterSlice.editCreateMaster({
+    dispatch(createMasterSlice.editMaster({
       [e.target.name]: e.target.value || null,
     }));
   };
 
+  const handleClickSubcategory = (item: SubCategory) => {
+    if (user.master) {
+      if (createMaster.master.subcategories?.find(sub => sub.id === item.id)) {
+        deleteMasterSubcategory(item.id)
+          .then(() => {
+            dispatch(
+              createMasterSlice.toggleSubcategory(item),
+            );
+          })
+          .catch(() => showNotification('error'));
+      } else {
+        addMasterSubcategory(item.id)
+          .then(() => {
+            dispatch(
+              createMasterSlice.toggleSubcategory(item),
+            );
+          })
+          .catch(() => showNotification('error'));
+      }
+    } else {
+      dispatch(
+        createMasterSlice.toggleSubcategory(item),
+      );
+    }
+  };
+
+  const handleSubmit = () => {
+    if (createMaster.editMode) {
+      putEditMaster({
+        ...createMaster.master,
+        address: {
+          ...createMaster.master.address,
+          cityId: createMaster.master.address.city?.id || null,
+        },
+        subcategories:
+          createMaster.master.subcategories?.map(item => item.id) || null,
+      })
+        .then(() => {
+          dispatch(createMasterSlice.editOptions({
+            editMode: false,
+          }));
+        })
+        .catch(() => {
+          showNotification('error');
+        });
+    } else {
+      navigate('../contacts');
+    }
+  };
+
   return (
     <>
-      <form className="edit-area-of-work__form">
+      <form
+        className="edit-area-of-work__form"
+        style={
+          user.master && !createMaster.editMode
+            ? {
+              pointerEvents: 'none',
+            }
+            : {}
+        }
+      >
         <h3 className="edit-area-of-work__title">
           Area of work
         </h3>
@@ -51,7 +146,7 @@ export const EditAreaOfWork: React.FC = () => {
         <div className="edit-area-of-work__name">
           <LoginInput
             title="Name"
-            value={createMaster.firstName || ''}
+            value={createMaster.master.firstName || ''}
             onChange={handleInputChange}
             name="firstName"
             placeholder="Enter name"
@@ -60,7 +155,7 @@ export const EditAreaOfWork: React.FC = () => {
 
           <LoginInput
             title="Surname"
-            value={createMaster.lastName || ''}
+            value={createMaster.master.lastName || ''}
             onChange={handleInputChange}
             name="lastName"
             placeholder="Enter surname"
@@ -73,7 +168,7 @@ export const EditAreaOfWork: React.FC = () => {
             title="About you"
             // eslint-disable-next-line max-len
             placeholder="Enter information about yourself, such as work experience, training certificates, etc."
-            value={createMaster.description || ''}
+            value={createMaster.master.description || ''}
             onChange={handleInputChange}
             name="description"
             className="edit-area-of-work__description-textarea"
@@ -83,7 +178,7 @@ export const EditAreaOfWork: React.FC = () => {
           <div
             className="edit-area-of-work__description-subcategories-wrapper"
           >
-            {createMaster.subcategories && (
+            {createMaster.master.subcategories && (
               <small
                 className="edit-area-of-work__description-subcategories-title"
               >
@@ -91,42 +186,43 @@ export const EditAreaOfWork: React.FC = () => {
               </small>
             )}
             <div className="edit-area-of-work__description-subcategories">
-              {createMaster.subcategories?.map(item => (
+              {createMaster.master.subcategories?.map(item => (
                 <DropDownButton
                   key={item.id}
-                  icon
-                  input
-                  active
+                  icon={!user.master
+                    || (user.master && createMaster.editMode)}
+                  input={!user.master
+                    || (user.master && createMaster.editMode)}
+                  active={!user.master
+                    || (user.master && createMaster.editMode)}
                   size="large"
                   className="edit-area-of-work__description-subcategory"
-                  onClick={() => dispatch(
-                    createMasterSlice.deleteSubcategory(item.id),
-                  )}
+                  onClick={() => handleClickSubcategory(item)}
                 >
                   {item.name}
                 </DropDownButton>
               ))}
+              {(!user.master || (user.master && createMaster.editMode)) && (
+                <DropDownButton
+                  size="large"
+                  placeholder="+ Add area of work"
+                  className="edit-area-of-work__description-add-area-of-work"
+                  onClick={() => setActiveModal('subcategories')}
+                />
+              )}
 
-              <DropDownButton
-                size="large"
-                placeholder="+ Add area of work"
-                className="edit-area-of-work__description-add-area-of-work"
-                onClick={() => setIsModalCategoriesOpen(c => !c)}
-              />
-
-              {isModalCategoriesOpen && (
+              {activeModal === 'subcategories' && (
                 <CreateModal>
                   <ModalCategories
                     subCategoriesStyle="row"
                     onClean={() => dispatch(
                       createMasterSlice
-                        .editCreateMaster({ subcategories: null }),
+                        .editMaster({ subcategories: null }),
                     )}
                     onApply={handleOnClickOutside}
-                    onClickSubcategory={item => dispatch(
-                      createMasterSlice.toggleSubcategory(item),
-                    )}
+                    onClickSubcategory={handleClickSubcategory}
                     activeSubcategories={createMaster
+                      .master
                       .subcategories
                       ?.map(item => item.id) || []}
                     className="edit-area-of-work__description-modal-categories"
@@ -146,22 +242,28 @@ export const EditAreaOfWork: React.FC = () => {
           </div>
         </div>
       </form>
-      <div className="edit-area-of-work__controls">
-        <DropDownButton
-          placeholder="Cancel"
-          size="large"
-          className="edit-area-of-work__controls-button"
-          onClick={handleCancel}
-        />
+      {(!user.master || (user.master && createMaster.editMode)) && (
+        <div className="edit-area-of-work__controls">
+          <DropDownButton
+            placeholder="Cancel"
+            size="large"
+            className="edit-area-of-work__controls-button"
+            onClick={handleCancel}
+          />
 
-        <Button
-          size="small"
-          className="edit-area-of-work__controls-button"
-          onClick={() => navigate('../contacts')}
-        >
-          Continue
-        </Button>
-      </div>
+          <Button
+            size="small"
+            className="edit-area-of-work__controls-button"
+            onClick={handleSubmit}
+          >
+            {
+              createMaster.editMode
+                ? 'Save changes'
+                : 'Continue'
+            }
+          </Button>
+        </div>
+      )}
     </>
   );
 };
