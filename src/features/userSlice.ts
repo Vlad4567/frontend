@@ -37,12 +37,22 @@ const userSlice = createSlice({
         },
       };
     },
+    deleteMaster: (state) => {
+      return {
+        ...state,
+        user: {
+          ...state.user,
+          master: false,
+        },
+      };
+    },
   },
 });
 
 export const {
   updateUser,
   updateProfilePhoto,
+  deleteMaster,
 } = userSlice.actions;
 export default userSlice.reducer;
 

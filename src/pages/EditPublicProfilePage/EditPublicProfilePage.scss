@@ -9,6 +9,25 @@
     gap: 15px;
   }
 
+  &__controls {
+    display: flex;
+    gap: 5px;
+
+    @include mixin.on-tablet {
+      gap: 10px;
+    }
+  }
+
+  &__controls-btn {
+    height: 50px;
+    width: 100%;
+    max-width: 130px;
+
+    &--small {
+      width: 50px;
+    }
+  }
+
   &__nav {
     display: flex;
     align-items: center;

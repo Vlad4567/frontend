@@ -39,6 +39,7 @@
   &__main {
     @include mixin.on-tablet {
       display: flex;
+      justify-content: center;
       gap: 20px;
     }
 
@@ -174,6 +175,12 @@
     @include mixin.on-desktop {
       gap: 30px;
     }
+  }
+
+  &__main-title-wrapper {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
   }
 
   &__main-title {

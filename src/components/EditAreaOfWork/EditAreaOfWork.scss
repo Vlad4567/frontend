@@ -33,6 +33,12 @@
     font-weight: bold;
   }
 
+  &__description-subcategories-wrapper {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+  }
+
   &__description-subcategories {
     display: flex;
     flex-wrap: wrap;
