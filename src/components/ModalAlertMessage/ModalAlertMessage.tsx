@@ -1,6 +1,6 @@
 /* eslint-disable jsx-a11y/no-noninteractive-element-interactions */
 /* eslint-disable jsx-a11y/click-events-have-key-events */
-import React from 'react';
+import React, { forwardRef } from 'react';
 import './ModalAlertMessage.scss';
 import closeIcon from '../../img/icons/icon-dropdown-close.svg';
 import { DropDownButton } from '../DropDownButton/DropDownButton';
@@ -16,7 +16,7 @@ interface Props extends React.HTMLAttributes<HTMLDivElement> {
   onClickSimple?: () => void
 }
 
-export const ModalAlertMessage: React.FC<Props> = ({
+export const ModalAlertMessage = forwardRef<HTMLDivElement, Props>(({
   className = '',
   title = '',
   dangerPlaceholder = '',
@@ -25,9 +25,9 @@ export const ModalAlertMessage: React.FC<Props> = ({
   onClickDanger = () => { },
   onClickSimple = () => { },
   ...rest
-}) => {
+}, ref) => {
   return (
-    <div className={`alert-message ${className}`} {...rest}>
+    <div className={`alert-message ${className}`} ref={ref} {...rest}>
       <div className="alert-message__header">
         <p className="alert-message__description">{title}</p>
         <img
@@ -62,4 +62,4 @@ export const ModalAlertMessage: React.FC<Props> = ({
 
     </div>
   );
-};
+});
