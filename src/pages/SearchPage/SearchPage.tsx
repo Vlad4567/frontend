@@ -24,7 +24,6 @@ import {
   getFilteredServiceCards,
 } from '../../api/searchPage';
 import { ActiveDropDown, City } from '../../types/searchPage';
-import { Pagination } from '../../components/Pagination/Pagination';
 import { getSearchWith } from '../../helpers/functions';
 import * as typesMaster from '../../types/master';
 import { Page, TypeCard, SearchWithParams } from '../../types/main';
@@ -64,6 +63,7 @@ export const SearchPage: React.FC = () => {
   const priceButtonRef = useRef<HTMLButtonElement>(null);
   const sortButtonRef = useRef<HTMLButtonElement>(null);
   const dropDownRef = useRef<HTMLDivElement>(null);
+  const observeRef = useRef<HTMLDivElement>(null);
 
   const setSearchWith = (params: SearchWithParams) => {
     const search = getSearchWith(params, searchParams);
@@ -148,6 +148,9 @@ export const SearchPage: React.FC = () => {
       maxPrice: null,
     });
     setSearchBy(typeUser);
+    setMasterCards(null);
+    setServiceCards(null);
+    setCurrentPage(1);
   };
 
   const handleChooseSubCategory = (
@@ -183,6 +186,18 @@ export const SearchPage: React.FC = () => {
   };
 
   useEffect(() => {
+    const observer = new IntersectionObserver((entries) => {
+      if (entries[0].isIntersecting) {
+        setCurrentPage(prev => prev + 1);
+      }
+    });
+
+    observer.observe(observeRef.current as HTMLDivElement);
+
+    return () => observer.disconnect();
+  }, []);
+
+  useEffect(() => {
     if (debouncedCity) {
       getCities(0, 4, debouncedCity)
         .then(res => setCityList(res.content));
@@ -216,14 +231,24 @@ export const SearchPage: React.FC = () => {
         getFilteredMasterCards(
           currentPage - 1, 16, debouncedSearchParams.toString(),
         )
-          .then(setMasterCards);
+          .then((res) => setMasterCards(c => (c?.content
+            ? {
+              ...res,
+              content: [...c.content, ...res.content],
+            }
+            : res)));
         break;
 
       case 'service':
         getFilteredServiceCards(
           currentPage - 1, 16, debouncedSearchParams.toString(),
         )
-          .then(setServiceCards);
+          .then((res) => setServiceCards(c => (c?.content
+            ? {
+              ...res,
+              content: [...c.content, ...res.content],
+            }
+            : res)));
         break;
 
       default:
@@ -637,18 +662,7 @@ export const SearchPage: React.FC = () => {
         </div>
       )}
 
-      {((searchBy === 'master' && !!masterCards?.content.length)
-        || (searchBy === 'service' && !!serviceCards?.content.length)) && (
-        <Pagination
-          maxLength={7}
-          lastPage={searchBy === 'master'
-            ? (masterCards?.totalPages && masterCards?.totalPages) || 0
-            : (serviceCards?.totalPages && serviceCards?.totalPages) || 0}
-          currentPage={currentPage}
-          setCurrentPage={setCurrentPage}
-        />
-      )}
-
+      <div ref={observeRef} />
     </main>
   );
 };
