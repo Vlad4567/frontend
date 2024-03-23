@@ -1,5 +1,4 @@
 import {
-  HashRouter,
   Navigate,
   Route,
   Routes,
@@ -23,11 +22,13 @@ import { EditPublicProfilePage }
 import { EditAreaOfWork } from './components/EditAreaOfWork/EditAreaOfWork';
 import { EditContacts } from './components/EditContacts/EditContacts';
 import { EditAddress } from './components/EditAddress/EditAddress';
+import { AppRouter } from './AppRouter';
+import { browserHistory } from './utils/history';
 
 export const Router = () => {
   return (
     <Provider store={store}>
-      <HashRouter>
+      <AppRouter history={browserHistory}>
         <Routes>
           <Route path="/" element={<App />}>
             <Route index element={<HomePage />} />
@@ -62,7 +63,7 @@ export const Router = () => {
             <Route path="*" element={<NotFoundPage />} />
           </Route>
         </Routes>
-      </HashRouter>
+      </AppRouter>
     </Provider>
   );
 };
