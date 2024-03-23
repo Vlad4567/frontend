@@ -228,7 +228,11 @@ export const EditContacts: React.FC = () => {
             className="edit-contacts__profile-button"
             onClick={handleSubmit}
           >
-            Continue
+            {
+              createMaster.editMode
+                ? 'Save changes'
+                : 'Continue'
+            }
           </Button>
 
         </div>

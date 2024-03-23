@@ -59,11 +59,6 @@ export const AccountPage: React.FC = () => {
     };
   }, []);
 
-  const logOut = () => {
-    localStorage.removeItem('token');
-    localStorage.removeItem('refreshToken');
-  };
-
   const handleAvatarChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const avatarFile = e.target.files?.item(0);
 
@@ -85,8 +80,6 @@ export const AccountPage: React.FC = () => {
   const handleTerminateSessions = () => {
     deleteRefreshToken()
       .then(() => {
-        localStorage.removeItem('token');
-        localStorage.removeItem('refreshToken');
         navigate('/login');
       })
       .catch(() => showNotification('error'));
@@ -191,7 +184,6 @@ export const AccountPage: React.FC = () => {
               <NavLink
                 to="/login"
                 className="account-page__menu-log-out-link"
-                onClick={logOut}
               >
                 <DropDownButton
                   className="account-page__menu-log-out"

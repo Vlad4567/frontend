@@ -70,7 +70,8 @@ export const LoginPage: React.FC = () => {
 
   useIsomorphicLayoutEffect(() => {
     if (token || refreshToken) {
-      navigate('/account', { replace: true });
+      localStorage.removeItem('token');
+      localStorage.removeItem('refreshToken');
     }
   }, []);
 

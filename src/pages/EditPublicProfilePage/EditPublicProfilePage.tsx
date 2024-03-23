@@ -1,8 +1,9 @@
-import { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { NavLink, Outlet, useNavigate } from 'react-router-dom';
 import classNames from 'classnames';
 import { createPortal } from 'react-dom';
 import { useMediaQuery, useOnClickOutside } from 'usehooks-ts';
+import { Transition } from 'history';
 import { convertSpaceToHyphen }
   from '../../helpers/functions';
 import { DropDownButton } from '../../components/DropDownButton/DropDownButton';
@@ -12,6 +13,7 @@ import {
   deleteMaster,
   getEditMaster,
   hideMaster,
+  putEditMaster,
   unhideMaster,
 } from '../../api/master';
 import { showNotification } from '../../helpers/notifications';
@@ -23,11 +25,12 @@ import { ModalAlertMessage }
   from '../../components/ModalAlertMessage/ModalAlertMessage';
 import * as userSlice from '../../features/userSlice';
 import './EditPublicProfilePage.scss';
+import { browserHistory } from '../../utils/history';
 
 const navButtons
   = ['Area of work', 'Contacts', 'Address', 'Gallery', 'Services'];
 
-type ActiveModal = '' | 'deleteMaster' | 'hideMaster';
+type ActiveModal = '' | 'deleteMaster' | 'hideMaster' | 'blockedURL';
 
 export const EditPublicProfilePage: React.FC = () => {
   const { user } = useAppSelector(state => state.userSlice);
@@ -36,14 +39,60 @@ export const EditPublicProfilePage: React.FC = () => {
   const navigate = useNavigate();
   const isDesktop = useMediaQuery(`(min-width: ${styleVariables['desktop-min-width']})`);
   const [activeNavButton, setActiveNavButton] = useState(navButtons[0]);
+  const [activeModal, setActiveModal] = useState<ActiveModal>('');
+  const [isBlockedURL, setIsBlockedURL] = useState(true);
+  const [browserBlock, setBrowserBlock]
+    = useState<Generator<undefined, void, unknown> | null>(null);
   const accountContentTitle
     = document.querySelector('.account-page__main-title-wrapper');
-  const [activeModal, setActiveModal] = useState<ActiveModal>('');
   const alertRef = useRef<HTMLDivElement>(null);
 
   useOnClickOutside(alertRef, () => {
     setActiveModal('');
   });
+
+  const createBrowserBlock = (tx: Transition, unblock: () => void) => {
+    const saveTx = tx;
+    const saveUnBlock = unblock;
+
+    // eslint-disable-next-line generator-star-spacing, func-names
+    return function*() {
+      setActiveModal('blockedURL');
+      yield;
+      saveUnBlock();
+      saveTx.retry();
+    };
+  };
+
+  useEffect(() => {
+    if (browserBlock) {
+      browserBlock.next();
+    }
+  }, [browserBlock]);
+
+  useEffect(() => {
+    if (!isBlockedURL && browserBlock) {
+      browserBlock.next();
+    }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [isBlockedURL]);
+
+  useEffect(() => {
+    let unblock: () => void | undefined;
+
+    if (createMaster.editMode) {
+      unblock = browserHistory
+        .block((tx) => {
+          setBrowserBlock(createBrowserBlock(tx, unblock));
+        });
+    }
+
+    return () => {
+      if (unblock) {
+        unblock();
+      }
+    };
+  }, [createMaster.editMode]);
 
   useEffect(() => {
     if (user.master) {
@@ -138,8 +187,47 @@ export const EditPublicProfilePage: React.FC = () => {
     }));
   };
 
+  const handleSaveChanges = () => {
+    putEditMaster({
+      ...createMaster.master,
+      address: {
+        ...createMaster.master.address,
+        cityId: createMaster.master.address.city?.id || null,
+      },
+      subcategories:
+        createMaster.master.subcategories?.map(item => item.id) || null,
+    })
+      .then(() => {
+        dispatch(createMasterSlice.editOptions({
+          editMode: false,
+        }));
+        setIsBlockedURL(false);
+        setActiveModal('');
+      })
+      .catch(() => {
+        showNotification('error');
+      });
+  };
+
+  const handleDeleteChanges = () => {
+    setIsBlockedURL(false);
+  };
+
   return (
     <div className="edit-public-profile-page">
+      {activeModal === 'blockedURL' && (
+        <CreateModal>
+          <ModalAlertMessage
+            ref={alertRef}
+            title="If you cancel editing, all changes will not be saved"
+            dangerPlaceholder="Save changes"
+            simplePlaceholder="Cancel"
+            onClickDanger={handleSaveChanges}
+            onClickSimple={handleDeleteChanges}
+            onClose={() => setActiveModal('')}
+          />
+        </CreateModal>
+      )}
       {accountContentTitle && user.master && createPortal(
         <div className="edit-public-profile-page__controls">
           <DropDownButton
@@ -209,13 +297,12 @@ export const EditPublicProfilePage: React.FC = () => {
       )}
       <nav className="edit-public-profile-page__nav">
         {navButtons.map((button, index) => (
-          <>
+          <React.Fragment key={button}>
             <NavLink
               className={({ isActive }) => {
                 return setNavLinkClassName(isActive, button);
               }}
               to={`./${convertSpaceToHyphen(button)}`}
-              key={button}
               style={(!user.master && index > 2)
                 || (user.master
                     && createMaster.master.subcategories?.length === 0
@@ -233,7 +320,7 @@ export const EditPublicProfilePage: React.FC = () => {
             {navButtons.length - 2 >= index && (
               <hr className="edit-public-profile-page__nav-hr" />
             )}
-          </>
+          </React.Fragment>
         ))}
       </nav>
 

@@ -229,6 +229,7 @@ export const EditAddress: React.FC = () => {
           >
             {
               createMasterState.master.subcategories?.length !== 0
+                || createMasterState.editMode
                 ? 'Continue'
                 : 'Save changes'
             }
