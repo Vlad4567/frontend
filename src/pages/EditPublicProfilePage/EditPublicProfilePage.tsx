@@ -43,6 +43,7 @@ export const EditPublicProfilePage: React.FC = () => {
   const [isBlockedURL, setIsBlockedURL] = useState(true);
   const [browserBlock, setBrowserBlock]
     = useState<Generator<undefined, void, unknown> | null>(null);
+  const [isEditFormShown, setIsEditFormShown] = useState(false);
   const accountContentTitle
     = document.querySelector('.account-page__main-title-wrapper');
   const alertRef = useRef<HTMLDivElement>(null);
@@ -120,6 +121,7 @@ export const EditPublicProfilePage: React.FC = () => {
             hidden: res.hidden,
             masterId: res.id,
           }));
+          setIsEditFormShown(true);
         })
         .catch(() => showNotification('error'));
     }
@@ -324,7 +326,10 @@ export const EditPublicProfilePage: React.FC = () => {
         ))}
       </nav>
 
-      <Outlet />
+      {isEditFormShown && (
+        <Outlet />
+      )}
+
     </div>
   );
 };
