@@ -1,14 +1,15 @@
 import { useNavigate } from 'react-router-dom';
 import SwiperCore from 'swiper';
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { Swiper, SwiperSlide } from 'swiper/react';
 import { ButtonWithArrow } from '../ButtonWithArrow/ButtonWithArrow';
 import 'swiper/scss';
-import './FeelBeautySection.scss';
 import { ArrowButton } from '../ArrowButton/ArrowButton';
-import { getMasterCard } from '../../api/master';
+import { getRatingMasterCard } from '../../api/master';
 import { MasterCard } from '../MasterCard/MasterCard';
 import * as types from '../../types/master';
+import { showNotification } from '../../helpers/notifications';
+import './FeelBeautySection.scss';
 
 interface Props {
   className?: string
@@ -18,6 +19,7 @@ export const FeelBeautySection: React.FC<Props> = ({ className = '' }) => {
   const navigate = useNavigate();
   const [swiperRef, setSwiperRef] = useState<SwiperCore | null>(null);
   const [masterCards, setMasterCards] = useState<types.MasterCard[]>([]);
+  const [masterCardsPage, setMasterCardsPage] = useState(0);
 
   const handleNext = () => {
     if (swiperRef) {
@@ -31,10 +33,14 @@ export const FeelBeautySection: React.FC<Props> = ({ className = '' }) => {
     }
   };
 
-  useEffect(() => {
-    getMasterCard(0, 20)
-      .then((response) => setMasterCards(response.content));
-  }, []);
+  const loadMasterCards = () => {
+    getRatingMasterCard(masterCardsPage, 20)
+      .then((response) => setMasterCards(c => (c.length
+        ? [...c, ...response.content]
+        : response.content)))
+      .catch(() => showNotification('error'));
+    setMasterCardsPage(c => c + 1);
+  };
 
   return (
     <section className={`feel-beauty ${className}`}>
@@ -59,6 +65,7 @@ export const FeelBeautySection: React.FC<Props> = ({ className = '' }) => {
           className="feel-beauty__swiper-slides"
           spaceBetween="30px"
           slidesPerView="auto"
+          onReachEnd={loadMasterCards}
         >
           {masterCards.map((card) => (
             <SwiperSlide

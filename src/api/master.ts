@@ -3,10 +3,32 @@ import { Page } from '../types/main';
 import { EditMaster, MasterCard } from '../types/master';
 import { City } from '../types/searchPage';
 import { client } from '../utils/axiosClient';
+import { downloadPhoto } from './account';
 
-export const getMasterCard = (pageNumber: number, pageSize: number) => {
-  return client.get<Page<MasterCard>>(`/masterSortByRating?pageNumber=${pageNumber}&pageSize=${pageSize}`);
-};
+export const getRatingMasterCard
+  = async (pageNumber: number, pageSize: number) => {
+    const masterCards = await client.get<Page<MasterCard>>(
+      `/masterSortByRating?pageNumber=${pageNumber}&pageSize=${pageSize}`,
+    );
+
+    const masterCardsWithRating = await Promise.all(
+      masterCards.content.map(async (masterCard) => {
+        if (masterCard.mainPhoto) {
+          const photo = await downloadPhoto(masterCard.mainPhoto);
+
+          // eslint-disable-next-line no-param-reassign
+          masterCard.mainPhoto = URL.createObjectURL(new Blob([photo]));
+        }
+
+        return masterCard;
+      }),
+    );
+
+    return {
+      ...masterCards,
+      content: masterCardsWithRating,
+    };
+  };
 
 interface CreateMaster extends Omit<EditMaster, 'address' | 'subcategories'> {
   address: {
