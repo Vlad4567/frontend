@@ -7,6 +7,7 @@ interface Props extends React.TextareaHTMLAttributes<HTMLTextAreaElement> {
   placeholder?: string
   autoGrow?: boolean
   title?: string
+  errorText?: string
 }
 
 export const Textarea: React.FC<Props> = ({
@@ -14,6 +15,7 @@ export const Textarea: React.FC<Props> = ({
   placeholder = '',
   autoGrow = false,
   title = '',
+  errorText = '',
   ...rest
 }) => {
   return (
@@ -33,6 +35,13 @@ export const Textarea: React.FC<Props> = ({
         } : undefined}
         {...rest}
       />
+
+      {errorText && (
+        <small className="textarea__error">
+          <span className="textarea__error-icon">!</span>
+          {errorText}
+        </small>
+      )}
     </div>
   );
 };

@@ -29,4 +29,22 @@
       border: mixin.$line-width solid mixin.$gray10;
     }
   }
+
+  &__error {
+    display: flex;
+    gap: 5px;
+  }
+
+  &__error-icon {
+    height: 15px;
+    min-width: 15px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+
+    color: mixin.$gray100;
+    background-color: mixin.$primary100;
+    border-radius: 50%;
+  }
 }

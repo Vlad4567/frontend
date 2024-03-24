@@ -1,10 +1,27 @@
+import { useRef, useState } from 'react';
+import { useOnClickOutside } from 'usehooks-ts';
 import { Link } from 'react-router-dom';
-import './Footer.scss';
 import { RectangleButton } from '../RectangleButton/RectangleButton';
 import { websiteName } from '../../helpers/variables';
 import { ScrollUpButton } from '../ScrollUpButton/ScrollUpButton';
+import { ModalContactUs } from '../ModalContactUs/ModalContactUs';
+import { CreateModal } from '../CreateModal/CreateModal';
+import './Footer.scss';
+
+type Modal = 'contactUs';
 
 export const Footer: React.FC = () => {
+  const [modal, setModal] = useState<Modal | ''>('');
+  const modalRef = useRef<HTMLFormElement>(null);
+
+  const handleClickOutside = () => {
+    setModal('');
+  };
+
+  useOnClickOutside<HTMLFormElement>([
+    modalRef,
+  ], handleClickOutside);
+
   return (
     <footer className="footer">
       <div className="footer__block">
@@ -13,17 +30,27 @@ export const Footer: React.FC = () => {
             Feel free to reach our if you want to collaborate with us or
             simply have a chat
           </p>
-          <Link
-            className="footer__contact-us-button-link"
-            to="contacts"
-          >
+          <>
             <RectangleButton
               className="footer__contact-us-button"
               type="dark"
+              onClick={() => setModal('contactUs')}
             >
               Contact us
             </RectangleButton>
-          </Link>
+
+            {modal && (
+              <CreateModal>
+                <ModalContactUs
+                  className="footer__contact-us-modal"
+                  onClose={() => setModal('')}
+                  ref={modalRef}
+                />
+              </CreateModal>
+            )}
+
+          </>
+
         </div>
 
         <article className="footer__contacts">
