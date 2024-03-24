@@ -1,7 +1,8 @@
 import classNames from 'classnames';
 import './RectangleButton.scss';
 
-interface Props {
+interface Props
+  extends Omit<React.ButtonHTMLAttributes<HTMLButtonElement>, 'type'> {
   children: React.ReactNode;
   className?: string;
   type: 'light' | 'dark';
@@ -13,6 +14,7 @@ export const RectangleButton: React.FC<Props> = ({
   className = '',
   type,
   active = false,
+  ...rest
 }) => {
   return (
     <button
@@ -23,6 +25,7 @@ export const RectangleButton: React.FC<Props> = ({
           [`rectangle-button--${type}-active`]: active,
         },
       )}
+      {...rest}
     >
       <div className="rectangle-button__first-rectangle" />
       <div className="rectangle-button__second-rectangle" />
