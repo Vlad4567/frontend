@@ -1,0 +1,40 @@
+@use '../../styles/mixin.scss' as mixin;
+
+.contact-us {
+  max-width: 640px;
+  padding: 20px;
+  border-radius: 30px;
+  display: flex;
+  gap: 20px;
+  flex-direction: column;
+  background-color: mixin.$gray100;
+
+  @include mixin.on-tablet {
+    padding: 40px;
+  }
+
+  &__header {
+    display: flex;
+    justify-content: space-between;
+  }
+
+  &__header-close-icon {
+    height: 15px;
+    width: 15px;
+    cursor: pointer;
+  }
+
+  &__form-button {
+    width: 100%;
+    background-color: mixin.$gray10;
+
+    &:hover {
+      background-color: mixin.$primary100;
+    }
+  }
+
+  &__form-button--disabled {
+    background-color: mixin.$gray30;
+    pointer-events: none;
+  }
+}
