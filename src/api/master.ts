@@ -1,6 +1,6 @@
 import { SubCategory } from '../types/category';
 import { Page } from '../types/main';
-import { EditMaster, MasterCard } from '../types/master';
+import { EditMaster, MasterCard, PublicMaster } from '../types/master';
 import { City } from '../types/searchPage';
 import { client } from '../utils/axiosClient';
 import { downloadPhoto } from './account';
@@ -48,6 +48,10 @@ interface GetEditMaster extends EditMaster {
   hidden: boolean
   id: number
 }
+
+export const getMaster = (id: number) => {
+  return client.get<PublicMaster>(`/master/${id}`);
+};
 
 export const getEditMaster = () => {
   return client.get<GetEditMaster>('/master');
