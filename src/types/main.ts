@@ -32,6 +32,6 @@ export interface Notification {
 
 export type SearchWithParam = string | number;
 
-export type SearchWithParams = {
+export interface SearchWithParams {
   [key: string]: SearchWithParam[] | SearchWithParam | null;
-};
+}
