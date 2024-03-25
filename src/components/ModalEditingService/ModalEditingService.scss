@@ -1,0 +1,87 @@
+@use '../../styles/mixin.scss' as mixin;
+
+.modal-editing-service {
+  padding: 20px;
+  max-width: 335px;
+
+  z-index: 10000;
+
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+
+  background-color: mixin.$gray100;
+  border-radius: 30px;
+  box-shadow: -1px 4px 15px 0 rgba(0, 0, 0, 0.25);
+
+  &__header {
+    display: flex;
+    justify-content: space-between;
+  }
+
+  &__title {
+    color: mixin.$gray15;
+  }
+
+  &__wrapper {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+
+  &__add-photo:is(.modal-editing-service__add-photo) {
+    background-color: mixin.$pink;
+    border: none;
+    height: 85px;
+    min-width: 85px;
+  }
+
+  &__wrapper-selected-photo {
+    display: flex;
+    gap: 10px;
+  }
+
+  &__selected-photo {
+    width: 85px;
+    height: 85px;
+    border-radius: 20px;
+    object-fit: cover;
+  }
+
+  &__wrapper-buttons {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+    flex: 1;
+  }
+
+  &__delete-photo {
+    gap: 5px;
+  }
+
+  &__replace-photo {
+    border: none;
+    background-color: mixin.$pink;
+    gap: 5px;
+  }
+
+  &__dropdown-plus-icon {
+    height: 20px;
+    width: 20px;
+  }
+
+  &__close-icon {
+    cursor: pointer;
+  }
+
+  &__dropdown-hr {
+    width: 100%;
+    border: none;
+    height: mixin.$line-width;
+    background-color: mixin.$gray70;
+  }
+
+  &__apply {
+    width: 100%;
+  }
+}
