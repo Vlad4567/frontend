@@ -47,3 +47,23 @@ export interface EditMaster {
   description: string | null,
   subcategories: SubCategory[] | null
 }
+
+export interface PublicMaster extends Omit<EditMaster, 'address'> {
+  id: number
+  address: {
+    city: string | null
+    street: string | null
+    houseNumber: string | null
+    description: string | null
+  },
+  rating: number | null
+  mainPhoto: string | null
+  statistics: {
+    count1: number
+    count2: number
+    count3: number
+    count4: number
+    count5: number
+  }
+  hidden: boolean;
+}
