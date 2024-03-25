@@ -165,3 +165,32 @@ export const convertSpaceToHyphen = (str: string) => {
     .map(word => word.toLowerCase())
     .join('-');
 };
+
+type ModifyPhotoNameKeys
+  = 'Gallery' | 'Category' | 'Blur' | 'Main' | 'MainMini';
+
+export const modifyPhotoName = (name: string, key: ModifyPhotoNameKeys) => {
+  const dotIndex = name.lastIndexOf('.');
+
+  if (dotIndex !== -1) {
+    const baseName = name.substring(0, dotIndex);
+    const extension = name.substring(dotIndex);
+
+    switch (key) {
+      case 'Gallery':
+        return `${baseName}G${extension}`;
+      case 'Category':
+        return `${baseName}C${extension}`;
+      case 'Blur':
+        return `${baseName}B${extension}`;
+      case 'Main':
+        return `${baseName}M${extension}`;
+      case 'MainMini':
+        return `${baseName}Mm${extension}`;
+      default:
+        return name;
+    }
+  }
+
+  return name;
+};
