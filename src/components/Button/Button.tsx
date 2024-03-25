@@ -16,6 +16,7 @@ export const Button: React.FC<Props> = ({
 }) => {
   return (
     <button
+      type="button"
       className={`button button--${size} ${className}`}
       {...rest}
     >
