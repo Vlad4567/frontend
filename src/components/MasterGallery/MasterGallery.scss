@@ -1,0 +1,271 @@
+@use '../../styles/mixin.scss' as mixin;
+
+.master-gallery {
+  padding: 30px;
+  height: fit-content;
+
+  z-index: 10000;
+
+  display: flex;
+  justify-content: flex-start;
+  flex-direction: column;
+  gap: 20px;
+
+  background-color: mixin.$gray100;
+  border-radius: 30px;
+  box-shadow: -1px 4px 15px 0 rgba(0, 0, 0, 0.25);
+
+  @include mixin.on-tablet {
+    padding: 40px;
+    border-radius: 40px;
+    gap: 20px;
+  }
+  @include mixin.on-desktop {
+    gap: 30px;
+    max-width: 928px;
+  }
+
+  &__header {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  &__header--edit-profile {
+    @include mixin.on-desktop {
+      flex-direction: row;
+      justify-content: space-between;
+    }
+  }
+
+  &__header--service {
+    @include mixin.on-desktop {
+      justify-content: space-between;
+    }
+  }
+
+  &__block {
+    display: flex;
+    justify-content: space-between;
+  }
+
+  &__close-icon {
+    cursor: pointer;
+
+    @include mixin.on-desktop {
+      height: 25px;
+      width: 25px;
+    }
+  }
+
+  &__description {
+    font-weight: 700;
+    color: mixin.$gray30;
+  }
+
+  &__main {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+
+    @include mixin.on-desktop {
+      gap: 15px;
+    }
+  }
+
+  &__list {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+
+    gap: 10px;
+
+    @include mixin.on-tablet {
+      grid-template-columns: repeat(3, 1fr);
+    }
+
+    @include mixin.on-desktop {
+      grid-template-columns: repeat(7, 1fr);
+      gap: 15px;
+
+      & :nth-child(6n + 1) {
+        aspect-ratio: 1 / 0.65;
+        grid-column: 1 / 4;
+      }
+
+      & :nth-child(6n + 2) {
+        aspect-ratio: 1;
+        grid-column: 4 / 6;
+      }
+
+      & :nth-child(6n + 3) {
+        aspect-ratio: 1;
+        grid-column: 6 / -1;
+      }
+
+      & :nth-child(6n + 4) {
+        grid-column: 1 / 3;
+        aspect-ratio: 1;
+      }
+
+      & :nth-child(6n + 5) {
+        aspect-ratio: 1;
+        grid-column: 3 / 5;
+      }
+
+      & :nth-child(6n + 6) {
+        aspect-ratio: 1 / 0.65;
+        grid-column: 5 / -1;
+      }
+    }
+  }
+
+  &__list-item {
+    position: relative;
+  }
+
+  &__list-photo {
+    height: 100%;
+    width: 100%;
+    object-fit: cover;
+    border-radius: 30px;
+    aspect-ratio: 1;
+
+    &--active {
+      border: 6px solid mixin.$primary100;
+      animation: 1.5s pulse infinite;
+    }
+
+    &--hover {
+      &:hover {
+        cursor: pointer;
+        animation: 1s pulse infinite;
+      }
+    }
+  }
+
+  &__list-delete {
+    height: 40px;
+    width: 40px;
+    border-radius: 50%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: mixin.$gray100;
+    position: absolute;
+    z-index: 1;
+    top: 5%;
+    right: 5%;
+    transition: mixin.$effect-duration;
+
+    &:hover {
+      cursor: pointer;
+      animation: mixin.$effect-duration basket-shake infinite;
+      background-color: mixin.$pink;
+    }
+
+    &:active {
+      background-color: mixin.$secondary-pink;
+    }
+  }
+
+  &__icon-basket {
+    @include mixin.on-desktop {
+      height: 20px;
+      width: 20px;
+    }
+  }
+
+  &__switch-buttons {
+    width: auto;
+  }
+
+  &__footer {
+    display: flex;
+    flex-wrap: wrap-reverse;
+    justify-content: center;
+    gap: 10px;
+  }
+
+  &__footer-button {
+    flex: auto;
+  }
+
+  &__profile {
+    display: flex;
+    flex-wrap: nowrap;
+    justify-content: flex-end;
+    gap: 10px;
+  }
+
+  &__profile-button {
+    width: 100%;
+
+    @include mixin.on-desktop {
+      width: 20%;
+    }
+  }
+
+  &__gallery {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+
+    @include mixin.on-desktop {
+      flex-direction: row-reverse;
+    }
+  }
+
+  &__gallery-field {
+    cursor: pointer;
+    opacity: 0;
+    position: absolute;
+    inset: 0;
+  }
+
+  &__gallery-button {
+    background-color: mixin.$pink;
+    border: none;
+    flex: auto;
+    gap: 10px;
+    position: relative;
+
+    @include mixin.on-tablet {
+      width: auto;
+      flex: none;
+    }
+  }
+
+  &__gallery-button-active {
+    border: mixin.$line-width solid mixin.$gray10;
+  }
+}
+
+@keyframes basket-shake {
+  0% {
+    transform: rotate(0deg);
+  }
+  25% {
+    transform: rotate(6deg);
+  }
+  50% {
+    transform: rotate(0deg);
+  }
+  75% {
+    transform: rotate(-6deg);
+  }
+  100% {
+    transform: rotate(0deg);
+  }
+}
+
+@keyframes pulse {
+  0% {
+    box-shadow: 0 0 0 0 rgba(255, 75, 75, 1);
+  }
+  80% {
+    box-shadow: 0 0 0 11px rgba(255, 75, 75, 0);
+  }
+  100% {
+    box-shadow: 0 0 0 0 rgba(255, 75, 75, 0);
+  }
+}
