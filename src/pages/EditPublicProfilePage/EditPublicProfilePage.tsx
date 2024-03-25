@@ -1,5 +1,10 @@
 import React, { useEffect, useRef, useState } from 'react';
-import { NavLink, Outlet, useNavigate } from 'react-router-dom';
+import {
+  NavLink,
+  Outlet,
+  useLocation,
+  useNavigate,
+} from 'react-router-dom';
 import classNames from 'classnames';
 import { createPortal } from 'react-dom';
 import { useMediaQuery, useOnClickOutside } from 'usehooks-ts';
@@ -47,6 +52,10 @@ export const EditPublicProfilePage: React.FC = () => {
   const accountContentTitle
     = document.querySelector('.account-page__main-title-wrapper');
   const alertRef = useRef<HTMLDivElement>(null);
+  const pathArray = useLocation().pathname.split('/');
+  const pathAfterEditPublicProfile
+    = pathArray[pathArray
+      .findIndex(path => path === 'edit-public-profile') + 1] || '';
 
   useOnClickOutside(alertRef, () => {
     setActiveModal('');
@@ -212,7 +221,11 @@ export const EditPublicProfilePage: React.FC = () => {
   };
 
   const handleDeleteChanges = () => {
+    dispatch(createMasterSlice.editOptions({
+      editMode: false,
+    }));
     setIsBlockedURL(false);
+    setActiveModal('');
   };
 
   return (
@@ -230,7 +243,11 @@ export const EditPublicProfilePage: React.FC = () => {
           />
         </CreateModal>
       )}
-      {accountContentTitle && user.master && createPortal(
+      {accountContentTitle
+      && user.master
+      && pathAfterEditPublicProfile !== 'gallery'
+      && pathAfterEditPublicProfile !== 'services'
+      && createPortal(
         <div className="edit-public-profile-page__controls">
           <DropDownButton
             // eslint-disable-next-line max-len
