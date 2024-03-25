@@ -1,18 +1,17 @@
 @use '../../styles/mixin.scss' as mixin;
 
 .switch-buttons {
-  width: fit-content;
-  height: 50px;
+  height: fit-content;
 
   display: flex;
   flex-wrap: wrap;
+  border-radius: 100px;
+  border: mixin.$line-width solid mixin.$gray10;
+  overflow: hidden;
 
-  &--small {
-    height: 40px;
-  }
-
-  &__button, &__small {
-    height: 100%;
+  &__button {
+    min-height: 50px;
+    height: auto;
     padding-inline: 10px;
 
     display: flex;
@@ -36,36 +35,17 @@
     line-height: 24px;
   }
 
-  &__small {
-    font-size: 24px;
-    line-height: 28px;
-    width: 47px;
-  }
-
-
-  &__button:first-of-type, &__small:first-of-type {
-    border-radius: 100px 0 0 100px;
-  }
-
-  &__button:last-of-type, &__small:last-of-type {
-    border-radius: 0 100px 100px 0;
-  }
-
-  &__button:nth-of-type(n + 2), &__small:nth-of-type(n + 2) {
-    border-left: none;
-  }
-
   &__button--active {
     background-color: mixin.$gray10;
     color: mixin.$gray100;
   }
 
-  &__button:hover, &__small:hover {
+  &__button:hover {
     background-color: mixin.$pink;
     transition: mixin.$effect-duration;
   }
 
-  &__button:active, &__small:active {
+  &__button:active{
     background-color: mixin.$secondary-pink;
   }
 
