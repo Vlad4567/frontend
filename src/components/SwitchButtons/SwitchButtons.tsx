@@ -1,76 +1,43 @@
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 import classNames from 'classnames';
 import './SwitchButtons.scss';
+import { SubCategory } from '../../types/category';
 
-interface Props {
+interface Props extends React.HTMLAttributes<HTMLDivElement> {
   className?: string,
-  size: 'large' | 'small',
-  onClick?: (
-    event: React.MouseEvent<HTMLButtonElement, MouseEvent>,
-    button: string,
+  onClickButton: (
+    e: React.MouseEvent<HTMLButtonElement, MouseEvent>,
+    button: SubCategory
   ) => void,
-  onChange: (activeButton: string) => void
-  buttons: string[],
+  buttons: SubCategory[],
+  activeButton: SubCategory,
 }
 
-export const SwitchButtons: React.FC<Props> = ({
-  buttons,
+export const SwitchButtons: React.FC<Props> = React.memo(({
   className = '',
-  size,
-  onClick = () => { },
-  onChange = () => { },
+  buttons,
+  activeButton,
+  onClickButton = () => { },
+  ...rest
 }) => {
-  const [activeButton, setActiveButton] = useState(buttons[0]);
-
-  useEffect(() => {
-    onChange(activeButton);
-  }, [activeButton, onChange]);
-
-  const handleButtonOnClick = (
-    event: React.MouseEvent<HTMLButtonElement, MouseEvent>,
-    button: string,
-  ) => {
-    setActiveButton(button);
-    onClick(event, button);
-  };
-
   return (
-    <div className={classNames('switch-buttons', {
-      'switch-buttons--small': size === 'small',
-      className,
-    })}
+    <div
+      className={`switch-buttons ${className}`}
+      {...rest}
     >
-      {size === 'large' ? (
-        buttons.map(button => (
-          <button
-            className={classNames('switch-buttons__button', {
-              'switch-buttons__button--active': activeButton === button,
-            })}
-            type="button"
-            key={button}
-            onClick={(e) => handleButtonOnClick(e, button)}
-          >
-            {button}
-          </button>
-        ))
-      ) : (
-        <>
-          <button
-            className="switch-buttons__small"
-            type="button"
-            onClick={(e) => handleButtonOnClick(e, 'decrease')}
-          >
-            -
-          </button>
-          <button
-            className="switch-buttons__small"
-            type="button"
-            onClick={(e) => handleButtonOnClick(e, 'increase')}
-          >
-            +
-          </button>
-        </>
-      )}
+
+      {buttons.map(button => (
+        <button
+          className={classNames('switch-buttons__button', {
+            'switch-buttons__button--active': activeButton.id === button.id,
+          })}
+          type="button"
+          key={button.id}
+          onClick={(e) => onClickButton(e, button)}
+        >
+          {button.name}
+        </button>
+      ))}
     </div>
   );
-};
+});

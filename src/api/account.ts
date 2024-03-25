@@ -1,8 +1,10 @@
+import { AxiosRequestConfig } from 'axios';
 import { PasswordData, UserData } from '../types/account';
 import { client } from '../utils/axiosClient';
 
-export const downloadPhoto = (photo: string) => {
+export const downloadPhoto = (photo: string, config?: AxiosRequestConfig) => {
   return client.get<ArrayBuffer>(`/photo/download?file=${photo}`, {
+    ...config,
     responseType: 'arraybuffer',
   });
 };

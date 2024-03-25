@@ -22,8 +22,10 @@ import { EditPublicProfilePage }
 import { EditAreaOfWork } from './components/EditAreaOfWork/EditAreaOfWork';
 import { EditContacts } from './components/EditContacts/EditContacts';
 import { EditAddress } from './components/EditAddress/EditAddress';
-import { AppRouter } from './AppRouter';
+import { MasterGallery }
+  from './components/MasterGallery/MasterGallery';
 import { browserHistory } from './utils/history';
+import { AppRouter } from './AppRouter';
 
 export const Router = () => {
   return (
@@ -58,6 +60,7 @@ export const Router = () => {
                 <Route path="area-of-work" element={<EditAreaOfWork />} />
                 <Route path="contacts" element={<EditContacts />} />
                 <Route path="address" element={<EditAddress />} />
+                <Route path="gallery" element={<MasterGallery />} />
               </Route>
             </Route>
             <Route path="*" element={<NotFoundPage />} />
