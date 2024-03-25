@@ -24,6 +24,7 @@ import { EditContacts } from './components/EditContacts/EditContacts';
 import { EditAddress } from './components/EditAddress/EditAddress';
 import { MasterGallery }
   from './components/MasterGallery/MasterGallery';
+import { EditServices } from './components/EditServices/EditServices';
 import { browserHistory } from './utils/history';
 import { AppRouter } from './AppRouter';
 
@@ -61,6 +62,7 @@ export const Router = () => {
                 <Route path="contacts" element={<EditContacts />} />
                 <Route path="address" element={<EditAddress />} />
                 <Route path="gallery" element={<MasterGallery />} />
+                <Route path="services" element={<EditServices />} />
               </Route>
             </Route>
             <Route path="*" element={<NotFoundPage />} />

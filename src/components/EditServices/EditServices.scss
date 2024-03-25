@@ -1,0 +1,76 @@
+@use '../../styles/mixin.scss' as mixin;
+
+.edit-services {
+  padding: 20px;
+  border-radius: 40px;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  background-color: mixin.$gray100;
+  box-shadow: -1px 4px 15px 0 rgba(0, 0, 0, 0.25);
+
+  @include mixin.on-tablet {
+    padding: 40px;
+    border-radius: 40px;
+    gap: 20px;
+  }
+
+  &__description {
+    color: mixin.$gray30;
+    font-weight: 700;
+  }
+
+  &__options {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+  }
+
+  &__options-title {
+    font-weight: 700;
+    color: mixin.$gray30;
+
+    &:nth-child(n+2) {
+      display: none;
+    }
+
+    @include mixin.on-tablet {
+      &:nth-child(n+2) {
+        display: block;
+      }
+    }
+  }
+
+  &__services-list {
+    display: flex;
+    flex-direction: column;
+    gap: 25px;
+  }
+
+  &__services-new-service-btn {
+    width: 100%;
+    border: none;
+    background-color: mixin.$secondary-pink;
+
+    @include mixin.on-tablet {
+      display: none;
+    }
+  }
+
+  &__services-new-service-form {
+    display: none;
+
+    @include mixin.on-tablet {
+      display: grid;
+    }
+  }
+
+  &__buttons {
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
+  }
+
+  &__profile-button {
+    height: auto;
+  }
+}
