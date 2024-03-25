@@ -35,3 +35,9 @@ export type SearchWithParam = string | number;
 export interface SearchWithParams {
   [key: string]: SearchWithParam[] | SearchWithParam | null;
 }
+
+export interface ContactUs {
+  name: string;
+  email: string;
+  message: string;
+}
