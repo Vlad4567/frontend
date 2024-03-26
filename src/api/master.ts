@@ -1,4 +1,5 @@
 import { SubCategory } from '../types/category';
+import { GalleryPhoto } from '../types/gallery';
 import { Page } from '../types/main';
 import { EditMaster, MasterCard, PublicMaster } from '../types/master';
 import { City } from '../types/searchPage';
@@ -51,6 +52,23 @@ interface GetEditMaster extends EditMaster {
 
 export const getMaster = (id: number) => {
   return client.get<PublicMaster>(`/master/${id}`);
+};
+
+export const getRandomMasterPhotos = async (id: number) => {
+  const photos = await client.get<GalleryPhoto[]>(`/photo?masterCardId=${id}`);
+
+  const photosWithPhotos = await Promise.all(
+    photos.map(async (item) => {
+      const photo = await downloadPhoto(item.photoUrl);
+
+      // eslint-disable-next-line no-param-reassign
+      item.photoUrl = URL.createObjectURL(new Blob([photo]));
+
+      return item;
+    }),
+  );
+
+  return photosWithPhotos;
 };
 
 export const getEditMaster = () => {
