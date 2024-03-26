@@ -201,4 +201,105 @@
     flex-direction: column;
     gap: 10px;
   }
+
+  &__services {
+    display: flex;
+    flex-direction: column;
+    gap: 30px;
+
+    @include mixin.on-desktop {
+      gap: 40px;
+    }
+  }
+
+  &__services-title {
+    margin: 0;
+    width: fit-content;
+    position: relative;
+  }
+
+  &__services-title-span {
+    color: mixin.$primary100;
+  }
+
+  &__services-main {
+    height: fit-content;
+    display: flex;
+    gap: 20px;
+
+    @include mixin.on-desktop {
+      gap: 24px;
+    }
+  }
+
+  &__services-main-wrapper {
+    padding: 20px;
+    width: 100%;
+
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+
+    background-color: mixin.$gray100;
+    border-radius: 30px;
+
+    @include mixin.on-tablet {
+      padding: 40px;
+      gap: 20px;
+    }
+  }
+
+  &__services-main-divider {
+    width: 100%;
+    height: mixin.$line-width;
+    border: none;
+    background-color: mixin.$gray70;
+  }
+
+  &__services-main-item {
+    height: 40px;
+    padding-inline: 15px;
+    display: grid;
+    align-items: center;
+    grid-template-columns: repeat(3, 1fr);
+    border-radius: 20px;
+    pointer-events: none;
+
+    @include mixin.on-tablet {
+      pointer-events: all;
+
+      &:nth-child(n+2) {
+        cursor: pointer;
+
+        &:hover {
+          background-color: mixin.$gray70;
+        }
+      }
+    }
+  }
+
+  &__services-main-item-small {
+    color: mixin.$gray30;
+  }
+
+  &__services-main-item-p {
+    &::first-letter {
+      text-transform: uppercase;
+    }
+  }
+
+  &__services-main-image {
+    height: 100%;
+    display: none;
+    border-radius: 30px;
+
+    @include mixin.on-tablet {
+      width: 301px;
+      display: block;
+    }
+
+    @include mixin.on-desktop {
+      width: 498px;
+    }
+  }
 }
