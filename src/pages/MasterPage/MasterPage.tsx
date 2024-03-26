@@ -10,11 +10,22 @@ import { DropDownButton } from '../../components/DropDownButton/DropDownButton';
 import { ButtonWithArrow }
   from '../../components/ButtonWithArrow/ButtonWithArrow';
 import './MasterPage.scss';
+import { websiteName } from '../../helpers/variables';
+import { SwitchButtons } from '../../components/SwitchButtons/SwitchButtons';
+import { SubCategory } from '../../types/category';
+import { getServicesBySubcategory } from '../../api/services';
+import { Service } from '../../types/services';
+import { Stars } from '../../components/Stars/Stars';
 
 export const MasterPage: React.FC = () => {
   const { id } = useParams();
   const dispatch = useAppDispatch();
   const { master } = useAppSelector(state => state.publicMasterSlice);
+  const [activeSubcategory, setActiveSubcategory]
+    = useState<SubCategory | null>(null);
+  const [subcategories, setSubcategories] = useState<SubCategory[]>([]);
+  const [services, setServices] = useState<Service[]>([]);
+  const [activeService, setActiveService] = useState<Service | null>(null);
   const [mainPhotos, setMainPhotos] = useState<GalleryPhoto[]>([]);
 
   useDocumentTitle(master.firstName || 'Master');
@@ -27,10 +38,24 @@ export const MasterPage: React.FC = () => {
           getRandomMasterPhotos(res.id)
             .then(setMainPhotos)
             .catch(() => showNotification('error'));
+
+          setSubcategories(res.subcategories || []);
+          setActiveSubcategory(res.subcategories?.[0] || {
+            id: 0,
+            name: '',
+          });
         })
         .catch(() => showNotification('error'));
     }
   }, [dispatch, id]);
+
+  useEffect(() => {
+    if (activeSubcategory && id) {
+      getServicesBySubcategory(+id, activeSubcategory.id)
+        .then(setServices)
+        .catch(() => showNotification('error'));
+    }
+  }, [activeSubcategory, id]);
 
   return (
     <main className="master-page">
@@ -89,6 +114,71 @@ export const MasterPage: React.FC = () => {
             <p className="master-page__info-description-text">
               {master.description}
             </p>
+          </div>
+        </section>
+        <section className="master-page__services">
+          <h1 className="master-page__services-title">
+            Services to
+            {' '}
+            <span className="master-page__services-title-span">
+              {websiteName}
+            </span>
+            <Stars type="dark" size="large" />
+          </h1>
+          <div className="master-page__services-main">
+            <article className="master-page__services-main-wrapper">
+              <SwitchButtons
+                buttons={subcategories}
+                activeButton={
+                  activeSubcategory || { id: -1, name: '' }
+                }
+                onClickButton={(_, item) => setActiveSubcategory(item)}
+                className="master-page__services-main-subcategories"
+              />
+
+              <hr className="master-page__services-main-divider" />
+
+              <div className="master-page__services-main-content">
+                <div className="master-page__services-main-item">
+                  <small className="master-page__services-main-item-small">
+                    Service
+                  </small>
+                  <small className="master-page__services-main-item-small">
+                    Price, ₴
+                  </small>
+                  <small className="master-page__services-main-item-small">
+                    Duration, min (approx.)
+                  </small>
+                </div>
+                {services.map((service) => (
+                  <div
+                    key={service.id}
+                    className="master-page__services-main-item"
+                    role="button"
+                    tabIndex={0}
+                    onKeyDown={() => setActiveService(service)}
+                    onClick={() => setActiveService(service)}
+                  >
+                    <p className="master-page__services-main-item-p">
+                      {service.name}
+                    </p>
+                    <p className="master-page__services-main-item-p">
+                      {`₴ ${service.price}`}
+                    </p>
+                    <p className="master-page__services-main-item-p">
+                      {`${service.duration} min`}
+                    </p>
+                  </div>
+                ))}
+              </div>
+            </article>
+            {activeService && (
+              <img
+                className="master-page__services-main-image"
+                src={activeService.photo?.photoUrl}
+                alt={activeService.name || 'Service'}
+              />
+            )}
           </div>
         </section>
       </div>
