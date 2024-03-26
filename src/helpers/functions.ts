@@ -194,3 +194,16 @@ export const modifyPhotoName = (name: string, key: ModifyPhotoNameKeys) => {
 
   return name;
 };
+
+export const getRatings = (values: number[]) => {
+  let sum = 0;
+  let countStars = 1;
+
+  values.forEach(star => {
+    sum += star * countStars;
+
+    countStars += 1;
+  });
+
+  return sum;
+};

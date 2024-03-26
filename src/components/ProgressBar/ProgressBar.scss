@@ -1,0 +1,20 @@
+// nor empty
+.progress-bar-container {
+  min-width: 137px;
+  background-color: #fff;
+  border-radius: 50px;
+
+  &__filler-styles {
+    height: 10px;
+    width: 100%;
+    background-color: #000;
+    border-radius: inherit;
+    text-align: right;
+  }
+
+  &__label-styles {
+    padding: 5px;
+    color: white;
+    font-weight: bold;
+  }
+}

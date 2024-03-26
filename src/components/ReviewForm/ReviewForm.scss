@@ -1,0 +1,68 @@
+@use '../../styles/mixin.scss' as mixin;
+
+.review-form {
+  max-width: 640px;
+  padding: 20px;
+  border-radius: 30px;
+  display: flex;
+  flex-direction: column;
+  background-color: mixin.$gray100;
+
+  @include mixin.on-tablet {
+    padding: 40px;
+  }
+
+  &__header {
+    display: flex;
+    justify-content: space-between;
+  }
+
+  &__header-close-icon {
+    height: 15px;
+    width: 15px;
+    cursor: pointer;
+  }
+
+  &__paragraph {
+    display: flex;
+    gap: 5px;
+  }
+
+  &__paragraph-link {
+    color: mixin.$error;
+    cursor: pointer;
+    position: relative;
+    transition: all mixin.$effect-duration ease;
+
+    &:hover {
+      &::after {
+        content: '';
+        width: 100%;
+        height: 1.5px;
+        position: absolute;
+        background-color: mixin.$error;
+        bottom: -3px;
+        left: 0;
+      }
+    }
+  }
+
+  &__form {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+  }
+
+  &__form-rating-description {
+    color: mixin.$gray30;
+    font-weight: 700;
+  }
+
+  &__form-stars-rating-start {
+    cursor: pointer;
+  }
+
+  &__form-button {
+    width: 100%;
+  }
+}
