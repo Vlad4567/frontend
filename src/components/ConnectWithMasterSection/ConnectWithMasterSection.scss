@@ -1,0 +1,48 @@
+@use '../../styles/mixin.scss' as mixin;
+
+.connect-with-master-section {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  gap: 40px;
+
+  @include mixin.on-tablet {
+    gap: 30px;
+  }
+
+  @include mixin.on-desktop {
+    gap: 40px;
+  }
+
+  &__title {
+    width: fit-content;
+
+    position: relative;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    text-align: center
+  }
+
+  &__title-span {
+    color: mixin.$primary100;
+  }
+
+  &__contacts {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 10px;
+  }
+
+  &__contacts-item-link {
+    text-decoration: none;
+    color: mixin.$gray100;
+  }
+
+  &__contacts-item {
+    width: fit-content;
+  }
+}

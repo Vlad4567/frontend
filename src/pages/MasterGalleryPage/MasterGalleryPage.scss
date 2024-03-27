@@ -1,0 +1,23 @@
+.master-gallery-page {
+  padding-block: 77px 215px;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: 215px;
+
+  &__back {
+    position: absolute;
+    top: 10px;
+    left: 0;
+
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  &__gallery {
+    padding: 0;
+    background: none;
+    box-shadow: none;
+  }
+}
