@@ -1,6 +1,11 @@
 import { useEffect } from 'react';
 import { useDocumentTitle } from 'usehooks-ts';
-import { Outlet, useLocation, useNavigate } from 'react-router-dom';
+import {
+  Outlet,
+  useLocation,
+  useNavigate,
+  useSearchParams,
+} from 'react-router-dom';
 import { Footer } from './components/Footer/Footer';
 import { Header } from './components/Header/Header';
 import { useAppSelector } from './app/hooks';
@@ -18,12 +23,16 @@ export const App: React.FC = () => {
   } = useAppSelector(state => state.appSlice);
   const navigate = useNavigate();
   const { pathname } = useLocation();
+  const [searchParams] = useSearchParams();
   const lastPathName = pathname.split('/').pop();
 
   useDocumentTitle(convertHyphenToSpace(lastPathName || '') || websiteName);
 
   useEffect(() => {
-    window.scroll({ top: 0, behavior: 'smooth' });
+    if (!searchParams.get('scroll')) {
+      window.scroll({ top: 0, behavior: 'smooth' });
+    }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [pathname]);
 
   globalRouter.navigate = navigate;
