@@ -1,7 +1,10 @@
 import { SubCategory } from '../types/category';
 import { GalleryPhoto } from '../types/gallery';
 import { Page } from '../types/main';
-import { EditMaster, MasterCard, PublicMaster } from '../types/master';
+import {
+  EditMaster, FormReview, MasterCard, PublicMaster,
+} from '../types/master';
+import { MasterReviewsCard } from '../types/reviews';
 import { City } from '../types/searchPage';
 import { client } from '../utils/axiosClient';
 import { downloadPhoto } from './account';
@@ -97,4 +100,36 @@ export const addMasterSubcategory = (id: SubCategory['id']) => {
 
 export const deleteMasterSubcategory = (id: SubCategory['id']) => {
   return client.delete(`/master/subcategory?id=${id}`);
+};
+
+export const getReviewsMaster = async (
+  idMaster: number,
+  pageNumber: number,
+  pageSize: number,
+) => {
+  const masterReviews = await client.get<Page<MasterReviewsCard>>(
+    `/mastercart/${idMaster}/review?page=${pageNumber}&size=${pageSize}`,
+  );
+
+  const masterReviewsWithPhoto = await Promise.all(
+    masterReviews.content.map(async (masterReview) => {
+      if (masterReview.user.profilePhoto) {
+        const photo = await downloadPhoto(masterReview.user.profilePhoto);
+
+        // eslint-disable-next-line no-param-reassign
+        masterReview.user.profilePhoto = URL.createObjectURL(new Blob([photo]));
+      }
+
+      return masterReview;
+    }),
+  );
+
+  return {
+    ...masterReviews,
+    content: masterReviewsWithPhoto,
+  };
+};
+
+export const addNewReview = (idMaster: number, form: FormReview) => {
+  return client.post(`mastercart/${idMaster}/review`, form);
 };

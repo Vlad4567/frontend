@@ -9,8 +9,16 @@ export const downloadPhoto = (photo: string, config?: AxiosRequestConfig) => {
   });
 };
 
-export const getUser = () => {
-  return client.get<UserData>('/user');
+export const getUser = async () => {
+  const user = await client.get<UserData>('/user');
+
+  if (user.profilePhoto) {
+    const photo = await downloadPhoto(user.profilePhoto);
+
+    user.profilePhoto = URL.createObjectURL(new Blob([photo]));
+  }
+
+  return user;
 };
 
 export const putUser = (data: Omit<UserData, 'profilePhoto' | 'master'>) => {

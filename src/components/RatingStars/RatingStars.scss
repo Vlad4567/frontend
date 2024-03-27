@@ -1,0 +1,38 @@
+@use '../../styles/mixin.scss' as mixin;
+
+.rating-stars {
+  display: flex;
+  justify-content: flex-start;
+  flex-direction: row-reverse;
+  gap: 2px;
+
+  &__star {
+    display: block;
+    width: 15px;
+    height: 15px;
+    background-position: center;
+    background-repeat: no-repeat;
+    font-size: 20px;
+    background-image: url(../../img/icons/empty-star-rating.svg);
+  }
+
+  &__star--selected {
+    cursor: pointer;
+
+    &:hover {
+      background-image: url(../../img/icons/full-star-rating.svg);
+    }
+
+    &:hover ~ * {
+      background-image: url(../../img/icons/full-star-rating.svg);
+    }
+  }
+
+  &__star--ready {
+    pointer-events: none;
+  }
+}
+
+input[type='radio'] {
+  display: none;
+}
