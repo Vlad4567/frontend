@@ -67,3 +67,8 @@ export interface PublicMaster extends Omit<EditMaster, 'address'> {
   }
   hidden: boolean;
 }
+
+export interface FormReview {
+  grade: number;
+  comment: string;
+}
