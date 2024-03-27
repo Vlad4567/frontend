@@ -13,6 +13,7 @@ import * as createMasterSlice from '../../features/createMasterSlice';
 import './EditContacts.scss';
 import { getEditMaster, putEditMaster } from '../../api/master';
 import { showNotification } from '../../helpers/notifications';
+import { linkValidation } from '../../helpers/variables';
 
 const getFormattedInputValue = (value: string) => {
   const digitsOnly = value.replace(/\D/g, '').slice(0, 12);
@@ -90,9 +91,23 @@ export const EditContacts: React.FC = () => {
   };
 
   const handleSubmit = () => {
+    const contacts: typeof createMaster.master.contacts
+      = { ...createMaster.master.contacts };
+
+    Object.entries(contacts).forEach((contact) => {
+      if (contact?.[1]
+        && contact?.[0] !== 'phone') {
+        contacts[contact[0] as keyof typeof contacts]
+          = contact[1]?.match(linkValidation)?.[0] || null;
+      }
+    });
+
+    dispatch(createMasterSlice.editContacts(contacts));
+
     if (createMaster.editMode) {
       putEditMaster({
         ...createMaster.master,
+        contacts,
         address: {
           ...createMaster.master.address,
           cityId: createMaster.master.address.city?.id || null,

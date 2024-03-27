@@ -245,8 +245,6 @@ export const EditPublicProfilePage: React.FC = () => {
       )}
       {accountContentTitle
       && user.master
-      && pathAfterEditPublicProfile !== 'gallery'
-      && pathAfterEditPublicProfile !== 'services'
       && createPortal(
         <div className="edit-public-profile-page__controls">
           <DropDownButton
@@ -271,7 +269,10 @@ export const EditPublicProfilePage: React.FC = () => {
             placeholder="Preview"
             onClick={() => navigate(`/master/${createMaster.masterId}`)}
           />
-          {!createMaster.editMode && (
+          {!createMaster.editMode
+          && pathAfterEditPublicProfile !== 'gallery'
+          && pathAfterEditPublicProfile !== 'services'
+          && (
             <Button
               className="edit-public-profile-page__controls-btn"
               size="small"
