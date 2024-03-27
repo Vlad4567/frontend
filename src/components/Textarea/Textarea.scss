@@ -28,6 +28,12 @@
     &:focus {
       border: mixin.$line-width solid mixin.$gray10;
     }
+
+    &:disabled {
+      color: mixin.$gray30;
+      background-color: mixin.$gray70;
+      border: none;
+    }
   }
 
   &__error {
