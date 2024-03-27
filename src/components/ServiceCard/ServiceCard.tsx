@@ -84,7 +84,7 @@ export const ServiceCard: React.FC<Props> = ({
         <Button
           size="large"
           className="service-card__buttons-chat"
-          onClick={() => navigate(`/master/${id}`)}
+          onClick={() => navigate(`/master/${id}?scroll=chat`)}
         >
           Chat
         </Button>

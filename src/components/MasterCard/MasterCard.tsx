@@ -88,7 +88,7 @@ export const MasterCard: React.FC<Props> = ({
         <Button
           size="large"
           className="master-card__buttons-chat"
-          onClick={() => navigate(`master/${id}`)}
+          onClick={() => navigate(`/master/${id}?scroll=chat`)}
         >
           Chat
         </Button>
@@ -96,7 +96,7 @@ export const MasterCard: React.FC<Props> = ({
         <DropDownButton
           size="large"
           placeholder="Details"
-          onClick={() => navigate(`master/${id}`)}
+          onClick={() => navigate(`/master/${id}`)}
         />
       </div>
     </article>

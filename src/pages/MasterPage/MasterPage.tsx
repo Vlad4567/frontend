@@ -1,5 +1,10 @@
 import { useEffect, useState } from 'react';
-import { Link, useParams } from 'react-router-dom';
+import {
+  Link,
+  useNavigate,
+  useParams,
+  useSearchParams,
+} from 'react-router-dom';
 import { useDocumentTitle } from 'usehooks-ts';
 import { getMaster, getRandomMasterPhotos } from '../../api/master';
 import { useAppDispatch, useAppSelector } from '../../app/hooks';
@@ -18,10 +23,12 @@ import { Stars } from '../../components/Stars/Stars';
 import { ConnectWithMasterSection }
   from '../../components/ConnectWithMasterSection/ConnectWithMasterSection';
 import './MasterPage.scss';
+import { ArrowButton } from '../../components/ArrowButton/ArrowButton';
 
 export const MasterPage: React.FC = () => {
   const { id } = useParams();
   const dispatch = useAppDispatch();
+  const navigate = useNavigate();
   const { master } = useAppSelector(state => state.publicMasterSlice);
   const [activeSubcategory, setActiveSubcategory]
     = useState<SubCategory | null>(null);
@@ -29,6 +36,7 @@ export const MasterPage: React.FC = () => {
   const [services, setServices] = useState<Service[]>([]);
   const [activeService, setActiveService] = useState<Service | null>(null);
   const [mainPhotos, setMainPhotos] = useState<GalleryPhoto[]>([]);
+  const [searchParams] = useSearchParams();
 
   useDocumentTitle(master.firstName || 'Master');
 
@@ -59,8 +67,26 @@ export const MasterPage: React.FC = () => {
     }
   }, [activeSubcategory, id]);
 
+  useEffect(() => {
+    if (searchParams.get('scroll') === 'chat') {
+      const chatButton
+        = document.querySelector('.master-page__connect-with-master');
+
+      if (chatButton) {
+        chatButton.scrollIntoView({ behavior: 'smooth' });
+      }
+    }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
   return (
     <main className="master-page">
+      <ArrowButton
+        className="master-page__back"
+        position="left"
+        onClick={() => navigate('/')}
+      />
+
       <div className="master-page__body">
         <section className="master-page__info">
           {!!mainPhotos.length && (
@@ -105,6 +131,14 @@ export const MasterPage: React.FC = () => {
             </div>
             <ButtonWithArrow
               className="master-page__info-title-chat"
+              onClick={() => {
+                const element
+                  = document.querySelector('.master-page__connect-with-master');
+
+                if (element) {
+                  element.scrollIntoView({ behavior: 'smooth' });
+                }
+              }}
             >
               Chat
             </ButtonWithArrow>
@@ -184,6 +218,7 @@ export const MasterPage: React.FC = () => {
           </div>
         </section>
         <ConnectWithMasterSection
+          className="master-page__connect-with-master"
           name={`${master.firstName} ${master.lastName}`}
           contacts={master.contacts}
         />
