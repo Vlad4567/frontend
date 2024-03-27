@@ -9,13 +9,15 @@ import { GalleryPhoto } from '../../types/gallery';
 import { DropDownButton } from '../../components/DropDownButton/DropDownButton';
 import { ButtonWithArrow }
   from '../../components/ButtonWithArrow/ButtonWithArrow';
-import './MasterPage.scss';
 import { websiteName } from '../../helpers/variables';
 import { SwitchButtons } from '../../components/SwitchButtons/SwitchButtons';
 import { SubCategory } from '../../types/category';
 import { getServicesBySubcategory } from '../../api/services';
 import { Service } from '../../types/services';
 import { Stars } from '../../components/Stars/Stars';
+import { ConnectWithMasterSection }
+  from '../../components/ConnectWithMasterSection/ConnectWithMasterSection';
+import './MasterPage.scss';
 
 export const MasterPage: React.FC = () => {
   const { id } = useParams();
@@ -181,6 +183,10 @@ export const MasterPage: React.FC = () => {
             )}
           </div>
         </section>
+        <ConnectWithMasterSection
+          name={`${master.firstName} ${master.lastName}`}
+          contacts={master.contacts}
+        />
       </div>
     </main>
   );
