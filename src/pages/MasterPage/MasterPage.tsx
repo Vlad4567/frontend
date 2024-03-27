@@ -1,12 +1,16 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import {
   Link,
   useNavigate,
   useParams,
   useSearchParams,
 } from 'react-router-dom';
-import { useDocumentTitle } from 'usehooks-ts';
-import { getMaster, getRandomMasterPhotos } from '../../api/master';
+import { useDocumentTitle, useOnClickOutside } from 'usehooks-ts';
+import SwiperCore from 'swiper';
+import { SwiperSlide, Swiper } from 'swiper/react';
+import {
+  getMaster, getRandomMasterPhotos, getReviewsMaster,
+} from '../../api/master';
 import { useAppDispatch, useAppSelector } from '../../app/hooks';
 import { showNotification } from '../../helpers/notifications';
 import * as publicMasterSlice from '../../features/publicMasterSlice';
@@ -22,14 +26,28 @@ import { Service } from '../../types/services';
 import { Stars } from '../../components/Stars/Stars';
 import { ConnectWithMasterSection }
   from '../../components/ConnectWithMasterSection/ConnectWithMasterSection';
-import './MasterPage.scss';
 import { ArrowButton } from '../../components/ArrowButton/ArrowButton';
+import { Button } from '../../components/Button/Button';
+import { CreateModal } from '../../components/CreateModal/CreateModal';
+import { ModalReview } from '../../components/ModalReview/ModalReview';
+import { ProgressBar } from '../../components/ProgressBar/ProgressBar';
+import { ReviewsCard } from '../../components/ReviewsCard/ReviewsCard';
+import { getUser } from '../../api/account';
+import { Page } from '../../types/main';
+import { MasterReviewsCard } from '../../types/reviews';
+import { RatingStars } from '../../components/RatingStars/RatingStars';
+import { getRatings } from '../../helpers/functions';
+import * as userSlice from '../../features/userSlice';
+import './MasterPage.scss';
+
+type Modal = 'newReview';
 
 export const MasterPage: React.FC = () => {
   const { id } = useParams();
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
   const { master } = useAppSelector(state => state.publicMasterSlice);
+  const { user } = useAppSelector(state => state.userSlice);
   const [activeSubcategory, setActiveSubcategory]
     = useState<SubCategory | null>(null);
   const [subcategories, setSubcategories] = useState<SubCategory[]>([]);
@@ -37,8 +55,58 @@ export const MasterPage: React.FC = () => {
   const [activeService, setActiveService] = useState<Service | null>(null);
   const [mainPhotos, setMainPhotos] = useState<GalleryPhoto[]>([]);
   const [searchParams] = useSearchParams();
+  const [reviewsCardPage, setReviewsCardPage]
+    = useState<Page<MasterReviewsCard> | null>(null);
+  const [masterReviewsPage, setMasterReviewsPage] = useState(0);
+  const [modal, setModal] = useState<Modal | ''>('');
+  const [swiperRef, setSwiperRef] = useState<SwiperCore | null>(null);
+  const modalRef = useRef<HTMLFormElement>(null);
 
   useDocumentTitle(master.firstName || 'Master');
+
+  const { statistics, rating } = master;
+  const statisticsStars = statistics && getRatings(Object.values(statistics));
+  const sumStatisticsValues = statistics && Object
+    .values(statistics)
+    .reduce((acc, curr) => acc + curr, 0);
+
+  const handleClickOutside = () => {
+    setModal('');
+  };
+
+  useOnClickOutside<HTMLFormElement>([
+    modalRef,
+  ], handleClickOutside);
+
+  const handleNext = () => {
+    if (swiperRef) {
+      swiperRef.slideNext();
+    }
+  };
+
+  const handlePrev = () => {
+    if (swiperRef) {
+      swiperRef.slidePrev();
+    }
+  };
+
+  const loadReviewsMaster = () => {
+    if (!reviewsCardPage || masterReviewsPage <= reviewsCardPage.totalPages) {
+      getReviewsMaster(Number(id), masterReviewsPage, 20)
+        .then(res => setReviewsCardPage(c => (c
+          ? {
+            ...res,
+            content: c ? [...c.content, ...res.content] : res.content,
+          }
+          : res)))
+        .catch(() => showNotification('error'));
+      setMasterReviewsPage(c => c + 1);
+    }
+  };
+
+  const openModalReview = () => {
+    setModal('newReview');
+  };
 
   useEffect(() => {
     if (id) {
@@ -76,7 +144,28 @@ export const MasterPage: React.FC = () => {
         chatButton.scrollIntoView({ behavior: 'smooth' });
       }
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  useEffect(() => {
+    if (id) {
+      getMaster(+id)
+        .then((res) => {
+          dispatch(publicMasterSlice.updateMaster(res));
+        })
+        .catch(() => showNotification('error'));
+    }
+  }, [dispatch, id]);
+
+  useEffect(() => {
+    if (!user.username) {
+      getUser()
+        .then((res) => {
+          dispatch(userSlice.updateUser(res));
+        })
+        .catch(() => showNotification('error'));
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   return (
@@ -118,15 +207,15 @@ export const MasterPage: React.FC = () => {
 
               <div className="master-page__info-title-left-subcategories">
                 {master.subcategories
-                && master.subcategories.map(subcategory => (
-                  <DropDownButton
-                    size="large"
-                    className="master-page__info-title-left-subcategory"
-                    key={subcategory.id}
-                  >
-                    {subcategory.name}
-                  </DropDownButton>
-                ))}
+                  && master.subcategories.map(subcategory => (
+                    <DropDownButton
+                      size="large"
+                      className="master-page__info-title-left-subcategory"
+                      key={subcategory.id}
+                    >
+                      {subcategory.name}
+                    </DropDownButton>
+                  ))}
               </div>
             </div>
             <ButtonWithArrow
@@ -215,6 +304,145 @@ export const MasterPage: React.FC = () => {
                 alt={activeService.name || 'Service'}
               />
             )}
+          </div>
+        </section>
+        <section className="master-page__reviews">
+          <h2 className="master-page__reviews-title">Reviews</h2>
+
+          <div className="master-page__reviews-body">
+            <article className="master-page__reviews-info">
+              <div className="master-page__reviews-info-header">
+                <div className="master-page__reviews-info-header-wraper">
+                  <h3 className="master-page__reviews-info-header-rating">
+                    {rating}
+                  </h3>
+
+                  <div className="master-page__reviews-info-header-blok">
+
+                    <p className="master-page__reviews-info-header-blok-text">
+                      {statisticsStars}
+                      {' '}
+                      ratings
+                    </p>
+
+                    {rating && (
+                      <RatingStars
+                        state={rating}
+                      />
+                    )}
+
+                  </div>
+                </div>
+                <>
+                  <Button
+                    size="large"
+                    className="master-page__reviews-button-first"
+                    onClick={openModalReview}
+                  >
+                    Write review
+                  </Button>
+                  {modal === 'newReview' && (
+                    <CreateModal>
+                      <ModalReview
+                        onClose={() => setModal('')}
+                        ref={modalRef}
+                        addCard={card => {
+                          setReviewsCardPage(c => {
+                            if (c) {
+                              return {
+                                ...c,
+                                content: [...c.content, card],
+                              };
+                            }
+
+                            return null;
+                          });
+                        }}
+                      />
+                    </CreateModal>
+                  )}
+                </>
+              </div>
+
+              <ul className="master-page__reviews-info-header-list">
+                {statistics
+                  && sumStatisticsValues
+                  && Object.entries(statistics)
+                    .sort((a, b) => a[0].localeCompare(b[0]))
+                    .map(item => {
+                      const [key, value] = item;
+                      const percent = 100;
+                      const percentValue = (
+                        value / sumStatisticsValues) * percent;
+
+                      return (
+                        <li className="master-page__reviews-info-header-item">
+                          <p className="master-page__reviews-info-header-rate">
+                            {key.replace('count', '')}
+                          </p>
+
+                          <ProgressBar completed={percentValue} />
+
+                        </li>
+                      );
+                    })}
+              </ul>
+              <>
+                <Button
+                  size="large"
+                  className="master-page__reviews-button-second"
+                  onClick={openModalReview}
+                >
+                  Write review
+                </Button>
+                {modal === 'newReview' && (
+                  <CreateModal>
+                    <ModalReview
+                      onClose={() => setModal('')}
+                      ref={modalRef}
+                      addCard={card => {
+                        setReviewsCardPage(c => {
+                          if (c) {
+                            return {
+                              ...c,
+                              content: [...c.content, card],
+                            };
+                          }
+
+                          return null;
+                        });
+                      }}
+                    />
+                  </CreateModal>
+                )}
+              </>
+            </article>
+
+            <figure className="master-page__reviews-swiper">
+              <Swiper
+                onSwiper={setSwiperRef}
+                className="master-page__reviews-swiper-slides"
+                spaceBetween="20px"
+                slidesPerView="auto"
+                onReachEnd={loadReviewsMaster}
+              >
+                {reviewsCardPage?.content.map((card) => (
+                  <SwiperSlide
+                    key={card.id}
+                    className="master-page__reviews-swiper-slide"
+                    style={{ width: 'auto' }}
+                  >
+                    <ReviewsCard card={card} />
+                  </SwiperSlide>
+                ))}
+              </Swiper>
+
+              <figcaption className="master-page__reviews-swiper-control">
+                <ArrowButton position="left" onClick={handlePrev} />
+                <ArrowButton position="right" onClick={handleNext} />
+              </figcaption>
+            </figure>
+
           </div>
         </section>
         <ConnectWithMasterSection
