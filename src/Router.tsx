@@ -28,6 +28,7 @@ import { EditServices } from './components/EditServices/EditServices';
 import { browserHistory } from './utils/history';
 import { AppRouter } from './AppRouter';
 import { MasterPage } from './pages/MasterPage/MasterPage';
+import { MasterGalleryPage } from './pages/MasterGalleryPage/MasterGalleryPage';
 
 export const Router = () => {
   return (
@@ -41,6 +42,10 @@ export const Router = () => {
               element={<Navigate to="/" replace />}
             />
             <Route path="master/:id" element={<MasterPage />} />
+            <Route
+              path="master/:id/gallery"
+              element={<MasterGalleryPage />}
+            />
             <Route path="login" element={<LoginPage />}>
               <Route index element={<LoginForm />} />
               <Route path="reset-password" element={<ResetPasswordForm />} />
