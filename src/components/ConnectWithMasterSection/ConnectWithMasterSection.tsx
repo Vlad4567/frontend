@@ -6,6 +6,7 @@ import facebookIcon from '../../img/icons/icon-facebook.svg';
 import telegramIcon from '../../img/icons/icon-telegram.svg';
 import phoneIcon from '../../img/icons/icon-phone.svg';
 import './ConnectWithMasterSection.scss';
+import { fixUrl } from '../../helpers/functions';
 
 interface Props {
   className?: string
@@ -95,7 +96,7 @@ export const ConnectWithMasterSection: React.FC<Props> = ({
             className="connect-with-master-section__contacts-item-link"
             to={contact[0] === 'phone'
               ? `tel:+${contact[1].replace(/\D/g, '')}`
-              : contact[1]}
+              : fixUrl(contact[1])}
           >
             <DropDownButton
               className="connect-with-master-section__contacts-item"
