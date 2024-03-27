@@ -1,8 +1,6 @@
 /* eslint-disable no-param-reassign */
 import { PayloadAction, createSlice } from '@reduxjs/toolkit';
 import { UserData } from '../types/account';
-import { listenerMiddleware } from '../app/listenerMiddleware';
-import { downloadPhoto } from '../api/account';
 
 const initialState: {
   user: UserData
@@ -55,18 +53,3 @@ export const {
   deleteMaster,
 } = userSlice.actions;
 export default userSlice.reducer;
-
-listenerMiddleware.startListening({
-  actionCreator: updateUser,
-  effect: async (action, listenerAPI) => {
-    if (action.payload.profilePhoto) {
-      await downloadPhoto(action.payload.profilePhoto)
-        .then(data => {
-          listenerAPI.dispatch(updateProfilePhoto(URL.createObjectURL(
-            new Blob([data],
-              { type: 'image/jpeg' }),
-          )));
-        });
-    }
-  },
-});
