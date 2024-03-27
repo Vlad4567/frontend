@@ -36,6 +36,7 @@ type TypeModal = 'deletePhoto';
 
 interface Props {
   type?: TypeComponent
+  className?: string
   subcategories?: SubCategory[]
   onClickCancel?: () => void,
   onClickSave?: (value: GalleryPhoto) => void,
@@ -43,6 +44,7 @@ interface Props {
 
 export const MasterGallery = forwardRef<HTMLFormElement, Props>(({
   type = 'edit-profile',
+  className = '',
   subcategories = null,
   onClickCancel = () => { },
   onClickSave = () => { },
@@ -140,39 +142,50 @@ export const MasterGallery = forwardRef<HTMLFormElement, Props>(({
   };
 
   useEffect(() => {
-    const observer = new IntersectionObserver((entries) => {
-      if (entries[0].isIntersecting) {
-        if (galleryPage < totalGalleryPage) {
-          setGalleryPage(prev => prev + 1);
-        } else {
-          observer.disconnect();
+    let observer: IntersectionObserver;
+
+    if (activeButton.id >= 0) {
+      observer = new IntersectionObserver((entries) => {
+        if (entries[0].isIntersecting) {
+          if (galleryPage < totalGalleryPage) {
+            setGalleryPage(prev => prev + 1);
+          } else {
+            observer.disconnect();
+          }
         }
-      }
-    });
+      });
 
-    observer.observe(observerRef.current as HTMLDivElement);
+      observer.observe(observerRef.current as HTMLDivElement);
+    }
 
-    return () => observer.disconnect();
+    return () => observer && observer.disconnect();
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [galleryPage]);
 
   useEffect(() => {
-    getGalleryPhotos(galleryPage, 5, activeButton.id)
-      .then(res => {
-        setTotalGalleryPage(res.totalPages);
-        setPhotos((c) => [...c, ...res.content]);
-        res.content.forEach(item => {
-          if (item.isMain) {
-            setActivePhoto(item);
-          }
-        });
-      })
-      .catch(() => showNotification('error'));
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [galleryPage]);
+    if (activeButton.id >= 0) {
+      getGalleryPhotos(galleryPage, 5, activeButton.id)
+        .then(res => {
+          setTotalGalleryPage(res.totalPages);
+          setPhotos((c) => [...c, ...res.content]);
+          res.content.forEach(item => {
+            if (item.isMain) {
+              setActivePhoto(item);
+            }
+          });
+        })
+        .catch(() => showNotification('error'));
+    }
+  }, [galleryPage, activeButton.id]);
+
+  useEffect(() => {
+    if (subcategories?.length) {
+      setActiveButton(subcategories[0]);
+    }
+  }, [subcategories]);
 
   return (
-    <form className="master-gallery" ref={ref}>
+    <form className={`master-gallery ${className}`} ref={ref}>
       {(type === 'edit-profile' || type === 'service') && (
         <div
           className={classNames('master-gallery__header',
