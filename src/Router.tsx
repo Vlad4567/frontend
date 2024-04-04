@@ -29,6 +29,8 @@ import { browserHistory } from './utils/history';
 import { AppRouter } from './AppRouter';
 import { MasterPage } from './pages/MasterPage/MasterPage';
 import { MasterGalleryPage } from './pages/MasterGalleryPage/MasterGalleryPage';
+import { LoginFormTelegram }
+  from './components/LoginFormTelegram/LoginFormTelegram';
 
 export const Router = () => {
   return (
@@ -50,6 +52,12 @@ export const Router = () => {
               <Route index element={<LoginForm />} />
               <Route path="reset-password" element={<ResetPasswordForm />} />
               <Route path="signup" element={<SignUpForm />} />
+              <Route
+                path="telegram"
+                element={(
+                  <LoginFormTelegram className="login-form-telegram--center" />
+                )}
+              />
             </Route>
             <Route path="search" element={<SearchPage />} />
             <Route path="account" element={<AccountPage />}>
