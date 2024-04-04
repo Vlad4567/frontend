@@ -12,9 +12,11 @@ import { objectKeys } from '../../helpers/functions';
 import { loginUser } from '../../api/login';
 import { ErrorData } from '../../types/main';
 import { useAppDispatch } from '../../app/hooks';
-import './LoginForm.scss';
 import { showNotification } from '../../helpers/notifications';
 import { UnderlinedSmall } from '../UnderlinedSmall/UnderlinedSmall';
+import { DropDownButton } from '../DropDownButton/DropDownButton';
+import telegramIcon from '../../img/icons/icon-telegram.svg';
+import './LoginForm.scss';
 
 interface InitialErrors {
   email: string
@@ -153,13 +155,26 @@ export const LoginForm: React.FC = () => {
             />
             Stay logged in
           </label>
-          <Button
-            type="submit"
-            size="large"
-            className="login-form__login"
-          >
-            Log in
-          </Button>
+          <div className="login-form__buttons">
+            <Button
+              type="submit"
+              size="large"
+              className="login-form__login"
+            >
+              Log in
+            </Button>
+
+            <DropDownButton
+              type="submit"
+              size="large"
+              className="login-form__login login-form__login--telegram"
+              onClick={() => navigate('telegram')}
+            >
+              <img src={telegramIcon} alt="Telegram" />
+
+              Log in with Telegram
+            </DropDownButton>
+          </div>
         </div>
       </div>
     </form>
