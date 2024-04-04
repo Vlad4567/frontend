@@ -180,7 +180,14 @@
   &__main-title-wrapper {
     display: flex;
     flex-direction: column;
+    justify-content: space-between;
+    align-items: flex-start;
     gap: 10px;
+
+    @include mixin.on-desktop {
+      flex-direction: row;
+      align-items: center;
+    }
   }
 
   &__main-title {
@@ -191,5 +198,22 @@
     @include mixin.on-tablet {
       display: block;
     }
+  }
+
+  &__login {
+    width: 100%;
+
+    @include mixin.on-tablet {
+      width: fit-content;
+    }
+  }
+
+  &__login--telegram {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 5px;
+    color: mixin.$gray10;
+    border: mixin.$line-width solid mixin.$gray10;
   }
 }

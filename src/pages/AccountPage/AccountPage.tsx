@@ -1,6 +1,10 @@
 /* eslint-disable jsx-a11y/label-has-associated-control */
-import { useEffect, useState } from 'react';
-import { useIsomorphicLayoutEffect, useMediaQuery } from 'usehooks-ts';
+import { useEffect, useRef, useState } from 'react';
+import {
+  useIsomorphicLayoutEffect,
+  useMediaQuery,
+  useOnClickOutside,
+} from 'usehooks-ts';
 import {
   NavLink,
   Outlet,
@@ -20,12 +24,21 @@ import { UnderlinedSmall }
   from '../../components/UnderlinedSmall/UnderlinedSmall';
 import {
   deleteRefreshToken,
+  disconnectTelegram,
   getUser,
   sendProfilePhoto,
+  verificationTelegram,
 } from '../../api/account';
 import { showNotification } from '../../helpers/notifications';
 import * as userSlice from '../../features/userSlice';
+import telegramIcon from '../../img/icons/icon-telegram.svg';
 import './AccountPage.scss';
+import { LoginFormTelegram }
+  from '../../components/LoginFormTelegram/LoginFormTelegram';
+import { CreateModal } from '../../components/CreateModal/CreateModal';
+import { TypeModal } from '../../types/account';
+import { ModalAlertMessage }
+  from '../../components/ModalAlertMessage/ModalAlertMessage';
 
 export const AccountPage: React.FC = () => {
   const dispatch = useAppDispatch();
@@ -37,6 +50,10 @@ export const AccountPage: React.FC = () => {
   const navigate = useNavigate();
   const isNotPhone = useMediaQuery(`(min-width: ${styleVariables['tablet-min-width']})`);
   const [isShownTabs, setIsShownTabs] = useState(false);
+  const [modal, setModal] = useState<TypeModal | ''>('');
+  const modalRef = useRef(null);
+
+  const { telegramAccount } = user;
 
   useEffect(() => {
     if (currentPath === 'account' && isNotPhone) {
@@ -85,6 +102,48 @@ export const AccountPage: React.FC = () => {
       .catch(() => showNotification('error'));
   };
 
+  const handleClickOutside = () => {
+    setModal('');
+  };
+
+  useOnClickOutside<HTMLFormElement>([
+    modalRef,
+  ], handleClickOutside);
+
+  const handleConnectTelegram = (code: string) => {
+    verificationTelegram(code)
+      .then((res) => {
+        setModal('');
+
+        dispatch(userSlice.updateUser({
+          telegramAccount: {
+            telegramUsername: res,
+          },
+        }));
+      })
+      .catch(() => showNotification('error'));
+  };
+
+  const handleOpenModal = () => {
+    if (telegramAccount?.telegramUsername) {
+      setModal('disconnectTelegram');
+    } else {
+      setModal('formTelegram');
+    }
+  };
+
+  const handleDisconnectTelegram = () => {
+    disconnectTelegram()
+      .then(() => {
+        dispatch(userSlice.updateUser({
+          telegramAccount: null,
+        }));
+
+        setModal('');
+      })
+      .catch(() => showNotification('error'));
+  };
+
   return (
     <main className="account-page">
       <div className="account-page__header">
@@ -98,6 +157,7 @@ export const AccountPage: React.FC = () => {
           {convertHyphenToSpace(pathAfterAccount)}
         </h3>
       </div>
+
       <div className="account-page__main">
         {((!isNotPhone && currentPath === 'account')
           || isNotPhone) && (
@@ -210,6 +270,61 @@ export const AccountPage: React.FC = () => {
               <h1 className="account-page__main-title">
                 {convertHyphenToSpace(pathAfterAccount)}
               </h1>
+
+              {pathAfterAccount === 'personal-details' && (
+                <>
+                  <DropDownButton
+                    type="submit"
+                    size="large"
+                    className="
+                      account-page__login account-page__login--telegram
+                    "
+                    onClick={handleOpenModal}
+                  >
+                    <img src={telegramIcon} alt="Telegram" />
+
+                    {telegramAccount?.telegramUsername
+                      ? `Disconnect @${telegramAccount.telegramUsername}`
+                      : 'Connect your Telegram'}
+
+                  </DropDownButton>
+
+                  {modal === 'formTelegram' && (
+                    <CreateModal>
+                      <LoginFormTelegram
+                        title="Connect your Telegram"
+                        type="modal"
+                        setModal={setModal}
+                        ref={modalRef}
+                        onSubmit={handleConnectTelegram}
+                        onClose={() => setModal('')}
+                      />
+                    </CreateModal>
+                  )}
+
+                  {modal === 'disconnectTelegram' && (
+                    <CreateModal>
+                      <ModalAlertMessage
+                        title={`
+                          Are you sure you want to disconnect
+                          your @${telegramAccount?.telegramUsername} telegram account?
+                        `}
+                        description="
+                          After disconnecting your current account,
+                          you can connect another or the same account
+                        "
+                        ref={modalRef}
+                        onClose={() => setModal('')}
+                        dangerPlaceholder="Disconnect"
+                        simplePlaceholder="Cancel"
+                        onClickDanger={handleDisconnectTelegram}
+                        onClickSimple={() => setModal('')}
+                      />
+                    </CreateModal>
+                  )}
+                </>
+              )}
+
             </div>
 
             <Outlet />

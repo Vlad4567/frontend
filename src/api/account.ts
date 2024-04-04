@@ -1,5 +1,10 @@
 import { AxiosRequestConfig } from 'axios';
-import { PasswordData, UserData } from '../types/account';
+import {
+  PasswordData,
+  ChangeEmail,
+  UpdateUserData,
+  UserData,
+} from '../types/account';
 import { client } from '../utils/axiosClient';
 
 export const downloadPhoto = (photo: string, config?: AxiosRequestConfig) => {
@@ -21,8 +26,9 @@ export const getUser = async () => {
   return user;
 };
 
-export const putUser = (data: Omit<UserData, 'profilePhoto' | 'master'>) => {
-  return client.put('/user', data);
+export const putUser = (data: UpdateUserData) => {
+  return client
+    .put<UpdateUserData & { newEmail: string | null }>('/user', data);
 };
 
 export const putPassword = (data: PasswordData) => {
@@ -39,4 +45,16 @@ export const sendProfilePhoto = (file: FormData) => {
       'Content-Type': 'multipart/form-data',
     },
   });
+};
+
+export const verificationTelegram = (code: string) => {
+  return client.post<string>(`/verificationTelegram/${code}`);
+};
+
+export const disconnectTelegram = () => {
+  return client.delete('/telegram/account');
+};
+
+export const changeEmail = (data: ChangeEmail) => {
+  return client.put('/user/verificationNewMail', data);
 };

@@ -9,27 +9,31 @@ import { Button } from '../Button/Button';
 interface Props extends React.HTMLAttributes<HTMLDivElement> {
   className?: string
   title?: string
+  description?: string
   dangerPlaceholder?: string
   simplePlaceholder?: string
   onClose?: () => void
   onClickDanger?: () => void
   onClickSimple?: () => void
+  children?: React.ReactNode
 }
 
 export const ModalAlertMessage = forwardRef<HTMLDivElement, Props>(({
   className = '',
   title = '',
+  description = '',
   dangerPlaceholder = '',
   simplePlaceholder = '',
   onClose = () => { },
   onClickDanger = () => { },
   onClickSimple = () => { },
+  children = null,
   ...rest
 }, ref) => {
   return (
     <div className={`alert-message ${className}`} ref={ref} {...rest}>
       <div className="alert-message__header">
-        <p className="alert-message__description">{title}</p>
+        <h3 className="alert-message__title">{title}</h3>
         <img
           src={closeIcon}
           alt="Close Icon"
@@ -37,6 +41,12 @@ export const ModalAlertMessage = forwardRef<HTMLDivElement, Props>(({
           onClick={() => onClose()}
         />
       </div>
+
+      {description && (
+        <p className="alert-message__description">{description}</p>
+      )}
+
+      { children }
 
       {(simplePlaceholder || dangerPlaceholder) && (
         <div className="alert-message__dropdown-buttons">
@@ -48,6 +58,7 @@ export const ModalAlertMessage = forwardRef<HTMLDivElement, Props>(({
               onClick={onClickSimple}
             />
           )}
+
           {dangerPlaceholder && (
             <Button
               size="small"

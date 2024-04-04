@@ -10,6 +10,7 @@ const initialState: {
     username: '',
     profilePhoto: null,
     master: false,
+    telegramAccount: null,
   },
 };
 

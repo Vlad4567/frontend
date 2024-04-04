@@ -1,4 +1,6 @@
-import { Login, Registration, Token } from '../types/login';
+import {
+  DataLogin, Login, Registration, Token,
+} from '../types/login';
 import { client } from '../utils/axiosClient';
 
 export const checkUsername = (username: string) => {
@@ -19,4 +21,12 @@ export const registrateUser = (data: Registration) => {
 
 export const forgotPassword = (email: string) => {
   return client.post(`/forgot-password/${email}`);
+};
+
+export const getDeviceToken = () => {
+  return client.get<string>('/auth/login/deviceToken');
+};
+
+export const authLoginTelegram = (data: DataLogin) => {
+  return client.post<Token>('/auth/login/telegram', data);
 };
