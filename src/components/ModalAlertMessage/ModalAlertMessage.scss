@@ -9,8 +9,6 @@
   flex-direction: column;
   gap: 20px;
   position: relative;
-  left: 50%;
-  transform: translateX(-50%);
   background-color: mixin.$gray100;
   box-shadow: 0 0 11px rgba(33, 33, 33, 0.2);
 
@@ -23,6 +21,7 @@
   &__header {
     display: flex;
     justify-content: space-between;
+    gap: 5px;
   }
 
   &__close-icon {
