@@ -29,6 +29,7 @@ import { ModalAlertMessage } from '../ModalAlertMessage/ModalAlertMessage';
 import { CreateModal } from '../CreateModal/CreateModal';
 import { useAppSelector } from '../../app/hooks';
 import './MasterGallery.scss';
+import { modifyPhotoName } from '../../helpers/functions';
 
 type TypeComponent = 'service' | 'portfolio' | 'edit-profile';
 
@@ -86,7 +87,7 @@ export const MasterGallery = forwardRef<HTMLFormElement, Props>(({
 
         addGalleryPhoto(activeButton.id, formData)
           .then(res => {
-            downloadPhoto(res.photoUrl)
+            downloadPhoto(modifyPhotoName(res.photoUrl, 'Gallery'))
               .then((photo) => {
                 setPhotos(c => [...c, {
                   ...res,

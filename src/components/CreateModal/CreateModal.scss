@@ -12,6 +12,7 @@
     left: 50%;
     right: 0;
     transform: translate(max(-50%, -50vw), max(-50%, -50vh));
+    box-shadow: -1px 4px 15px 0 rgba(0, 0, 0, 0.25);
   }
 
   backdrop-filter: blur(10px);

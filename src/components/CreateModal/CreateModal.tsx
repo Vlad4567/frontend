@@ -1,6 +1,6 @@
-import React, { useEffect } from 'react';
+import React from 'react';
 import { createPortal } from 'react-dom';
-import { useLockedBody, useMediaQuery } from 'usehooks-ts';
+import { useMediaQuery } from 'usehooks-ts';
 import variables from '../../styles/variables.module.scss';
 import './CreateModal.scss';
 
@@ -23,7 +23,6 @@ export const CreateModal: React.FC<Props> = ({
     onDesktop: true,
   },
 }) => {
-  const [, setLocked] = useLockedBody(false, 'root');
   const onTablet = useMediaQuery(`(min-width: ${variables['tablet-min-width']})`);
   const onDesktop = useMediaQuery(`(min-width: ${variables['desktop-min-width']})`);
   const onPhone = !(onTablet || onDesktop);
@@ -31,10 +30,6 @@ export const CreateModal: React.FC<Props> = ({
   const checkMedia = (media.onPhone && onPhone)
     || (media.onTablet && onTablet)
     || (media.onDesktop && onDesktop);
-
-  useEffect(() => {
-    setLocked(typeof checkMedia === 'undefined' ? false : checkMedia);
-  }, [checkMedia, setLocked]);
 
   return checkMedia ? createPortal(
     <div className={`modal ${className}`}>

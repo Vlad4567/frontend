@@ -1,3 +1,4 @@
+import { modifyPhotoName } from '../helpers/functions';
 import { SubCategory } from '../types/category';
 import { GalleryPhoto } from '../types/gallery';
 import { Page } from '../types/main';
@@ -18,7 +19,9 @@ export const getRatingMasterCard
     const masterCardsWithRating = await Promise.all(
       masterCards.content.map(async (masterCard) => {
         if (masterCard.mainPhoto) {
-          const photo = await downloadPhoto(masterCard.mainPhoto);
+          const photo = await downloadPhoto(
+            modifyPhotoName(masterCard.mainPhoto, 'MainMini'),
+          );
 
           // eslint-disable-next-line no-param-reassign
           masterCard.mainPhoto = URL.createObjectURL(new Blob([photo]));
@@ -62,7 +65,9 @@ export const getRandomMasterPhotos = async (id: number) => {
 
   const photosWithPhotos = await Promise.all(
     photos.map(async (item) => {
-      const photo = await downloadPhoto(item.photoUrl);
+      const photo = await downloadPhoto(
+        modifyPhotoName(item.photoUrl, 'Gallery'),
+      );
 
       // eslint-disable-next-line no-param-reassign
       item.photoUrl = URL.createObjectURL(new Blob([photo]));
@@ -114,7 +119,9 @@ export const getReviewsMaster = async (
   const masterReviewsWithPhoto = await Promise.all(
     masterReviews.content.map(async (masterReview) => {
       if (masterReview.user.profilePhoto) {
-        const photo = await downloadPhoto(masterReview.user.profilePhoto);
+        const photo = await downloadPhoto(
+          modifyPhotoName(masterReview.user.profilePhoto, 'ReviewCard'),
+        );
 
         // eslint-disable-next-line no-param-reassign
         masterReview.user.profilePhoto = URL.createObjectURL(new Blob([photo]));

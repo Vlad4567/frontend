@@ -18,14 +18,15 @@
   &__title {
     width: fit-content;
 
-    position: relative;
     display: flex;
+    flex-wrap: wrap;
     justify-content: center;
     align-items: center;
     text-align: center
   }
 
   &__title-span {
+    position: relative;
     color: mixin.$primary100;
   }
 
