@@ -3,6 +3,7 @@
 import React, { useState } from 'react';
 
 import { Link } from 'react-router-dom';
+import { AxiosError } from 'axios';
 import { Textarea } from '../Textarea/Textarea';
 import { Button } from '../Button/Button';
 import closeIcon from '../../img/icons/icon-dropdown-close.svg';
@@ -12,6 +13,7 @@ import { addNewReview } from '../../api/master';
 import { showNotification } from '../../helpers/notifications';
 import { useAppSelector } from '../../app/hooks';
 import { MasterReviewsCard } from '../../types/reviews';
+import { ErrorData } from '../../types/main';
 
 interface Props {
   className?: string;
@@ -34,11 +36,9 @@ export const ModalReview = React.forwardRef<HTMLFormElement, Props>(({
   const [form, setForm] = useState(initialForm);
   const token = localStorage.getItem('token');
   const refreshToken = localStorage.getItem('refreshToken');
-  // const [formErrors, setFormErrors] = useState(initialForm);
+  const [formError, setFormError] = useState('');
   const { grade, comment } = form;
   const { master } = publicMaster;
-
-  // const { email: emailError, message: messageError } = formErrors;
 
   const handleChangeField = (
     e: React.ChangeEvent<HTMLTextAreaElement | HTMLInputElement>,
@@ -69,11 +69,17 @@ export const ModalReview = React.forwardRef<HTMLFormElement, Props>(({
               },
             },
           );
-        })
-        .catch(() => showNotification('error'));
-    }
 
-    onClose();
+          onClose();
+        })
+        .catch((err: AxiosError<ErrorData<string>>) => {
+          if (err.response?.data.errors?.comment) {
+            setFormError(err.response.data.errors.comment);
+          }
+
+          showNotification('error');
+        });
+    }
   };
 
   return (
@@ -135,14 +141,14 @@ export const ModalReview = React.forwardRef<HTMLFormElement, Props>(({
         value={comment}
         onChange={e => handleChangeField(e)}
         disabled={!token || !refreshToken}
-      // errorText={messageError}
+        errorText={formError}
       />
 
       <Button
         type="submit"
         size="small"
         className="modal-review__form-button"
-      // disabled={!grade || !comment}
+        disabled={!grade || !comment}
       >
         Send
       </Button>
