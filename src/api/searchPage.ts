@@ -1,3 +1,4 @@
+import { modifyPhotoName } from '../helpers/functions';
 import { Page } from '../types/main';
 import { MasterCard, ServiceCard } from '../types/master';
 import { City } from '../types/searchPage';
@@ -20,7 +21,9 @@ export const getFilteredMasterCards = async (
   const masterCardsWithPhotos = await Promise.all(
     masterCards.content.map(async (masterCard) => {
       if (masterCard.mainPhoto) {
-        const photo = await downloadPhoto(masterCard.mainPhoto);
+        const photo = await downloadPhoto(
+          modifyPhotoName(masterCard.mainPhoto, 'MainMini'),
+        );
 
         // eslint-disable-next-line no-param-reassign
         masterCard.mainPhoto = URL.createObjectURL(new Blob([photo]));
@@ -48,7 +51,9 @@ export const getFilteredServiceCards = async (
   const serviceCardsWithPhotos = await Promise.all(
     serviceCards.content.map(async (serviceCard) => {
       if (serviceCard.photo) {
-        const photo = await downloadPhoto(serviceCard.photo);
+        const photo = await downloadPhoto(
+          modifyPhotoName(serviceCard.photo, 'MainMini'),
+        );
 
         // eslint-disable-next-line no-param-reassign
         serviceCard.photo = URL.createObjectURL(new Blob([photo]));

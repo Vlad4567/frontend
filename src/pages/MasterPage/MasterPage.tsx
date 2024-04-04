@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from 'react';
+import { Navigation } from 'swiper/modules';
 import {
   Link,
   useNavigate,
@@ -6,7 +7,6 @@ import {
   useSearchParams,
 } from 'react-router-dom';
 import { useDocumentTitle, useOnClickOutside } from 'usehooks-ts';
-import SwiperCore from 'swiper';
 import { SwiperSlide, Swiper } from 'swiper/react';
 import {
   getMaster, getRandomMasterPhotos, getReviewsMaster,
@@ -32,12 +32,10 @@ import { CreateModal } from '../../components/CreateModal/CreateModal';
 import { ModalReview } from '../../components/ModalReview/ModalReview';
 import { ProgressBar } from '../../components/ProgressBar/ProgressBar';
 import { ReviewsCard } from '../../components/ReviewsCard/ReviewsCard';
-import { getUser } from '../../api/account';
 import { Page } from '../../types/main';
 import { MasterReviewsCard } from '../../types/reviews';
 import { RatingStars } from '../../components/RatingStars/RatingStars';
 import { getRatings } from '../../helpers/functions';
-import * as userSlice from '../../features/userSlice';
 import './MasterPage.scss';
 
 type Modal = 'newReview';
@@ -47,10 +45,8 @@ export const MasterPage: React.FC = () => {
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
   const { master } = useAppSelector(state => state.publicMasterSlice);
-  const { user } = useAppSelector(state => state.userSlice);
   const [activeSubcategory, setActiveSubcategory]
     = useState<SubCategory | null>(null);
-  const [subcategories, setSubcategories] = useState<SubCategory[]>([]);
   const [services, setServices] = useState<Service[]>([]);
   const [activeService, setActiveService] = useState<Service | null>(null);
   const [mainPhotos, setMainPhotos] = useState<GalleryPhoto[]>([]);
@@ -59,7 +55,6 @@ export const MasterPage: React.FC = () => {
     = useState<Page<MasterReviewsCard> | null>(null);
   const [masterReviewsPage, setMasterReviewsPage] = useState(0);
   const [modal, setModal] = useState<Modal | ''>('');
-  const [swiperRef, setSwiperRef] = useState<SwiperCore | null>(null);
   const modalRef = useRef<HTMLFormElement>(null);
 
   useDocumentTitle(master.firstName || 'Master');
@@ -70,25 +65,9 @@ export const MasterPage: React.FC = () => {
     .values(statistics)
     .reduce((acc, curr) => acc + curr, 0);
 
-  const handleClickOutside = () => {
-    setModal('');
-  };
-
   useOnClickOutside<HTMLFormElement>([
     modalRef,
-  ], handleClickOutside);
-
-  const handleNext = () => {
-    if (swiperRef) {
-      swiperRef.slideNext();
-    }
-  };
-
-  const handlePrev = () => {
-    if (swiperRef) {
-      swiperRef.slidePrev();
-    }
-  };
+  ], () => setModal(''));
 
   const loadReviewsMaster = () => {
     if (!reviewsCardPage || masterReviewsPage <= reviewsCardPage.totalPages) {
@@ -117,7 +96,6 @@ export const MasterPage: React.FC = () => {
             .then(setMainPhotos)
             .catch(() => showNotification('error'));
 
-          setSubcategories(res.subcategories || []);
           setActiveSubcategory(res.subcategories?.[0] || {
             id: 0,
             name: '',
@@ -144,27 +122,8 @@ export const MasterPage: React.FC = () => {
         chatButton.scrollIntoView({ behavior: 'smooth' });
       }
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
 
-  useEffect(() => {
-    if (id) {
-      getMaster(+id)
-        .then((res) => {
-          dispatch(publicMasterSlice.updateMaster(res));
-        })
-        .catch(() => showNotification('error'));
-    }
-  }, [dispatch, id]);
-
-  useEffect(() => {
-    if (!user.username) {
-      getUser()
-        .then((res) => {
-          dispatch(userSlice.updateUser(res));
-        })
-        .catch(() => showNotification('error'));
-    }
+    loadReviewsMaster();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
@@ -205,18 +164,20 @@ export const MasterPage: React.FC = () => {
                 {`${master.firstName} ${master.lastName}`}
               </h1>
 
-              <div className="master-page__info-title-left-subcategories">
-                {master.subcategories
-                  && master.subcategories.map(subcategory => (
-                    <DropDownButton
-                      size="large"
-                      className="master-page__info-title-left-subcategory"
-                      key={subcategory.id}
-                    >
-                      {subcategory.name}
-                    </DropDownButton>
-                  ))}
-              </div>
+              {!!master.subcategories?.length && (
+                <div className="master-page__info-title-left-subcategories">
+                  {master.subcategories
+                    && master.subcategories.map(subcategory => (
+                      <DropDownButton
+                        size="large"
+                        className="master-page__info-title-left-subcategory"
+                        key={subcategory.id}
+                      >
+                        {subcategory.name}
+                      </DropDownButton>
+                    ))}
+                </div>
+              )}
             </div>
             <ButtonWithArrow
               className="master-page__info-title-chat"
@@ -232,111 +193,175 @@ export const MasterPage: React.FC = () => {
               Chat
             </ButtonWithArrow>
           </div>
-          <div className="master-page__info-description">
-            <h3 className="master-page__info-description-title">
-              About me
-            </h3>
-            <p className="master-page__info-description-text">
-              {master.description}
-            </p>
-          </div>
+
+          {master.description && (
+            <div className="master-page__info-description">
+              <h3 className="master-page__info-description-title">
+                About me
+              </h3>
+              <p className="master-page__info-description-text">
+                {master.description}
+              </p>
+            </div>
+          )}
         </section>
-        <section className="master-page__services">
-          <h1 className="master-page__services-title">
-            Services to
-            {' '}
-            <span className="master-page__services-title-span">
-              {websiteName}
-            </span>
-            <Stars type="dark" size="large" />
-          </h1>
-          <div className="master-page__services-main">
-            <article className="master-page__services-main-wrapper">
-              <SwitchButtons
-                buttons={subcategories}
-                activeButton={
-                  activeSubcategory || { id: -1, name: '' }
-                }
-                onClickButton={(_, item) => setActiveSubcategory(item)}
-                className="master-page__services-main-subcategories"
-              />
 
-              <hr className="master-page__services-main-divider" />
+        {!!master.subcategories?.length && (
+          <section className="master-page__services">
+            <h1 className="master-page__services-title">
+              Services to
+              {' '}
+              <span className="master-page__services-title-span">
+                {websiteName}
+              </span>
+              <Stars type="dark" size="large" />
+            </h1>
+            <div className="master-page__services-main">
+              <article className="master-page__services-main-wrapper">
+                <SwitchButtons
+                  buttons={master.subcategories}
+                  activeButton={
+                    activeSubcategory || { id: -1, name: '' }
+                  }
+                  onClickButton={(_, item) => setActiveSubcategory(item)}
+                  className="master-page__services-main-subcategories"
+                />
 
-              <div className="master-page__services-main-content">
-                <div className="master-page__services-main-item">
-                  <small className="master-page__services-main-item-small">
-                    Service
-                  </small>
-                  <small className="master-page__services-main-item-small">
-                    Price, ₴
-                  </small>
-                  <small className="master-page__services-main-item-small">
-                    Duration, min (approx.)
-                  </small>
-                </div>
-                {services.map((service) => (
-                  <div
-                    key={service.id}
-                    className="master-page__services-main-item"
-                    role="button"
-                    tabIndex={0}
-                    onKeyDown={() => setActiveService(service)}
-                    onClick={() => setActiveService(service)}
-                  >
-                    <p className="master-page__services-main-item-p">
-                      {service.name}
-                    </p>
-                    <p className="master-page__services-main-item-p">
-                      {`₴ ${service.price}`}
-                    </p>
-                    <p className="master-page__services-main-item-p">
-                      {`${service.duration} min`}
-                    </p>
+                <hr className="master-page__services-main-divider" />
+
+                <div className="master-page__services-main-content">
+                  <div className="master-page__services-main-item">
+                    <small className="master-page__services-main-item-small">
+                      Service
+                    </small>
+                    <small className="master-page__services-main-item-small">
+                      Price, ₴
+                    </small>
+                    <small className="master-page__services-main-item-small">
+                      Duration, min (approx.)
+                    </small>
                   </div>
-                ))}
-              </div>
-            </article>
-            {activeService && (
-              <img
-                className="master-page__services-main-image"
-                src={activeService.photo?.photoUrl}
-                alt={activeService.name || 'Service'}
-              />
-            )}
-          </div>
-        </section>
-        <section className="master-page__reviews">
-          <h2 className="master-page__reviews-title">Reviews</h2>
+                  {services.map((service) => (
+                    <div
+                      key={service.id}
+                      className="master-page__services-main-item"
+                      role="button"
+                      tabIndex={0}
+                      onKeyDown={() => setActiveService(service)}
+                      onClick={() => setActiveService(service)}
+                    >
+                      <p className="master-page__services-main-item-p">
+                        {service.name}
+                      </p>
+                      <p className="master-page__services-main-item-p">
+                        {`₴ ${service.price}`}
+                      </p>
+                      <p className="master-page__services-main-item-p">
+                        {`${service.duration} min`}
+                      </p>
+                    </div>
+                  ))}
+                </div>
+              </article>
+              {activeService && (
+                <img
+                  className="master-page__services-main-image"
+                  src={activeService.photo?.photoUrl}
+                  alt={activeService.name || 'Service'}
+                />
+              )}
+            </div>
+          </section>
+        )}
 
-          <div className="master-page__reviews-body">
-            <article className="master-page__reviews-info">
-              <div className="master-page__reviews-info-header">
-                <div className="master-page__reviews-info-header-wraper">
-                  <h3 className="master-page__reviews-info-header-rating">
-                    {rating}
-                  </h3>
+        {!!reviewsCardPage?.content.length && (
+          <section className="master-page__reviews">
+            <h2 className="master-page__reviews-title">Reviews</h2>
 
-                  <div className="master-page__reviews-info-header-blok">
+            <div className="master-page__reviews-body">
+              <article className="master-page__reviews-info">
+                <div className="master-page__reviews-info-header">
+                  <div className="master-page__reviews-info-header-wraper">
+                    <h3 className="master-page__reviews-info-header-rating">
+                      {rating}
+                    </h3>
 
-                    <p className="master-page__reviews-info-header-blok-text">
-                      {statisticsStars}
-                      {' '}
-                      ratings
-                    </p>
+                    <div className="master-page__reviews-info-header-blok">
 
-                    {rating && (
-                      <RatingStars
-                        state={rating}
-                      />
+                      <p className="master-page__reviews-info-header-blok-text">
+                        {statisticsStars}
+                        {' '}
+                        ratings
+                      </p>
+
+                      {rating && (
+                        <RatingStars
+                          state={rating}
+                        />
+                      )}
+
+                    </div>
+                  </div>
+                  <>
+                    <Button
+                      size="large"
+                      className="master-page__reviews-button-first"
+                      onClick={openModalReview}
+                    >
+                      Write review
+                    </Button>
+                    {modal === 'newReview' && (
+                      <CreateModal>
+                        <ModalReview
+                          onClose={() => setModal('')}
+                          ref={modalRef}
+                          addCard={card => {
+                            setReviewsCardPage(c => {
+                              if (c) {
+                                return {
+                                  ...c,
+                                  content: [...c.content, card],
+                                };
+                              }
+
+                              return null;
+                            });
+                          }}
+                        />
+                      </CreateModal>
                     )}
-
-                  </div>
+                  </>
                 </div>
+
+                <ul className="master-page__reviews-info-header-list">
+                  {statistics
+                    && sumStatisticsValues
+                    && Object.entries(statistics)
+                      .sort((a, b) => a[0].localeCompare(b[0]))
+                      .map(item => {
+                        const [key, value] = item;
+                        const percent = 100;
+                        const percentValue = (
+                          value / sumStatisticsValues) * percent;
+
+                        return (
+                          <li className="master-page__reviews-info-header-item">
+                            <p
+                              className="master-page__reviews-info-header-rate"
+                            >
+                              {key.replace('count', '')}
+                            </p>
+
+                            <ProgressBar completed={percentValue} />
+
+                          </li>
+                        );
+                      })}
+                </ul>
                 <>
                   <Button
                     size="large"
-                    className="master-page__reviews-button-first"
+                    className="master-page__reviews-button-second"
                     onClick={openModalReview}
                   >
                     Write review
@@ -362,89 +387,47 @@ export const MasterPage: React.FC = () => {
                     </CreateModal>
                   )}
                 </>
-              </div>
+              </article>
 
-              <ul className="master-page__reviews-info-header-list">
-                {statistics
-                  && sumStatisticsValues
-                  && Object.entries(statistics)
-                    .sort((a, b) => a[0].localeCompare(b[0]))
-                    .map(item => {
-                      const [key, value] = item;
-                      const percent = 100;
-                      const percentValue = (
-                        value / sumStatisticsValues) * percent;
-
-                      return (
-                        <li className="master-page__reviews-info-header-item">
-                          <p className="master-page__reviews-info-header-rate">
-                            {key.replace('count', '')}
-                          </p>
-
-                          <ProgressBar completed={percentValue} />
-
-                        </li>
-                      );
-                    })}
-              </ul>
-              <>
-                <Button
-                  size="large"
-                  className="master-page__reviews-button-second"
-                  onClick={openModalReview}
+              <figure className="master-page__reviews-swiper">
+                <Swiper
+                  navigation={{
+                    nextEl: '.master-page__reviews-swiper-control-next',
+                    prevEl: '.master-page__reviews-swiper-control-prev',
+                  }}
+                  modules={[Navigation]}
+                  className="master-page__reviews-swiper-slides"
+                  spaceBetween="20px"
+                  slidesPerView="auto"
+                  onReachEnd={loadReviewsMaster}
                 >
-                  Write review
-                </Button>
-                {modal === 'newReview' && (
-                  <CreateModal>
-                    <ModalReview
-                      onClose={() => setModal('')}
-                      ref={modalRef}
-                      addCard={card => {
-                        setReviewsCardPage(c => {
-                          if (c) {
-                            return {
-                              ...c,
-                              content: [...c.content, card],
-                            };
-                          }
+                  {reviewsCardPage?.content.map((card) => (
+                    <SwiperSlide
+                      key={card.id}
+                      className="master-page__reviews-swiper-slide"
+                      style={{ width: 'auto' }}
+                    >
+                      <ReviewsCard card={card} />
+                    </SwiperSlide>
+                  ))}
+                </Swiper>
 
-                          return null;
-                        });
-                      }}
-                    />
-                  </CreateModal>
-                )}
-              </>
-            </article>
+                <figcaption className="master-page__reviews-swiper-control">
+                  <ArrowButton
+                    className="master-page__reviews-swiper-control-prev"
+                    position="left"
+                  />
+                  <ArrowButton
+                    className="master-page__reviews-swiper-control-next"
+                    position="right"
+                  />
+                </figcaption>
+              </figure>
 
-            <figure className="master-page__reviews-swiper">
-              <Swiper
-                onSwiper={setSwiperRef}
-                className="master-page__reviews-swiper-slides"
-                spaceBetween="20px"
-                slidesPerView="auto"
-                onReachEnd={loadReviewsMaster}
-              >
-                {reviewsCardPage?.content.map((card) => (
-                  <SwiperSlide
-                    key={card.id}
-                    className="master-page__reviews-swiper-slide"
-                    style={{ width: 'auto' }}
-                  >
-                    <ReviewsCard card={card} />
-                  </SwiperSlide>
-                ))}
-              </Swiper>
+            </div>
+          </section>
+        )}
 
-              <figcaption className="master-page__reviews-swiper-control">
-                <ArrowButton position="left" onClick={handlePrev} />
-                <ArrowButton position="right" onClick={handleNext} />
-              </figcaption>
-            </figure>
-
-          </div>
-        </section>
         <ConnectWithMasterSection
           className="master-page__connect-with-master"
           name={`${master.firstName} ${master.lastName}`}

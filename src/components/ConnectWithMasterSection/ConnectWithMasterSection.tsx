@@ -84,8 +84,8 @@ export const ConnectWithMasterSection: React.FC<Props> = ({
           className="connect-with-master-section__title-span"
         >
           {name}
+          <Stars size="large" type="dark" />
         </span>
-        <Stars size="large" type="dark" />
       </h1>
       <article
         className="connect-with-master-section__contacts"
