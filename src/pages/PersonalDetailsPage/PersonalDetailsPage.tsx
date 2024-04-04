@@ -1,7 +1,7 @@
 /* eslint-disable jsx-a11y/label-has-associated-control */
 import { useNavigate } from 'react-router-dom';
-import { useEffect, useState } from 'react';
-import { useDebounce } from 'usehooks-ts';
+import { useEffect, useRef, useState } from 'react';
+import { useDebounce, useOnClickOutside } from 'usehooks-ts';
 import { AxiosError } from 'axios';
 import {
   changeObjectStateKey,
@@ -13,13 +13,16 @@ import './PersonalDetailsPage.scss';
 import { UnderlinedSmall }
   from '../../components/UnderlinedSmall/UnderlinedSmall';
 import { useAppDispatch, useAppSelector } from '../../app/hooks';
-import { PasswordData, UserData } from '../../types/account';
+import { PasswordData, TypeModal, UpdateUserData } from '../../types/account';
 import { debounceDelay } from '../../helpers/variables';
 import { checkUserEmail, checkUsername, forgotPassword } from '../../api/login';
 import { ErrorData } from '../../types/main';
 import { showNotification } from '../../helpers/notifications';
-import { putPassword, putUser } from '../../api/account';
+import { putPassword, putUser, changeEmail } from '../../api/account';
 import * as userSlice from '../../features/userSlice';
+import { CreateModal } from '../../components/CreateModal/CreateModal';
+import { ModalAlertMessage }
+  from '../../components/ModalAlertMessage/ModalAlertMessage';
 
 interface InitialDataErrors {
   email: string,
@@ -44,6 +47,10 @@ export const PersonalDetailsPage: React.FC = () => {
   const dispatch = useAppDispatch();
   const { user } = useAppSelector(state => state.userSlice);
   const navigate = useNavigate();
+  const [modal, setModal] = useState<TypeModal | ''>('');
+  const modalRef = useRef(null);
+  const [password, setPassword] = useState('');
+  const [errorPassword, setErrorPassword] = useState('');
 
   const initialUserData = {
     username: user.username,
@@ -52,9 +59,8 @@ export const PersonalDetailsPage: React.FC = () => {
   };
 
   const [showPassword, setShowPassword] = useState(false);
-  const [userData, setUserData] = useState<
-  Omit<UserData, 'profilePhoto' | 'master'> & PasswordData
-  >(initialUserData);
+  const [userData, setUserData] = useState<UpdateUserData
+  & PasswordData>(initialUserData);
   const [errors, setErrors] = useState<InitialDataErrors>(initialDataErrors);
 
   const debouncedUsername = useDebounce(userData.username, debounceDelay);
@@ -63,6 +69,35 @@ export const PersonalDetailsPage: React.FC = () => {
   const isApplyDisabled = JSON.stringify(userData)
     === JSON.stringify(initialUserData)
     || JSON.stringify(errors) !== JSON.stringify(initialDataErrors);
+
+  const handleClickOutside = () => {
+    setModal('');
+    setUserData(c => ({ ...c, email: user.email }));
+  };
+
+  useOnClickOutside<HTMLFormElement>([
+    modalRef,
+  ], handleClickOutside);
+
+  const handleChangeEmail = () => {
+    changeEmail({
+      newEmail: userData.email,
+      password,
+    })
+      .then(() => {
+        setModal('');
+        setPassword('');
+        showNotification('confirmationEmail');
+      })
+      .catch((err: AxiosError<ErrorData<string>>) => {
+        setErrorPassword(err.response?.data.error || 'Error updating email');
+      });
+  };
+
+  const cancelChangingEmail = () => {
+    setModal('');
+    setUserData(c => ({ ...c, email: user.email }));
+  };
 
   const handleResetPassword = () => {
     if (user.email) {
@@ -140,8 +175,10 @@ export const PersonalDetailsPage: React.FC = () => {
           email: userData.email,
           username: userData.username,
         })
-          .then(() => {
-            showNotification('confirmationEmail');
+          .then((res) => {
+            if (res.newEmail) {
+              setModal('ResetEmail');
+            }
 
             dispatch(userSlice.updateUser({
               username: userData.username,
@@ -180,14 +217,6 @@ export const PersonalDetailsPage: React.FC = () => {
   };
 
   useEffect(() => {
-    setUserData(c => ({
-      ...c,
-      username: user.username,
-      email: user.email,
-    }));
-  }, [user]);
-
-  useEffect(() => {
     if (debouncedUsername !== user.username) {
       checkUsername(debouncedUsername)
         .then(res => typeof res === 'boolean' && (res ? setErrors(c => ({
@@ -209,7 +238,7 @@ export const PersonalDetailsPage: React.FC = () => {
         username: '',
       }));
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [debouncedUsername]);
 
   useEffect(() => {
@@ -234,7 +263,7 @@ export const PersonalDetailsPage: React.FC = () => {
         email: '',
       }));
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [debouncedEmail]);
 
   const handleInputOnChange = (
@@ -263,15 +292,46 @@ export const PersonalDetailsPage: React.FC = () => {
             title="Username"
             placeholder="Username"
           />
-          <LoginInput
-            errorText={errors.email}
-            value={userData.email}
-            onChange={handleInputOnChange}
-            type="email"
-            name="email"
-            title="Email address"
-            placeholder="Email address"
-          />
+          <>
+            <LoginInput
+              errorText={errors.email}
+              value={userData.email}
+              onChange={handleInputOnChange}
+              type="email"
+              name="email"
+              title="Email address"
+              placeholder="Email address"
+            />
+
+            {modal && (
+              <CreateModal>
+                <ModalAlertMessage
+                  title="Reset email"
+                  description="
+                    Enter your password you used
+                    to register earlier to change an email
+                  "
+                  ref={modalRef}
+                  onClose={cancelChangingEmail}
+                  dangerPlaceholder="Reset email"
+                  simplePlaceholder="Cancel"
+                  onClickDanger={handleChangeEmail}
+                  onClickSimple={cancelChangingEmail}
+                >
+                  <LoginInput
+                    type="password"
+                    placeholder="Password"
+                    title="Password"
+                    showPassword={showPassword}
+                    setShowPassword={setShowPassword}
+                    value={password}
+                    onChange={e => setPassword(e.target.value)}
+                    errorText={errorPassword}
+                  />
+                </ModalAlertMessage>
+              </CreateModal>
+            )}
+          </>
         </div>
         <div className="personal-details-page__main-password">
           <div className="personal-details-page__main-password-header">
