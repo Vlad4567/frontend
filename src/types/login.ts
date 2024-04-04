@@ -12,3 +12,8 @@ export interface Token {
   token: string
   refreshToken: string | null
 }
+
+export interface DataLogin {
+  code: number
+  token: string
+}
