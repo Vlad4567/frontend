@@ -51,10 +51,24 @@ const publicMasterSlice = createSlice({
         },
       };
     },
+
+    updateStatistics: (state, action: PayloadAction<Partial<PublicMaster>>) => {
+      return {
+        ...state,
+        master: {
+          ...state.master,
+          statistics: {
+            ...state.master.statistics,
+            ...action.payload,
+          },
+        },
+      };
+    },
   },
 });
 
 export const {
   updateMaster,
+  updateStatistics,
 } = publicMasterSlice.actions;
 export default publicMasterSlice.reducer;

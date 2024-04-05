@@ -65,6 +65,7 @@ $border-bottom: 2px;
 
   &__error {
     display: flex;
+    flex-wrap: wrap;
     gap: 5px;
   }
 

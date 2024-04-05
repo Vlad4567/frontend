@@ -46,9 +46,7 @@ export const ModalContactUs = React.forwardRef<HTMLFormElement, Props>(({
     setFormErrors(initialForm);
   };
 
-  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-
+  const handleSubmit = () => {
     sendContactUs(form)
       .then(() => {
         setForm(initialForm);
@@ -69,7 +67,6 @@ export const ModalContactUs = React.forwardRef<HTMLFormElement, Props>(({
   return (
     <form
       className={`contact-us ${className}`}
-      onSubmit={handleSubmit}
       ref={ref}
     >
       <div className="contact-us__wrapper">
@@ -118,6 +115,7 @@ export const ModalContactUs = React.forwardRef<HTMLFormElement, Props>(({
         className={classNames('contact-us__form-button', {
           'contact-us__form-button--disabled': !!emailError || !!messageError,
         })}
+        onClick={handleSubmit}
       >
         Send
       </Button>

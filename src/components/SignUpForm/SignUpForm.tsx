@@ -179,7 +179,6 @@ export const SignUpForm: React.FC = () => {
 
   return (
     <form
-      onSubmit={handleButtonRegistration}
       className="sign-up-form"
     >
       <LoginHeaderForm
@@ -187,7 +186,7 @@ export const SignUpForm: React.FC = () => {
         title="Sign up"
         description="Already have an account?"
         textLink="Log in"
-        onClick={() => navigate('/login')}
+        onClick={() => navigate('..')}
       />
       <div className="sign-up-form__body">
         <div className="sign-up-form__main">
@@ -261,7 +260,6 @@ export const SignUpForm: React.FC = () => {
             Terms of service and Privacy policy
           </small>
           <Button
-            type="submit"
             size="large"
             className="sign-up-form__button"
             onClick={handleButtonRegistration}
