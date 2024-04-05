@@ -24,18 +24,18 @@ const renderLoginHeaderForm = (
           title="Log in"
           description="New user?"
           textLink="Create an account"
-          onClick={() => navigate('sign-up', { replace: true })}
+          onClick={() => navigate('/login/signup', { replace: true })}
         />
       );
 
-    case 'sign-up':
+    case 'signup':
       return (
         <LoginHeaderForm
           className={className}
           title="Sign up"
           description="Already have an account?"
           textLink="Log in"
-          onClick={() => navigate('login', { replace: true })}
+          onClick={() => navigate('/login', { replace: true })}
         />
       );
 

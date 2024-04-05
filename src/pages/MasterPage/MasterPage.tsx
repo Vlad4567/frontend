@@ -35,7 +35,6 @@ import { ReviewsCard } from '../../components/ReviewsCard/ReviewsCard';
 import { Page } from '../../types/main';
 import { MasterReviewsCard } from '../../types/reviews';
 import { RatingStars } from '../../components/RatingStars/RatingStars';
-import { getRatings } from '../../helpers/functions';
 import './MasterPage.scss';
 
 type Modal = 'newReview';
@@ -60,7 +59,6 @@ export const MasterPage: React.FC = () => {
   useDocumentTitle(master.firstName || 'Master');
 
   const { statistics, rating } = master;
-  const statisticsStars = statistics && getRatings(Object.values(statistics));
   const sumStatisticsValues = statistics && Object
     .values(statistics)
     .reduce((acc, curr) => acc + curr, 0);
@@ -88,6 +86,25 @@ export const MasterPage: React.FC = () => {
 
   const openModalReview = () => {
     setModal('newReview');
+  };
+
+  const handleAddCard = (newCard: MasterReviewsCard) => {
+    if (reviewsCardPage?.totalElements) {
+      const ratingCalculate = rating
+      && rating * reviewsCardPage?.totalElements;
+
+      const reultRatingCalculate = ratingCalculate
+        && (ratingCalculate + newCard.grade)
+        / (reviewsCardPage?.totalElements + 1);
+
+      dispatch(publicMasterSlice.updateMaster({
+        rating: reultRatingCalculate && +reultRatingCalculate?.toFixed(1),
+      }));
+    }
+
+    dispatch(publicMasterSlice.updateStatistics({ [`count${newCard.grade}`]: newCard.grade }));
+
+    loadReviewsMaster();
   };
 
   useEffect(() => {
@@ -302,7 +319,7 @@ export const MasterPage: React.FC = () => {
                     <div className="master-page__reviews-info-header-blok">
 
                       <p className="master-page__reviews-info-header-blok-text">
-                        {statisticsStars}
+                        {reviewsCardPage.totalElements}
                         {' '}
                         ratings
                       </p>
@@ -328,18 +345,7 @@ export const MasterPage: React.FC = () => {
                         <ModalReview
                           onClose={() => setModal('')}
                           ref={modalRef}
-                          addCard={card => {
-                            setReviewsCardPage(c => {
-                              if (c) {
-                                return {
-                                  ...c,
-                                  content: [...c.content, card],
-                                };
-                              }
-
-                              return null;
-                            });
-                          }}
+                          addCard={card => handleAddCard(card)}
                         />
                       </CreateModal>
                     )}
@@ -384,18 +390,7 @@ export const MasterPage: React.FC = () => {
                       <ModalReview
                         onClose={() => setModal('')}
                         ref={modalRef}
-                        addCard={card => {
-                          setReviewsCardPage(c => {
-                            if (c) {
-                              return {
-                                ...c,
-                                content: [...c.content, card],
-                              };
-                            }
-
-                            return null;
-                          });
-                        }}
+                        addCard={card => handleAddCard(card)}
                       />
                     </CreateModal>
                   )}

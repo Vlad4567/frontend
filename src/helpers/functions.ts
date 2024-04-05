@@ -200,16 +200,3 @@ export const fixUrl = (url: string) => {
     ? url
     : `http://${url}`;
 };
-
-export const getRatings = (values: number[]) => {
-  let sum = 0;
-  let countStars = 1;
-
-  values.forEach(star => {
-    sum += star * countStars;
-
-    countStars += 1;
-  });
-
-  return sum;
-};
