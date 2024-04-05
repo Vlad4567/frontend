@@ -1,33 +1,8 @@
-import { SubCategory } from '../types/category';
 import { GalleryPhoto } from '../types/gallery';
-import { City } from '../types/searchPage';
 import { client } from '../utils/axiosClient';
 import { Page } from '../types/main';
 import { downloadPhoto } from './account';
 import { modifyPhotoName } from '../helpers/functions';
-
-export interface EditMaster {
-  firstName: string | null,
-  lastName: string | null,
-  contacts: {
-    instagram: string | null,
-    facebook: string | null,
-    telegram: string | null,
-    phone: string | null
-  },
-  address: {
-    city: City | null,
-    street: string | null,
-    houseNumber: string | null,
-    description: string | null
-  },
-  description: string | null,
-  subcategories: SubCategory[] | null
-}
-
-export const getEditMaster = () => {
-  return client.get<EditMaster>('/master');
-};
 
 export const getGalleryPhotos = async (
   page: number,

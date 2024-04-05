@@ -15,7 +15,8 @@ import photoPlus from '../../img/icons/tabler-photo-plus.svg';
 import { Service } from '../../types/services';
 import './ModalEditingService.scss';
 import { GalleryPhoto } from '../../types/gallery';
-import { showNotification } from '../../helpers/notifications';
+import * as notificationSlice from '../../features/notificationSlice';
+import { useAppDispatch } from '../../app/hooks';
 
 type Modal = 'Gallery';
 
@@ -47,6 +48,7 @@ export const ModalEditingService = forwardRef<HTMLFormElement, Props>(({
   onChange = () => {},
   onClose = () => {},
 }, ref) => {
+  const dispatch = useAppDispatch();
   const [modal, setModal] = useState<Modal | ''>('');
   const [form, setForm] = useState<Service>(value || newService);
 
@@ -62,7 +64,10 @@ export const ModalEditingService = forwardRef<HTMLFormElement, Props>(({
     } else {
       onAddService(form)
         .then(() => setForm(newService))
-        .catch(() => showNotification('error'));
+        .catch(() => dispatch(notificationSlice.addNotification({
+          id: +new Date(),
+          type: 'error',
+        })));
     }
   };
 

@@ -6,7 +6,7 @@ import './MasterGalleryPage.scss';
 import { getMaster } from '../../api/master';
 import * as publicMasterSlice from '../../features/publicMasterSlice';
 import { useAppDispatch, useAppSelector } from '../../app/hooks';
-import { showNotification } from '../../helpers/notifications';
+import * as notificationSlice from '../../features/notificationSlice';
 import { ConnectWithMasterSection }
   from '../../components/ConnectWithMasterSection/ConnectWithMasterSection';
 
@@ -23,7 +23,10 @@ export const MasterGalleryPage: React.FC = () => {
         .then((res) => {
           dispatch(publicMasterSlice.updateMaster(res));
         })
-        .catch(() => showNotification('error'));
+        .catch(() => dispatch(notificationSlice.addNotification({
+          id: +new Date(),
+          type: 'error',
+        })));
     }
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);

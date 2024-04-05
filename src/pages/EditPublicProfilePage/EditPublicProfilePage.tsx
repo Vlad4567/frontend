@@ -16,12 +16,11 @@ import styleVariables from '../../styles/variables.module.scss';
 import { useAppDispatch, useAppSelector } from '../../app/hooks';
 import {
   deleteMaster,
-  getEditMaster,
   hideMaster,
   putEditMaster,
   unhideMaster,
 } from '../../api/master';
-import { showNotification } from '../../helpers/notifications';
+import * as notificationSlice from '../../features/notificationSlice';
 import * as createMasterSlice from '../../features/createMasterSlice';
 import iconBasket from '../../img/icons/icon-basket.svg';
 import { Button } from '../../components/Button/Button';
@@ -48,7 +47,6 @@ export const EditPublicProfilePage: React.FC = () => {
   const [isBlockedURL, setIsBlockedURL] = useState(true);
   const [browserBlock, setBrowserBlock]
     = useState<Generator<undefined, void, unknown> | null>(null);
-  const [isEditFormShown, setIsEditFormShown] = useState(false);
   const accountContentTitle
     = document.querySelector('.account-page__main-title-wrapper');
   const alertRef = useRef<HTMLDivElement>(null);
@@ -106,33 +104,11 @@ export const EditPublicProfilePage: React.FC = () => {
 
   useEffect(() => {
     if (user.master) {
-      getEditMaster()
-        .then(res => {
-          dispatch(createMasterSlice.editMaster({
-            firstName: res.firstName,
-            lastName: res.lastName,
-            contacts: {
-              instagram: res.contacts.instagram,
-              facebook: res.contacts.facebook,
-              telegram: res.contacts.telegram,
-              phone: res.contacts.phone,
-            },
-            address: {
-              city: res.address.city,
-              street: res.address.street,
-              houseNumber: res.address.houseNumber,
-              description: res.address.description,
-            },
-            description: res.description,
-            subcategories: res.subcategories,
-          }));
-          dispatch(createMasterSlice.editOptions({
-            hidden: res.hidden,
-            masterId: res.id,
-          }));
-          setIsEditFormShown(true);
-        })
-        .catch(() => showNotification('error'));
+      dispatch(createMasterSlice.updateEditMaster());
+    }
+
+    if (pathAfterEditPublicProfile === '') {
+      navigate('./area-of-work');
     }
 
     window.onbeforeunload = (e) => {
@@ -172,13 +148,19 @@ export const EditPublicProfilePage: React.FC = () => {
         .then(() => dispatch(createMasterSlice.editOptions({
           hidden: !createMaster.hidden,
         })))
-        .catch(() => showNotification('error'));
+        .catch(() => dispatch(notificationSlice.addNotification({
+          id: +new Date(),
+          type: 'error',
+        })));
     } else {
       hideMaster()
         .then(() => dispatch(createMasterSlice.editOptions({
           hidden: !createMaster.hidden,
         })))
-        .catch(() => showNotification('error'));
+        .catch(() => dispatch(notificationSlice.addNotification({
+          id: +new Date(),
+          type: 'error',
+        })));
     }
   };
 
@@ -189,7 +171,12 @@ export const EditPublicProfilePage: React.FC = () => {
         dispatch(userSlice.deleteMaster());
         navigate('..');
       })
-      .catch(() => showNotification('error'));
+      .catch(() => dispatch(
+        notificationSlice.addNotification({
+          id: +new Date(),
+          type: 'error',
+        }),
+      ));
   };
 
   const toggleEdit = () => {
@@ -216,7 +203,10 @@ export const EditPublicProfilePage: React.FC = () => {
         setActiveModal('');
       })
       .catch(() => {
-        showNotification('error');
+        dispatch(notificationSlice.addNotification({
+          id: +new Date(),
+          type: 'error',
+        }));
       });
   };
 
@@ -344,7 +334,7 @@ export const EditPublicProfilePage: React.FC = () => {
         ))}
       </nav>
 
-      {isEditFormShown && (
+      {(createMaster.editFormShown || !user.master) && (
         <Outlet />
       )}
 

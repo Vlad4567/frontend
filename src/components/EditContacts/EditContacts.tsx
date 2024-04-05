@@ -11,8 +11,8 @@ import { Button } from '../Button/Button';
 import { useAppDispatch, useAppSelector } from '../../app/hooks';
 import * as createMasterSlice from '../../features/createMasterSlice';
 import './EditContacts.scss';
-import { getEditMaster, putEditMaster } from '../../api/master';
-import { showNotification } from '../../helpers/notifications';
+import { putEditMaster } from '../../api/master';
+import * as notificationSlice from '../../features/notificationSlice';
 import { linkValidation } from '../../helpers/variables';
 
 const getFormattedInputValue = (value: string) => {
@@ -59,32 +59,7 @@ export const EditContacts: React.FC = () => {
   const handleCancel = () => {
     if (createMaster.editMode) {
       dispatch(createMasterSlice.deleteMaster());
-      getEditMaster()
-        .then(res => {
-          dispatch(createMasterSlice.editMaster({
-            firstName: res.firstName,
-            lastName: res.lastName,
-            contacts: {
-              instagram: res.contacts.instagram,
-              facebook: res.contacts.facebook,
-              telegram: res.contacts.telegram,
-              phone: res.contacts.phone,
-            },
-            address: {
-              city: res.address.city,
-              street: res.address.street,
-              houseNumber: res.address.houseNumber,
-              description: res.address.description,
-            },
-            description: res.description,
-            subcategories: res.subcategories,
-          }));
-          dispatch(createMasterSlice.editOptions({
-            hidden: res.hidden,
-            masterId: res.id,
-          }));
-        })
-        .catch(() => showNotification('error'));
+      dispatch(createMasterSlice.updateEditMaster());
     } else {
       navigate('..');
     }
@@ -120,9 +95,10 @@ export const EditContacts: React.FC = () => {
             editMode: false,
           }));
         })
-        .catch(() => {
-          showNotification('error');
-        });
+        .catch(() => dispatch(notificationSlice.addNotification({
+          id: +new Date(),
+          type: 'error',
+        })));
     } else {
       navigate('../address');
     }

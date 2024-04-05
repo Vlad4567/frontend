@@ -17,7 +17,7 @@ import { PasswordData, TypeModal, UpdateUserData } from '../../types/account';
 import { debounceDelay } from '../../helpers/variables';
 import { checkUserEmail, checkUsername, forgotPassword } from '../../api/login';
 import { ErrorData } from '../../types/main';
-import { showNotification } from '../../helpers/notifications';
+import * as notificationSlice from '../../features/notificationSlice';
 import { putPassword, putUser, changeEmail } from '../../api/account';
 import * as userSlice from '../../features/userSlice';
 import { CreateModal } from '../../components/CreateModal/CreateModal';
@@ -87,7 +87,10 @@ export const PersonalDetailsPage: React.FC = () => {
       .then(() => {
         setModal('');
         setPassword('');
-        showNotification('confirmationEmail');
+        dispatch(notificationSlice.addNotification({
+          id: +new Date(),
+          type: 'confirmationEmail',
+        }));
       })
       .catch((err: AxiosError<ErrorData<string>>) => {
         setErrorPassword(err.response?.data.error || 'Error updating email');
@@ -102,9 +105,15 @@ export const PersonalDetailsPage: React.FC = () => {
   const handleResetPassword = () => {
     if (user.email) {
       forgotPassword(user.email)
-        .then(() => showNotification('resetPassword'))
+        .then(() => dispatch(notificationSlice.addNotification({
+          id: +new Date(),
+          type: 'resetPassword',
+        })))
         .catch((err: AxiosError<ErrorData<string>>) => {
-          showNotification('error');
+          dispatch(notificationSlice.addNotification({
+            id: +new Date(),
+            type: 'error',
+          }));
           if (err.response?.data) {
             const resError = err.response.data.error
               || Object.values(err.response.data.errors || {})[0];
@@ -140,7 +149,10 @@ export const PersonalDetailsPage: React.FC = () => {
             }));
           })
           .catch((err: AxiosError<ErrorData<string>>) => {
-            showNotification('error');
+            dispatch(notificationSlice.addNotification({
+              id: +new Date(),
+              type: 'error',
+            }));
 
             if (err.response?.data.error) {
               const res = err.response.data.error;
@@ -185,7 +197,10 @@ export const PersonalDetailsPage: React.FC = () => {
             }));
           })
           .catch((err: AxiosError<ErrorData<string>>) => {
-            showNotification('error');
+            dispatch(notificationSlice.addNotification({
+              id: +new Date(),
+              type: 'error',
+            }));
 
             if (err.response?.data.error) {
               const res = err.response.data.error;
@@ -212,7 +227,10 @@ export const PersonalDetailsPage: React.FC = () => {
           });
       }
     } else {
-      showNotification('error');
+      dispatch(notificationSlice.addNotification({
+        id: +new Date(),
+        type: 'error',
+      }));
     }
   };
 
@@ -387,12 +405,14 @@ export const PersonalDetailsPage: React.FC = () => {
               return false;
             }}
           />
-          <UnderlinedSmall
-            className="personal-details-page__main-password-reset"
-            onClick={handleResetPassword}
-          >
-            Forgotten password?
-          </UnderlinedSmall>
+          {user.email && (
+            <UnderlinedSmall
+              className="personal-details-page__main-password-reset"
+              onClick={handleResetPassword}
+            >
+              Forgotten password?
+            </UnderlinedSmall>
+          )}
         </div>
       </div>
 

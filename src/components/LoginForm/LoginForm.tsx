@@ -12,7 +12,7 @@ import { objectKeys } from '../../helpers/functions';
 import { loginUser } from '../../api/login';
 import { ErrorData } from '../../types/main';
 import { useAppDispatch } from '../../app/hooks';
-import { showNotification } from '../../helpers/notifications';
+import * as notificationSlice from '../../features/notificationSlice';
 import { UnderlinedSmall } from '../UnderlinedSmall/UnderlinedSmall';
 import { DropDownButton } from '../DropDownButton/DropDownButton';
 import telegramIcon from '../../img/icons/icon-telegram.svg';
@@ -59,7 +59,10 @@ export const LoginForm: React.FC = () => {
 
       params.delete('notification');
       setSearchParams(params);
-      showNotification('registration');
+      dispatch(notificationSlice.addNotification({
+        id: +new Date(),
+        type: 'registration',
+      }));
     }
   }, [dispatch, searchParams, setSearchParams]);
 
@@ -70,7 +73,10 @@ export const LoginForm: React.FC = () => {
       .then((res) => {
         localStorage.setItem('token', res.token);
         localStorage.setItem('refreshToken', `${res.refreshToken}`);
-        showNotification('login');
+        dispatch(notificationSlice.addNotification({
+          id: +new Date(),
+          type: 'login',
+        }));
         navigate('/account');
       })
       .catch((err: AxiosError<ErrorData<string>>) => setFormErrors(c => {
