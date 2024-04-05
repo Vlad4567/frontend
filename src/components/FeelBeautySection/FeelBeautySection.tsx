@@ -8,8 +8,9 @@ import { ArrowButton } from '../ArrowButton/ArrowButton';
 import { getRatingMasterCard } from '../../api/master';
 import { MasterCard } from '../MasterCard/MasterCard';
 import * as types from '../../types/master';
-import { showNotification } from '../../helpers/notifications';
+import * as notificationSlice from '../../features/notificationSlice';
 import './FeelBeautySection.scss';
+import { useAppDispatch } from '../../app/hooks';
 
 interface Props {
   className?: string
@@ -17,6 +18,7 @@ interface Props {
 
 export const FeelBeautySection: React.FC<Props> = ({ className = '' }) => {
   const navigate = useNavigate();
+  const dispatch = useAppDispatch();
   const [swiperRef, setSwiperRef] = useState<SwiperCore | null>(null);
   const [masterCards, setMasterCards] = useState<types.MasterCard[]>([]);
   const [masterCardsPage, setMasterCardsPage] = useState(0);
@@ -38,7 +40,10 @@ export const FeelBeautySection: React.FC<Props> = ({ className = '' }) => {
       .then((response) => setMasterCards(c => (c.length
         ? [...c, ...response.content]
         : response.content)))
-      .catch(() => showNotification('error'));
+      .catch(() => dispatch(notificationSlice.addNotification({
+        id: +new Date(),
+        type: 'error',
+      })));
     setMasterCardsPage(c => c + 1);
   };
 

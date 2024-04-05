@@ -5,6 +5,7 @@ import {
   useMediaQuery,
   useOnClickOutside,
 } from 'usehooks-ts';
+import { AxiosError } from 'axios';
 import {
   NavLink,
   Outlet,
@@ -29,7 +30,7 @@ import {
   sendProfilePhoto,
   verificationTelegram,
 } from '../../api/account';
-import { showNotification } from '../../helpers/notifications';
+import * as notificationSlice from '../../features/notificationSlice';
 import * as userSlice from '../../features/userSlice';
 import telegramIcon from '../../img/icons/icon-telegram.svg';
 import './AccountPage.scss';
@@ -39,6 +40,7 @@ import { CreateModal } from '../../components/CreateModal/CreateModal';
 import { TypeModal } from '../../types/account';
 import { ModalAlertMessage }
   from '../../components/ModalAlertMessage/ModalAlertMessage';
+import { ErrorData } from '../../types/main';
 
 export const AccountPage: React.FC = () => {
   const dispatch = useAppDispatch();
@@ -69,14 +71,19 @@ export const AccountPage: React.FC = () => {
         dispatch(userSlice.updateUser(res));
         setIsShownTabs(true);
       })
-      .catch(() => showNotification('error'));
+      .catch(() => dispatch(notificationSlice.addNotification({
+        id: +new Date(),
+        type: 'error',
+      })));
 
     return () => {
       dispatch(appSlice.setShownFooter(true));
     };
   }, []);
 
-  const handleAvatarChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleAvatarChange = (
+    e: React.ChangeEvent<HTMLInputElement>,
+  ) => {
     const avatarFile = e.target.files?.item(0);
 
     if (avatarFile) {
@@ -85,12 +92,15 @@ export const AccountPage: React.FC = () => {
       formData.append('file', avatarFile);
 
       sendProfilePhoto(formData)
-        .then(photo => {
+        .then(() => {
           dispatch(userSlice.updateUser({
-            profilePhoto: photo,
+            profilePhoto: URL.createObjectURL(avatarFile),
           }));
         })
-        .catch(() => showNotification('error'));
+        .catch(() => dispatch(notificationSlice.addNotification({
+          id: +new Date(),
+          type: 'error',
+        })));
     }
   };
 
@@ -99,7 +109,10 @@ export const AccountPage: React.FC = () => {
       .then(() => {
         navigate('/login');
       })
-      .catch(() => showNotification('error'));
+      .catch(() => dispatch(notificationSlice.addNotification({
+        id: +new Date(),
+        type: 'error',
+      })));
   };
 
   const handleClickOutside = () => {
@@ -121,7 +134,10 @@ export const AccountPage: React.FC = () => {
           },
         }));
       })
-      .catch(() => showNotification('error'));
+      .catch(() => dispatch(notificationSlice.addNotification({
+        id: +new Date(),
+        type: 'error',
+      })));
   };
 
   const handleOpenModal = () => {
@@ -141,7 +157,13 @@ export const AccountPage: React.FC = () => {
 
         setModal('');
       })
-      .catch(() => showNotification('error'));
+      .catch((err: AxiosError<ErrorData<string>>) => dispatch(
+        notificationSlice.addNotification({
+          id: +new Date(),
+          type: 'error',
+          description: err.response?.data.error,
+        }),
+      ));
   };
 
   return (

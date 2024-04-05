@@ -8,7 +8,8 @@ import { forgotPassword } from '../../api/login';
 import { ErrorData } from '../../types/main';
 import { objectKeys } from '../../helpers/functions';
 import './ResetPasswordForm.scss';
-import { showNotification } from '../../helpers/notifications';
+import * as notificationSlice from '../../features/notificationSlice';
+import { useAppDispatch } from '../../app/hooks';
 
 interface InitialErrors {
   email: string
@@ -28,6 +29,7 @@ const initialData: InitialData = {
 
 export const ResetPasswordForm: React.FC = () => {
   const navigate = useNavigate();
+  const dispatch = useAppDispatch();
   const [formData, setFormData] = useState<InitialData>(initialData);
   const [formErrors, setFormErrors] = useState<InitialErrors>(initialErrors);
 
@@ -38,7 +40,10 @@ export const ResetPasswordForm: React.FC = () => {
 
     if (email) {
       forgotPassword(email)
-        .then(() => showNotification('resetPassword'))
+        .then(() => dispatch(notificationSlice.addNotification({
+          id: +new Date(),
+          type: 'resetPassword',
+        })))
         .catch((err: AxiosError<ErrorData<string>>) => setFormErrors(c => {
           if (err.response?.data.error) {
             const objectErrors = { ...c };

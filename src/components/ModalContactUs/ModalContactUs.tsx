@@ -9,10 +9,11 @@ import { Textarea } from '../Textarea/Textarea';
 import { Button } from '../Button/Button';
 import { sendContactUs } from '../../api/main';
 import closeIcon from '../../img/icons/icon-dropdown-close.svg';
-import { showNotification } from '../../helpers/notifications';
+import * as notificationSlice from '../../features/notificationSlice';
 import { ErrorData } from '../../types/main';
 import { objectKeys } from '../../helpers/functions';
 import './ModalContactUs.scss';
+import { useAppDispatch } from '../../app/hooks';
 
 interface Props {
   className?: string;
@@ -29,6 +30,7 @@ export const ModalContactUs = React.forwardRef<HTMLFormElement, Props>(({
   className = '',
   onClose = () => { },
 }, ref) => {
+  const dispatch = useAppDispatch();
   const [form, setForm] = useState(initialForm);
   const [formErrors, setFormErrors] = useState(initialForm);
 
@@ -59,7 +61,10 @@ export const ModalContactUs = React.forwardRef<HTMLFormElement, Props>(({
               [key]: error.response?.data.errors?.[key] || '',
             }));
           });
-          showNotification('error');
+          dispatch(notificationSlice.addNotification({
+            id: +new Date(),
+            type: 'error',
+          }));
         }
       });
   };

@@ -1,13 +1,29 @@
 /* eslint-disable no-param-reassign */
-import { createSlice, PayloadAction } from '@reduxjs/toolkit';
+import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { SubCategory } from '../types/category';
 import { EditMaster } from '../types/master';
+import { client } from '../utils/axiosClient';
+
+interface UpdateEditMaster extends EditMaster {
+  hidden: boolean
+  id: number
+}
+
+export const updateEditMaster = createAsyncThunk(
+  'users/updateEditMaster',
+  async () => {
+    const response = await client.get<UpdateEditMaster>('/master');
+
+    return response;
+  },
+);
 
 export interface CreateMasterState {
   master: EditMaster
   hidden: boolean;
   editMode: boolean;
   masterId: number | null;
+  editFormShown: boolean;
 }
 
 const initialState: CreateMasterState = {
@@ -32,6 +48,7 @@ const initialState: CreateMasterState = {
   hidden: false,
   editMode: false,
   masterId: null,
+  editFormShown: false,
 };
 
 const createMasterSlice = createSlice({
@@ -119,6 +136,34 @@ const createMasterSlice = createSlice({
     deleteMaster: () => {
       return initialState;
     },
+  },
+  extraReducers: (builder) => {
+    builder.addCase(updateEditMaster.fulfilled, (state, action) => {
+      const {
+        firstName,
+        lastName,
+        contacts,
+        address,
+        description,
+        subcategories,
+        hidden,
+        id,
+      } = action.payload;
+
+      state.master = {
+        ...state.master,
+        firstName,
+        lastName,
+        contacts,
+        address,
+        description,
+        subcategories,
+      };
+
+      state.hidden = hidden;
+      state.masterId = id;
+      state.editFormShown = true;
+    });
   },
 });
 

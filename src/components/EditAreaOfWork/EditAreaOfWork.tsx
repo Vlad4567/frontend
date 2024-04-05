@@ -13,10 +13,9 @@ import './EditAreaOfWork.scss';
 import {
   addMasterSubcategory,
   deleteMasterSubcategory,
-  getEditMaster,
   putEditMaster,
 } from '../../api/master';
-import { showNotification } from '../../helpers/notifications';
+import * as notificationSlice from '../../features/notificationSlice';
 import { SubCategory } from '../../types/category';
 
 type ActiveModal = '' | 'subcategories' | 'cleanMaster';
@@ -36,32 +35,7 @@ export const EditAreaOfWork: React.FC = () => {
   const handleCancel = () => {
     if (createMaster.editMode) {
       dispatch(createMasterSlice.deleteMaster());
-      getEditMaster()
-        .then(res => {
-          dispatch(createMasterSlice.editMaster({
-            firstName: res.firstName,
-            lastName: res.lastName,
-            contacts: {
-              instagram: res.contacts.instagram,
-              facebook: res.contacts.facebook,
-              telegram: res.contacts.telegram,
-              phone: res.contacts.phone,
-            },
-            address: {
-              city: res.address.city,
-              street: res.address.street,
-              houseNumber: res.address.houseNumber,
-              description: res.address.description,
-            },
-            description: res.description,
-            subcategories: res.subcategories,
-          }));
-          dispatch(createMasterSlice.editOptions({
-            hidden: res.hidden,
-            masterId: res.id,
-          }));
-        })
-        .catch(() => showNotification('error'));
+      dispatch(createMasterSlice.updateEditMaster());
     } else {
       navigate('..');
     }
@@ -86,7 +60,10 @@ export const EditAreaOfWork: React.FC = () => {
               createMasterSlice.toggleSubcategory(item),
             );
           })
-          .catch(() => showNotification('error'));
+          .catch(() => dispatch(notificationSlice.addNotification({
+            id: +new Date(),
+            type: 'error',
+          })));
       } else {
         addMasterSubcategory(item.id)
           .then(() => {
@@ -94,7 +71,10 @@ export const EditAreaOfWork: React.FC = () => {
               createMasterSlice.toggleSubcategory(item),
             );
           })
-          .catch(() => showNotification('error'));
+          .catch(() => dispatch(notificationSlice.addNotification({
+            id: +new Date(),
+            type: 'error',
+          })));
       }
     } else {
       dispatch(
@@ -119,9 +99,10 @@ export const EditAreaOfWork: React.FC = () => {
             editMode: false,
           }));
         })
-        .catch(() => {
-          showNotification('error');
-        });
+        .catch(() => dispatch(notificationSlice.addNotification({
+          id: +new Date(),
+          type: 'error',
+        })));
     } else {
       navigate('../contacts');
     }

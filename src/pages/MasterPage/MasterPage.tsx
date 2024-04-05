@@ -12,7 +12,7 @@ import {
   getMaster, getRandomMasterPhotos, getReviewsMaster,
 } from '../../api/master';
 import { useAppDispatch, useAppSelector } from '../../app/hooks';
-import { showNotification } from '../../helpers/notifications';
+import * as notificationSlice from '../../features/notificationSlice';
 import * as publicMasterSlice from '../../features/publicMasterSlice';
 import { GalleryPhoto } from '../../types/gallery';
 import { DropDownButton } from '../../components/DropDownButton/DropDownButton';
@@ -76,7 +76,10 @@ export const MasterPage: React.FC = () => {
             content: c ? [...c.content, ...res.content] : res.content,
           }
           : res)))
-        .catch(() => showNotification('error'));
+        .catch(() => dispatch(notificationSlice.addNotification({
+          id: +new Date(),
+          type: 'error',
+        })));
       setMasterReviewsPage(c => c + 1);
     }
   };
@@ -111,14 +114,20 @@ export const MasterPage: React.FC = () => {
           dispatch(publicMasterSlice.updateMaster(res));
           getRandomMasterPhotos(res.id)
             .then(setMainPhotos)
-            .catch(() => showNotification('error'));
+            .catch(() => dispatch(notificationSlice.addNotification({
+              id: +new Date(),
+              type: 'error',
+            })));
 
           setActiveSubcategory(res.subcategories?.[0] || {
             id: 0,
             name: '',
           });
         })
-        .catch(() => showNotification('error'));
+        .catch(() => dispatch(notificationSlice.addNotification({
+          id: +new Date(),
+          type: 'error',
+        })));
     }
   }, [dispatch, id]);
 
@@ -126,8 +135,12 @@ export const MasterPage: React.FC = () => {
     if (activeSubcategory && id) {
       getServicesBySubcategory(+id, activeSubcategory.id)
         .then(setServices)
-        .catch(() => showNotification('error'));
+        .catch(() => dispatch(notificationSlice.addNotification({
+          id: +new Date(),
+          type: 'error',
+        })));
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [activeSubcategory, id]);
 
   useEffect(() => {

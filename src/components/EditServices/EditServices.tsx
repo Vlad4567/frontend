@@ -8,9 +8,9 @@ import {
   getServicesBySubcategory,
   putService,
 } from '../../api/services';
-import { useAppSelector } from '../../app/hooks';
+import { useAppDispatch, useAppSelector } from '../../app/hooks';
 import { Service } from '../../types/services';
-import { showNotification } from '../../helpers/notifications';
+import * as notificationSlice from '../../features/notificationSlice';
 import { DropDownButton } from '../DropDownButton/DropDownButton';
 import { CreateModal } from '../CreateModal/CreateModal';
 import { ModalEditingService }
@@ -25,6 +25,7 @@ type Modal = 'Service';
 
 export const EditServices: React.FC<Props> = () => {
   const createMaster = useAppSelector(state => state.createMasterSlice);
+  const dispatch = useAppDispatch();
   const { master } = createMaster;
   const [modal, setModal] = useState<Modal | ''>('');
   const [services, setServices] = useState<Service[]>([]);
@@ -44,8 +45,12 @@ export const EditServices: React.FC<Props> = () => {
         .then(res => {
           setServices(res);
         })
-        .catch(() => showNotification('error'));
+        .catch(() => dispatch(notificationSlice.addNotification({
+          id: +new Date(),
+          type: 'error',
+        })));
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [activeSubcategory?.id, createMaster.masterId]);
 
   const handleAddService = async (item: Service) => {
@@ -69,7 +74,10 @@ export const EditServices: React.FC<Props> = () => {
 
         return res;
       } catch (err) {
-        showNotification('error');
+        dispatch(notificationSlice.addNotification({
+          id: +new Date(),
+          type: 'error',
+        }));
 
         setModal('');
 
@@ -87,7 +95,10 @@ export const EditServices: React.FC<Props> = () => {
       .then(() => {
         setServices(services.filter(service => service.id !== id));
       })
-      .catch(() => showNotification('error'));
+      .catch(() => dispatch(notificationSlice.addNotification({
+        id: +new Date(),
+        type: 'error',
+      })));
   };
 
   const handleChangeService = (item: Service) => {
@@ -100,7 +111,10 @@ export const EditServices: React.FC<Props> = () => {
           ? item
           : currService)));
       })
-      .catch(() => showNotification('error'));
+      .catch(() => dispatch(notificationSlice.addNotification({
+        id: +new Date(),
+        type: 'error',
+      })));
   };
 
   return (

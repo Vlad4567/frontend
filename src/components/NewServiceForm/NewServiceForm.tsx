@@ -15,11 +15,12 @@ import { Service } from '../../types/services';
 import { SubCategory } from '../../types/category';
 import { debounceDelay } from '../../helpers/variables';
 import { GalleryPhoto } from '../../types/gallery';
-import { showNotification } from '../../helpers/notifications';
+import * as notificationSlice from '../../features/notificationSlice';
 import { DropDownButton } from '../DropDownButton/DropDownButton';
 import { ModalEditingService }
   from '../ModalEditingService/ModalEditingService';
 import './NewServiceForm.scss';
+import { useAppDispatch } from '../../app/hooks';
 
 interface Props {
   className?: string
@@ -49,6 +50,7 @@ export const NewServiceForm: React.FC<Props> = ({
   onAddService = () => Promise.reject(),
   onChange = () => {},
 }) => {
+  const dispatch = useAppDispatch();
   const [modal, setModal] = useState<Modal | ''>('');
   const modalRef = useRef<HTMLFormElement>(null);
   const [form, setForm] = useState<Service>(value || newService);
@@ -86,7 +88,10 @@ export const NewServiceForm: React.FC<Props> = ({
   const handleAddService = () => {
     onAddService(form)
       .then(() => setForm(newService))
-      .catch(() => showNotification('error'));
+      .catch(() => dispatch(notificationSlice.addNotification({
+        id: +new Date(),
+        type: 'error',
+      })));
   };
 
   return (

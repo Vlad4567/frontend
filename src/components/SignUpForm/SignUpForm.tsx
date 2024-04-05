@@ -13,7 +13,8 @@ import { checkUserEmail, checkUsername, registrateUser }
   from '../../api/login';
 import { ErrorData } from '../../types/main';
 import './SignUpForm.scss';
-import { showNotification } from '../../helpers/notifications';
+import * as notificationSlice from '../../features/notificationSlice';
+import { useAppDispatch } from '../../app/hooks';
 
 export interface InitialData {
   username: string
@@ -43,6 +44,7 @@ export const initialErrors: InitialErrors = {
 
 export const SignUpForm: React.FC = () => {
   const navigate = useNavigate();
+  const dispatch = useAppDispatch();
   const [showPassword, setShowPassword] = useState(false);
   const [formErrors, setFormErrors] = useState<InitialErrors>(initialErrors);
   const [formData, setFormData] = useState<InitialData>(initialData);
@@ -106,7 +108,10 @@ export const SignUpForm: React.FC = () => {
   const handleButtonRegistration = () => {
     registrateUser(formData)
       .then(() => {
-        showNotification('confirmationEmail');
+        dispatch(notificationSlice.addNotification({
+          id: +new Date(),
+          type: 'confirmationEmail',
+        }));
         navigate('/login');
       })
       .catch((err: AxiosError<ErrorData<string>>) => setFormErrors(c => {
