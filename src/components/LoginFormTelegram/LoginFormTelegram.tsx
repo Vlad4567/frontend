@@ -9,10 +9,11 @@ import { LoginInput } from '../LoginInput/LoginInput';
 import { UnderlinedSmall } from '../UnderlinedSmall/UnderlinedSmall';
 import { authLoginTelegram, getDeviceToken } from '../../api/login';
 import { TypeModal } from '../../types/account';
-import { showNotification } from '../../helpers/notifications';
+import * as notificationSlice from '../../features/notificationSlice';
 import { ErrorData } from '../../types/main';
 import closeIcon from '../../img/icons/icon-dropdown-close.svg';
 import './LoginFormTelegram.scss';
+import { useAppDispatch } from '../../app/hooks';
 
 type TypeButton = 'GetTheCode' | 'Confirm';
 type TypeForm = 'form' | 'modal';
@@ -37,6 +38,7 @@ export const LoginFormTelegram = forwardRef<HTMLFormElement, Props>(({
   onClose = null,
 }, ref) => {
   const navigate = useNavigate();
+  const dispatch = useAppDispatch();
   const [button, setButton] = useState<TypeButton>('GetTheCode');
   const [fieldErrors, setFieldErrors] = useState('');
   const [field, setField] = useState('');
@@ -67,7 +69,10 @@ export const LoginFormTelegram = forwardRef<HTMLFormElement, Props>(({
         .then(res => {
           localStorage.setItem('token', res.token);
           localStorage.setItem('refreshToken', `${res.refreshToken}`);
-          showNotification('login');
+          dispatch(notificationSlice.addNotification({
+            id: +new Date(),
+            type: 'login',
+          }));
           navigate('/account');
         })
         .catch((err: AxiosError<ErrorData<string>>) => {

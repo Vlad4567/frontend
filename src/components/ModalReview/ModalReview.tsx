@@ -10,8 +10,8 @@ import closeIcon from '../../img/icons/icon-dropdown-close.svg';
 import { RatingStars } from '../RatingStars/RatingStars';
 import './ModalReview.scss';
 import { addNewReview } from '../../api/master';
-import { showNotification } from '../../helpers/notifications';
-import { useAppSelector } from '../../app/hooks';
+import * as notificationSlice from '../../features/notificationSlice';
+import { useAppDispatch, useAppSelector } from '../../app/hooks';
 import { MasterReviewsCard } from '../../types/reviews';
 import { ErrorData } from '../../types/main';
 
@@ -33,6 +33,7 @@ export const ModalReview = React.forwardRef<HTMLFormElement, Props>(({
 }, ref) => {
   const publicMaster = useAppSelector(state => state.publicMasterSlice);
   const { user } = useAppSelector(state => state.userSlice);
+  const dispatch = useAppDispatch();
   const [form, setForm] = useState(initialForm);
   const token = localStorage.getItem('token');
   const refreshToken = localStorage.getItem('refreshToken');
@@ -77,7 +78,10 @@ export const ModalReview = React.forwardRef<HTMLFormElement, Props>(({
             setFormError(err.response.data.errors.comment);
           }
 
-          showNotification('error');
+          dispatch(notificationSlice.addNotification({
+            id: +new Date(),
+            type: 'error',
+          }));
         });
     }
   };

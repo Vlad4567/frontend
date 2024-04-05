@@ -62,7 +62,7 @@
 
   &__profile-button {
     width: 100%;
-    height: 100%;
+    height: 50px;
 
     @include mixin.on-tablet {
       width: 170px;

@@ -34,9 +34,12 @@ import { UnderlinedSmall }
 import { ModalCategories }
   from '../../components/ModalCategories/ModalCategories';
 import './SearchPage.scss';
+import * as notificationSlice from '../../features/notificationSlice';
+import { useAppDispatch } from '../../app/hooks';
 
 export const SearchPage: React.FC = () => {
   const [searchParams, setSearchParams] = useSearchParams();
+  const dispatch = useAppDispatch();
   const directionSort = searchParams.get('direction') || '';
   const propertySort = searchParams.get('property') || '';
 
@@ -50,8 +53,8 @@ export const SearchPage: React.FC = () => {
     = useState<Page<typesMaster.MasterCard> | null>(null);
   const [serviceCards, setServiceCards]
     = useState<Page<typesMaster.ServiceCard> | null>(null);
-
   const [currentPage, setCurrentPage] = useState(1);
+  const [observer, setObserver] = useState<IntersectionObserver | null>(null);
 
   const isShownModalCityInput = useMediaQuery(`(max-width: ${variables['tablet-min-width']})`);
   const debouncedCity = useDebounce<string>(cityValue, debounceDelay);
@@ -113,20 +116,20 @@ export const SearchPage: React.FC = () => {
     setActiveDropDown(null);
   };
 
-  const handleChangeMinPrice = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleChangePrice = (
+    e: React.ChangeEvent<HTMLInputElement>,
+  ) => {
     const inputValue = e.target.value
       .replace(/\b0*([1-9]\d*|0)\b/, '$1')
       .replace(/[^\d]/g, '');
 
-    setSearchWith({ minPrice: inputValue });
-  };
+    const { name } = e.target;
 
-  const handleChangeMaxPrice = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const inputValue = e.target.value
-      .replace(/\b0*([1-9]\d*|0)\b/, '$1')
-      .replace(/[^\d]/g, '');
-
-    setSearchWith({ maxPrice: inputValue });
+    if (name === 'minPrice') {
+      setSearchWith({ minPrice: inputValue });
+    } else if (name === 'maxPrice') {
+      setSearchWith({ maxPrice: inputValue });
+    }
   };
 
   const handleChangeSort = (
@@ -185,17 +188,81 @@ export const SearchPage: React.FC = () => {
     setActiveCategory(null);
   };
 
+  const loadCardsByPage = (page: number) => {
+    switch (searchBy) {
+      case 'master':
+        getFilteredMasterCards(
+          page - 1, 16, debouncedSearchParams.toString(),
+        )
+          .then((res) => {
+            if (page === 1) {
+              setMasterCards(res);
+            } else {
+              setMasterCards(c => (c?.content
+                ? {
+                  ...res,
+                  content: [...c.content, ...res.content],
+                }
+                : res));
+            }
+
+            if (res.last) {
+              observer?.disconnect();
+            }
+          })
+          .catch(() => dispatch(notificationSlice.addNotification({
+            id: +new Date(),
+            type: 'error',
+          })));
+        break;
+
+      case 'service':
+        getFilteredServiceCards(
+          page - 1, 16, debouncedSearchParams.toString(),
+        )
+          .then((res) => {
+            if (page === 1) {
+              setServiceCards(res);
+            } else {
+              setServiceCards(c => (c?.content
+                ? {
+                  ...res,
+                  content: [...c.content, ...res.content],
+                }
+                : res));
+            }
+
+            if (res.last) {
+              observer?.disconnect();
+            }
+          })
+          .catch(() => dispatch(notificationSlice.addNotification({
+            id: +new Date(),
+            type: 'error',
+          })));
+        break;
+
+      default:
+        break;
+    }
+  };
+
   useEffect(() => {
-    const observer = new IntersectionObserver((entries) => {
-      if (entries[0].isIntersecting) {
-        setCurrentPage(prev => prev + 1);
-      }
+    setObserver(() => {
+      const createdObserver = new IntersectionObserver((entries) => {
+        if (entries[0].isIntersecting) {
+          setCurrentPage(prev => prev + 1);
+        }
+      });
+
+      createdObserver.observe(observeRef.current as HTMLDivElement);
+
+      return createdObserver;
     });
 
-    observer.observe(observeRef.current as HTMLDivElement);
-
-    return () => observer.disconnect();
-  }, []);
+    return () => observer?.disconnect();
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [searchBy]);
 
   useEffect(() => {
     if (debouncedCity) {
@@ -226,35 +293,15 @@ export const SearchPage: React.FC = () => {
   }, [searchParams, setSearchParams]);
 
   useEffect(() => {
-    switch (searchBy) {
-      case 'master':
-        getFilteredMasterCards(
-          currentPage - 1, 16, debouncedSearchParams.toString(),
-        )
-          .then((res) => setMasterCards(c => (c?.content
-            ? {
-              ...res,
-              content: [...c.content, ...res.content],
-            }
-            : res)));
-        break;
+    loadCardsByPage(currentPage);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [currentPage]);
 
-      case 'service':
-        getFilteredServiceCards(
-          currentPage - 1, 16, debouncedSearchParams.toString(),
-        )
-          .then((res) => setServiceCards(c => (c?.content
-            ? {
-              ...res,
-              content: [...c.content, ...res.content],
-            }
-            : res)));
-        break;
-
-      default:
-        break;
-    }
-  }, [debouncedSearchParams, currentPage, searchBy]);
+  useEffect(() => {
+    setCurrentPage(1);
+    loadCardsByPage(1);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [debouncedSearchParams, searchBy]);
 
   return (
     <main className="search-page">
@@ -408,8 +455,9 @@ export const SearchPage: React.FC = () => {
 
                       <input
                         value={searchParams.get('minPrice') || ''}
-                        onChange={handleChangeMinPrice}
+                        onChange={handleChangePrice}
                         type="text"
+                        name="minPrice"
                         placeholder="85"
                         className="search-page__dropdown-price-range-input"
                       />
@@ -424,8 +472,9 @@ export const SearchPage: React.FC = () => {
 
                       <input
                         value={searchParams.get('maxPrice') || ''}
-                        onChange={handleChangeMaxPrice}
+                        onChange={handleChangePrice}
                         type="text"
+                        name="maxPrice"
                         placeholder="1000"
                         className="search-page__dropdown-price-range-input"
                       />

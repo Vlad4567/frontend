@@ -51,11 +51,6 @@ export const createMaster = (master: CreateMaster) => {
   return client.post('/new-master', master);
 };
 
-interface GetEditMaster extends EditMaster {
-  hidden: boolean
-  id: number
-}
-
 export const getMaster = (id: number) => {
   return client.get<PublicMaster>(`/master/${id}`);
 };
@@ -77,10 +72,6 @@ export const getRandomMasterPhotos = async (id: number) => {
   );
 
   return photosWithPhotos;
-};
-
-export const getEditMaster = () => {
-  return client.get<GetEditMaster>('/master');
 };
 
 export const putEditMaster = (master: CreateMaster) => {

@@ -24,10 +24,10 @@ import {
   from '../../api/gallery';
 import { GalleryPhoto } from '../../types/gallery';
 import { downloadPhoto } from '../../api/account';
-import { showNotification } from '../../helpers/notifications';
+import * as notificationSlice from '../../features/notificationSlice';
 import { ModalAlertMessage } from '../ModalAlertMessage/ModalAlertMessage';
 import { CreateModal } from '../CreateModal/CreateModal';
-import { useAppSelector } from '../../app/hooks';
+import { useAppDispatch, useAppSelector } from '../../app/hooks';
 import './MasterGallery.scss';
 import { modifyPhotoName } from '../../helpers/functions';
 
@@ -51,6 +51,7 @@ export const MasterGallery = forwardRef<HTMLFormElement, Props>(({
   onClickSave = () => { },
 }, ref) => {
   const createMaster = useAppSelector(state => state.createMasterSlice);
+  const dispatch = useAppDispatch();
   const [photos, setPhotos] = useState<GalleryPhoto[]>([]);
   const [activeButton, setActiveButton] = useState<SubCategory>(
     subcategories?.[0] || createMaster.master.subcategories?.[0] || {
@@ -109,7 +110,10 @@ export const MasterGallery = forwardRef<HTMLFormElement, Props>(({
         setPhotos((prevPhotos) => prevPhotos
           .filter(photo => photo.id !== picture.id));
       })
-      .catch(() => showNotification('error'));
+      .catch(() => dispatch(notificationSlice.addNotification({
+        id: +new Date(),
+        type: 'error',
+      })));
   };
 
   const handleSaveChanges = () => {
@@ -125,9 +129,10 @@ export const MasterGallery = forwardRef<HTMLFormElement, Props>(({
           setActivePhoto(photo);
           setIsSelectPhoto(false);
         })
-        .catch(() => {
-          showNotification('error');
-        });
+        .catch(() => dispatch(notificationSlice.addNotification({
+          id: +new Date(),
+          type: 'error',
+        })));
     }
 
     if (type === 'service') {
@@ -175,8 +180,12 @@ export const MasterGallery = forwardRef<HTMLFormElement, Props>(({
             }
           });
         })
-        .catch(() => showNotification('error'));
+        .catch(() => dispatch(notificationSlice.addNotification({
+          id: +new Date(),
+          type: 'error',
+        })));
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [galleryPage, activeButton.id]);
 
   useEffect(() => {
