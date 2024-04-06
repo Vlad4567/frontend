@@ -162,7 +162,7 @@ export const MasterPage: React.FC = () => {
       <ArrowButton
         className="master-page__back"
         position="left"
-        onClick={() => navigate('/')}
+        onClick={() => navigate(-1)}
       />
 
       <div className="master-page__body">
