@@ -4,8 +4,6 @@
   padding: 30px;
   height: fit-content;
 
-  z-index: 10000;
-
   display: flex;
   justify-content: flex-start;
   flex-direction: column;
@@ -177,6 +175,10 @@
 
   &__switch-buttons {
     width: auto;
+
+    &--disabled {
+      pointer-events: none;
+    }
   }
 
   &__footer {
