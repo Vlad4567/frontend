@@ -275,7 +275,9 @@ export const MasterGallery = forwardRef<HTMLFormElement, Props>(({
       <div className="master-gallery__main">
         <SwitchButtons
           buttons={subcategoriesList}
-          className="master-gallery__switch-buttons"
+          className={classNames('master-gallery__switch-buttons', {
+            'master-gallery__switch-buttons--disabled': type === 'service',
+          })}
           activeButton={activeButton}
           onClickButton={(_, button) => handleChooseSubcategory(button)}
         />
