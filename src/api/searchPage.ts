@@ -52,7 +52,7 @@ export const getFilteredServiceCards = async (
     serviceCards.content.map(async (serviceCard) => {
       if (serviceCard.photo) {
         const photo = await downloadPhoto(
-          modifyPhotoName(serviceCard.photo, 'MainMini'),
+          modifyPhotoName(serviceCard.photo, 'ServiceCard'),
         );
 
         // eslint-disable-next-line no-param-reassign

@@ -167,7 +167,7 @@ export const convertSpaceToHyphen = (str: string) => {
 };
 
 type ModifyPhotoNameKeys
-  = 'Gallery' | 'Category' | 'Main' | 'MainMini' | 'ReviewCard';
+  = 'Gallery' | 'Category' | 'Main' | 'MainMini' | 'ReviewCard' | 'ServiceCard';
 
 export const modifyPhotoName = (name: string, key: ModifyPhotoNameKeys) => {
   const dotIndex = name.lastIndexOf('.');
@@ -187,6 +187,8 @@ export const modifyPhotoName = (name: string, key: ModifyPhotoNameKeys) => {
         return `${baseName}Mm${extension}`;
       case 'ReviewCard':
         return `${baseName}R${extension}`;
+      case 'ServiceCard':
+        return `${baseName}S${extension}`;
       default:
         return name;
     }
