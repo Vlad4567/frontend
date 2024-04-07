@@ -22,7 +22,6 @@ export const ServiceCard: React.FC<Props> = ({
     name,
     photo,
     price,
-    id,
   } = service;
 
   const {
@@ -84,7 +83,7 @@ export const ServiceCard: React.FC<Props> = ({
         <Button
           size="large"
           className="service-card__buttons-chat"
-          onClick={() => navigate(`/master/${id}?scroll=chat`)}
+          onClick={() => navigate(`/master/${service.masterCard.id}?scroll=chat`)}
         >
           Chat
         </Button>
@@ -92,7 +91,7 @@ export const ServiceCard: React.FC<Props> = ({
         <DropDownButton
           size="large"
           placeholder="Details"
-          onClick={() => navigate(`/master/${id}`)}
+          onClick={() => navigate(`/master/${service.masterCard.id}`)}
         />
       </div>
     </article>

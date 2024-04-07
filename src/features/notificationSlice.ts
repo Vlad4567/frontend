@@ -10,6 +10,7 @@ type TypeNotification =
   | 'resetPassword'
   | 'confirmationEmail'
   | 'registration'
+  | 'contactUs'
   | 'login';
 
 const initialState: {
@@ -65,6 +66,15 @@ const notificationSlice = createSlice({
               'A new password has been sent to your email address.',
             description: `In addition to your inbox, check your spam folder.
             The email may have ended up there.`,
+          };
+          break;
+
+        case 'contactUs':
+          notification = {
+            id: action.payload.id,
+            title: 'Message Sent!',
+            description: `Your message was successfully sent.
+            Please wait for a response. You will receive an answer via email.`,
           };
           break;
 

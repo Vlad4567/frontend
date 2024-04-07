@@ -52,6 +52,10 @@ export const ModalContactUs = React.forwardRef<HTMLFormElement, Props>(({
     sendContactUs(form)
       .then(() => {
         setForm(initialForm);
+        dispatch(notificationSlice.addNotification({
+          id: +new Date(),
+          type: 'contactUs',
+        }));
       })
       .catch((error: AxiosError<ErrorData<Partial<typeof initialForm>>>) => {
         if (error.response?.data.errors) {

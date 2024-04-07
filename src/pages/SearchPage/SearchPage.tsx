@@ -262,15 +262,20 @@ export const SearchPage: React.FC = () => {
 
     return () => observer?.disconnect();
   // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [searchBy]);
+  }, [searchBy, searchParams]);
 
   useEffect(() => {
     if (debouncedCity) {
       getCities(0, 4, debouncedCity)
-        .then(res => setCityList(res.content));
+        .then(res => setCityList(res.content))
+        .catch(() => dispatch(notificationSlice.addNotification({
+          id: +new Date(),
+          type: 'error',
+        })));
     } else {
       setCityList([]);
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [debouncedCity]);
 
   useEffect(() => {
@@ -301,7 +306,7 @@ export const SearchPage: React.FC = () => {
     setCurrentPage(1);
     loadCardsByPage(1);
   // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [debouncedSearchParams, searchBy]);
+  }, [debouncedSearchParams]);
 
   return (
     <main className="search-page">
