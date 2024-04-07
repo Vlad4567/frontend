@@ -144,14 +144,18 @@ export const MasterPage: React.FC = () => {
   }, [activeSubcategory, id]);
 
   useEffect(() => {
-    if (searchParams.get('scroll') === 'chat') {
-      const chatButton
-        = document.querySelector('.master-page__connect-with-master');
+    const timeoutId = setTimeout(() => {
+      if (searchParams.get('scroll') === 'chat') {
+        const chatButton
+          = document.querySelector('.master-page__connect-with-master');
 
-      if (chatButton) {
-        chatButton.scrollIntoView({ behavior: 'smooth' });
+        if (chatButton) {
+          chatButton.scrollIntoView({ behavior: 'smooth' });
+        }
       }
-    }
+
+      clearTimeout(timeoutId);
+    }, 5000);
 
     loadReviewsMaster();
     // eslint-disable-next-line react-hooks/exhaustive-deps
