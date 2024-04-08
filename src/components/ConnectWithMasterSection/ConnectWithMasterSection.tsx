@@ -72,6 +72,20 @@ export const ConnectWithMasterSection: React.FC<Props> = ({
     phone: null,
   },
 }) => {
+  const renderContactLink = (
+    [type, value]: string[],
+  ) => {
+    if (type === 'phone') {
+      return `tel:+${value.replace(/\D/g, '')}`;
+    }
+
+    if (type === 'telegram' && value.startsWith('@')) {
+      return `https://t.me/${value.slice(1)}`;
+    }
+
+    return fixUrl(value);
+  };
+
   return (
     <section
       className={`connect-with-master-section ${className}`}
@@ -94,9 +108,7 @@ export const ConnectWithMasterSection: React.FC<Props> = ({
           <Link
             target="_blank"
             className="connect-with-master-section__contacts-item-link"
-            to={contact[0] === 'phone'
-              ? `tel:+${contact[1].replace(/\D/g, '')}`
-              : fixUrl(contact[1])}
+            to={renderContactLink([contact[0], contact[1]])}
           >
             <DropDownButton
               className="connect-with-master-section__contacts-item"

@@ -71,7 +71,7 @@ export const EditContacts: React.FC = () => {
 
     Object.entries(contacts).forEach((contact) => {
       if (contact?.[1]
-        && contact?.[0] !== 'phone') {
+        && contact?.[0] !== 'phone' && contact?.[0] !== 'telegram') {
         contacts[contact[0] as keyof typeof contacts]
           = contact[1]?.match(linkValidation)?.[0] || null;
       }
