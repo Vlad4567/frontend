@@ -198,7 +198,7 @@ export const modifyPhotoName = (name: string, key: ModifyPhotoNameKeys) => {
 };
 
 export const fixUrl = (url: string) => {
-  return (url.slice(0, 8) === 'http://' || url.slice(0, 8) === 'https://')
+  return (url.startsWith('http://') || url.startsWith('https://'))
     ? url
     : `http://${url}`;
 };
