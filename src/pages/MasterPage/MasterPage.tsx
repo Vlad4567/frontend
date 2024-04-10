@@ -67,10 +67,13 @@ export const MasterPage: React.FC = () => {
     modalRef,
   ], () => setModal(''));
 
-  const loadReviewsMaster = () => {
-    if (!reviewsCardPage || masterReviewsPage <= reviewsCardPage.totalPages) {
-      getReviewsMaster(Number(id), masterReviewsPage, 20)
-        .then(res => setReviewsCardPage(c => (c
+  const loadReviewsMaster = (page?: number) => {
+    if (
+      !reviewsCardPage
+      || (page || masterReviewsPage) <= reviewsCardPage.totalPages
+    ) {
+      getReviewsMaster(Number(id), (page || masterReviewsPage), 20)
+        .then(res => setReviewsCardPage(c => ((page || masterReviewsPage)
           ? {
             ...res,
             content: c ? [...c.content, ...res.content] : res.content,
@@ -80,7 +83,7 @@ export const MasterPage: React.FC = () => {
           id: +new Date(),
           type: 'error',
         })));
-      setMasterReviewsPage(c => c + 1);
+      setMasterReviewsPage(c => (page || c) + 1);
     }
   };
 
@@ -104,7 +107,7 @@ export const MasterPage: React.FC = () => {
 
     dispatch(publicMasterSlice.updateStatistics({ [`count${newCard.grade}`]: newCard.grade }));
 
-    loadReviewsMaster();
+    loadReviewsMaster(0);
   };
 
   useEffect(() => {
@@ -124,12 +127,9 @@ export const MasterPage: React.FC = () => {
             name: '',
           });
         })
-        .catch(() => dispatch(notificationSlice.addNotification({
-          id: +new Date(),
-          type: 'error',
-        })));
+        .catch(() => navigate(-1));
     }
-  }, [dispatch, id]);
+  }, [dispatch, id, navigate]);
 
   useEffect(() => {
     if (activeSubcategory && id) {
@@ -308,99 +308,109 @@ export const MasterPage: React.FC = () => {
           </section>
         )}
 
-        {!!reviewsCardPage?.content.length && (
-          <section className="master-page__reviews">
-            <h2 className="master-page__reviews-title">Reviews</h2>
+        <section className="master-page__reviews">
+          <h2 className="master-page__reviews-title">Reviews</h2>
 
-            <div className="master-page__reviews-body">
-              <article className="master-page__reviews-info">
-                <div className="master-page__reviews-info-header">
-                  <div className="master-page__reviews-info-header-wraper">
-                    <h3 className="master-page__reviews-info-header-rating">
-                      {rating}
-                    </h3>
-
-                    <div className="master-page__reviews-info-header-blok">
-
-                      <p className="master-page__reviews-info-header-blok-text">
-                        {reviewsCardPage.totalElements}
-                        {' '}
-                        ratings
-                      </p>
-
-                      {rating && (
-                        <RatingStars
-                          state={rating}
-                        />
-                      )}
-
-                    </div>
-                  </div>
-                  <>
-                    <Button
-                      size="large"
-                      className="master-page__reviews-button-first"
-                      onClick={openModalReview}
-                    >
-                      Write review
-                    </Button>
-                    {modal === 'newReview' && (
-                      <CreateModal>
-                        <ModalReview
-                          onClose={() => setModal('')}
-                          ref={modalRef}
-                          addCard={card => handleAddCard(card)}
-                        />
-                      </CreateModal>
-                    )}
-                  </>
-                </div>
-
-                <ul className="master-page__reviews-info-header-list">
-                  {statistics
-                    && sumStatisticsValues
-                    && Object.entries(statistics)
-                      .sort((a, b) => a[0].localeCompare(b[0]))
-                      .map(item => {
-                        const [key, value] = item;
-                        const percent = 100;
-                        const percentValue = (
-                          value / sumStatisticsValues) * percent;
-
-                        return (
-                          <li className="master-page__reviews-info-header-item">
-                            <p
-                              className="master-page__reviews-info-header-rate"
-                            >
-                              {key.replace('count', '')}
-                            </p>
-
-                            <ProgressBar completed={percentValue} />
-
-                          </li>
-                        );
-                      })}
-                </ul>
+          <div className="master-page__reviews-body">
+            <article className="master-page__reviews-info">
+              {!!reviewsCardPage?.content.length && (
                 <>
-                  <Button
-                    size="large"
-                    className="master-page__reviews-button-second"
-                    onClick={openModalReview}
-                  >
-                    Write review
-                  </Button>
-                  {modal === 'newReview' && (
-                    <CreateModal>
-                      <ModalReview
-                        onClose={() => setModal('')}
-                        ref={modalRef}
-                        addCard={card => handleAddCard(card)}
-                      />
-                    </CreateModal>
-                  )}
-                </>
-              </article>
+                  <div className="master-page__reviews-info-header">
+                    <div className="master-page__reviews-info-header-wraper">
+                      <h3 className="master-page__reviews-info-header-rating">
+                        {rating}
+                      </h3>
 
+                      <div className="master-page__reviews-info-header-blok">
+
+                        <p
+                          className="master-page__reviews-info-header-blok-text"
+                        >
+                          {reviewsCardPage?.totalElements}
+                          {' '}
+                          ratings
+                        </p>
+
+                        {rating && (
+                          <RatingStars
+                            state={rating}
+                          />
+                        )}
+
+                      </div>
+                    </div>
+                    <>
+                      <Button
+                        size="large"
+                        className="master-page__reviews-button-first"
+                        onClick={openModalReview}
+                      >
+                        Write review
+                      </Button>
+                      {modal === 'newReview' && (
+                        <CreateModal>
+                          <ModalReview
+                            onClose={() => setModal('')}
+                            ref={modalRef}
+                            addCard={card => handleAddCard(card)}
+                          />
+                        </CreateModal>
+                      )}
+                    </>
+                  </div>
+
+                  <ul className="master-page__reviews-info-header-list">
+                    {statistics
+                      && sumStatisticsValues
+                      && Object.entries(statistics)
+                        .sort((a, b) => a[0].localeCompare(b[0]))
+                        .map(item => {
+                          const [key, value] = item;
+                          const percent = 100;
+                          const percentValue = (
+                            value / sumStatisticsValues) * percent;
+
+                          return (
+                            <li
+                              className="master-page__reviews-info-header-item"
+                            >
+                              <p
+                                className="
+                                master-page__reviews-info-header-rate
+                                "
+                              >
+                                {key.replace('count', '')}
+                              </p>
+
+                              <ProgressBar completed={percentValue} />
+
+                            </li>
+                          );
+                        })}
+                  </ul>
+                </>
+              )}
+              <>
+                <Button
+                  size="large"
+                  className="master-page__reviews-button-second"
+                  onClick={openModalReview}
+                >
+                  Write review
+                </Button>
+                {modal === 'newReview' && (
+                  <CreateModal>
+                    <ModalReview
+                      onClose={() => setModal('')}
+                      ref={modalRef}
+                      addCard={card => handleAddCard(card)}
+                    />
+                  </CreateModal>
+                )}
+              </>
+            </article>
+
+            {!!reviewsCardPage?.content.length && (
               <figure className="master-page__reviews-swiper">
                 <Swiper
                   navigation={{
@@ -411,7 +421,7 @@ export const MasterPage: React.FC = () => {
                   className="master-page__reviews-swiper-slides"
                   spaceBetween="20px"
                   slidesPerView="auto"
-                  onReachEnd={loadReviewsMaster}
+                  onReachEnd={() => loadReviewsMaster()}
                 >
                   {reviewsCardPage?.content.map((card) => (
                     <SwiperSlide
@@ -435,10 +445,10 @@ export const MasterPage: React.FC = () => {
                   />
                 </figcaption>
               </figure>
+            )}
 
-            </div>
-          </section>
-        )}
+          </div>
+        </section>
 
         <ConnectWithMasterSection
           className="master-page__connect-with-master"
