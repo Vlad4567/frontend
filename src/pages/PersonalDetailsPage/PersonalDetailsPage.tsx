@@ -422,7 +422,7 @@ export const PersonalDetailsPage: React.FC = () => {
             <div className="personal-details-page__footer-become-master">
               <Checkbox
                 checked={user.master}
-                onChange={() => navigate('../edit-public-profile')}
+                onChange={() => navigate('../edit-public-profile/area-of-work')}
               />
               I am Master
             </div>

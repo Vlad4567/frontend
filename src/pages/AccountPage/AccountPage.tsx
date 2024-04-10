@@ -241,7 +241,7 @@ export const AccountPage: React.FC = () => {
                   || pathAfterAccount === 'edit-public-profile') && (
                   <li className="account-page__menu-nav-item">
                     <NavLink
-                      to="./edit-public-profile"
+                      to="./edit-public-profile/area-of-work"
                       className={({ isActive }) => {
                         return classNames('account-page__menu-nav-link', {
                           'account-page__menu-nav-link--active': isActive,
