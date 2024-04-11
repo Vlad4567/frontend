@@ -157,23 +157,23 @@ export const SearchPage: React.FC = () => {
   };
 
   const handleChooseSubCategory = (
-    subCategory: SubCategory,
+    subcategory: SubCategory,
     checked: boolean,
   ) => {
-    const convertedSubCategories = searchParams
-      .getAll('subCategories')
+    const convertedSubcategories = searchParams
+      .getAll('subcategories')
       .map(Number);
 
-    const newSubCategories = convertedSubCategories
-      .includes(subCategory.id) && !checked
-      ? convertedSubCategories.filter(id => id !== subCategory.id)
-      : [...convertedSubCategories, subCategory.id];
+    const newSubcategories = convertedSubcategories
+      .includes(subcategory.id) && !checked
+      ? convertedSubcategories.filter(id => id !== subcategory.id)
+      : [...convertedSubcategories, subcategory.id];
 
-    setSearchWith({ subCategories: newSubCategories });
+    setSearchWith({ subcategories: newSubcategories });
   };
 
   const clearSubCategories = () => {
-    setSearchWith({ subCategories: null });
+    setSearchWith({ subcategories: null });
   };
 
   const clearSortBy = () => {
@@ -527,7 +527,7 @@ export const SearchPage: React.FC = () => {
                   onClean={clearSubCategories}
                   onClickSubcategory={handleChooseSubCategory}
                   activeSubcategories={searchParams
-                    .getAll('subCategories').map(Number)}
+                    .getAll('subcategories').map(Number)}
                 >
                   <div className="search-page__dropdown-categories-header">
                     <h3 className="search-page__dropdown-categories-title">
