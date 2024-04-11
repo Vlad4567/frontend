@@ -8,7 +8,16 @@
     "plugin:react-hooks/recommended",
     "airbnb-typescript",
     "plugin:@typescript-eslint/eslint-recommended",
-    "plugin:@typescript-eslint/recommended"
+    "plugin:@typescript-eslint/recommended",
+    "plugin:prettier/recommended"
+  ],
+  "overrides": [
+    {
+      "files": ["**/*.spec.jsx"],
+      "rules": {
+        "react/jsx-filename-extension": ["off"]
+      }
+    }
   ],
   "parser": "@typescript-eslint/parser",
   "parserOptions": {
@@ -19,9 +28,14 @@
     "project": "./tsconfig.json",
     "sourceType": "module"
   },
-  "plugins": ["react", "react-hooks", "@typescript-eslint"],
+  "plugins": [
+    "jsx-a11y",
+    "import",
+    "react-hooks",
+    "@typescript-eslint",
+    "prettier"
+  ],
   "rules": {
-    // JS
     "semi": "off",
     "@typescript-eslint/semi": ["error", "always"],
     "prefer-const": 2,
@@ -35,7 +49,7 @@
     ],
     "no-redeclare": [2, { "builtinGlobals": true }],
     "no-console": 2,
-    "operator-linebreak": [2, "before"],
+    "operator-linebreak": 0,
     "brace-style": [2, "1tbs"],
     "arrow-body-style": 0,
     "arrow-parens": 0,
@@ -52,8 +66,7 @@
       { "blankLine": "always", "prev": "directive", "next": "*" },
       { "blankLine": "always", "prev": "block-like", "next": "*" }
     ],
-
-    // React
+    "implicit-arrow-linebreak": 0,
     "react/prop-types": 0,
     "react/require-default-props": 0,
     "import/prefer-default-export": 0,
@@ -81,9 +94,8 @@
     ],
     "react/jsx-uses-react": "off",
     "react/react-in-jsx-scope": "off",
-
-    // Typescript
     "@typescript-eslint/explicit-function-return-type": "off",
+    "@typescript-eslint/explicit-module-boundary-types": "off",
     "@typescript-eslint/no-unused-vars": ["error"],
     "@typescript-eslint/indent": ["error", 2],
     "@typescript-eslint/ban-types": [
@@ -94,15 +106,6 @@
           "{}": false
         }
       }
-    ],
-    "@typescript-eslint/explicit-module-boundary-types": "off"
-  },
-  "overrides": [
-    {
-      "files": ["**/*.spec.jsx"],
-      "rules": {
-        "react/jsx-filename-extension": ["off"]
-      }
-    }
-  ]
+    ]
+  }
 }
