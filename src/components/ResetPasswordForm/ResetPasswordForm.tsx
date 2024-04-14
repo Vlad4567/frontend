@@ -12,7 +12,7 @@ import * as notificationSlice from '../../features/notificationSlice';
 import { useAppDispatch } from '../../app/hooks';
 
 interface InitialErrors {
-  email: string
+  email: string;
 }
 
 const initialErrors: InitialErrors = {
@@ -20,7 +20,7 @@ const initialErrors: InitialErrors = {
 };
 
 interface InitialData {
-  email: string
+  email: string;
 }
 
 const initialData: InitialData = {
@@ -40,35 +40,41 @@ export const ResetPasswordForm: React.FC = () => {
 
     if (email) {
       forgotPassword(email)
-        .then(() => dispatch(notificationSlice.addNotification({
-          id: +new Date(),
-          type: 'resetPassword',
-        })))
-        .catch((err: AxiosError<ErrorData<string>>) => setFormErrors(c => {
-          if (err.response?.data.error) {
-            const objectErrors = { ...c };
+        .then(() =>
+          dispatch(
+            notificationSlice.addNotification({
+              id: +new Date(),
+              type: 'resetPassword',
+            }),
+          ),
+        )
+        .catch((err: AxiosError<ErrorData<string>>) =>
+          setFormErrors(c => {
+            if (err.response?.data.error) {
+              const objectErrors = { ...c };
 
-            objectKeys(initialErrors).forEach(key => {
-              objectErrors[key] = err.response?.data.error as string;
-            });
+              objectKeys(initialErrors).forEach(key => {
+                objectErrors[key] = err.response?.data.error as string;
+              });
 
-            return objectErrors;
-          }
+              return objectErrors;
+            }
 
-          if (err.response?.data.errors) {
-            const objectErrors = { ...c };
+            if (err.response?.data.errors) {
+              const objectErrors = { ...c };
 
-            objectKeys(initialErrors).forEach(key => {
-              objectErrors[key] = err.response?.data.errors
-                ? err.response?.data.errors[key]
-                : '';
-            });
+              objectKeys(initialErrors).forEach(key => {
+                objectErrors[key] = err.response?.data.errors
+                  ? err.response?.data.errors[key]
+                  : '';
+              });
 
-            return objectErrors;
-          }
+              return objectErrors;
+            }
 
-          return c;
-        }));
+            return c;
+          }),
+        );
     }
   };
 
@@ -89,8 +95,8 @@ export const ResetPasswordForm: React.FC = () => {
 
       <div className="reset-password-form__reset">
         <p className="reset-password-form__description">
-          Enter your email address you used to register earlier
-          and we will send you a new password within the next 5 minutes
+          Enter your email address you used to register earlier and we will send
+          you a new password within the next 5 minutes
         </p>
       </div>
 

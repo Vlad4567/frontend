@@ -1,6 +1,5 @@
 import { CSSTransition, TransitionGroup } from 'react-transition-group';
-import { NotificationMessage }
-  from '../NotificationMessage/NotificationMessage';
+import { NotificationMessage } from '../NotificationMessage/NotificationMessage';
 import styleVariables from '../../styles/variables.module.scss';
 import { extractFirstNumber } from '../../helpers/functions';
 import { useAppDispatch, useAppSelector } from '../../app/hooks';
@@ -24,9 +23,9 @@ export const Notifications: React.FC = () => {
             title={notification.title}
             description={notification.description}
             icon={notification.icon}
-            onClose={() => dispatch(
-              notificationSlice.removeNotification(notification.id),
-            )}
+            onClose={() =>
+              dispatch(notificationSlice.removeNotification(notification.id))
+            }
           />
         </CSSTransition>
       ))}

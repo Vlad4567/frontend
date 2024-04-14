@@ -3,7 +3,7 @@ import { PayloadAction, createSlice } from '@reduxjs/toolkit';
 import { PublicMaster } from '../types/master';
 
 export interface InitialState {
-  master: PublicMaster
+  master: PublicMaster;
 }
 
 const initialState: InitialState = {
@@ -67,8 +67,5 @@ const publicMasterSlice = createSlice({
   },
 });
 
-export const {
-  updateMaster,
-  updateStatistics,
-} = publicMasterSlice.actions;
+export const { updateMaster, updateStatistics } = publicMasterSlice.actions;
 export default publicMasterSlice.reducer;

@@ -2,20 +2,13 @@ import React from 'react';
 import './Checkbox.scss';
 
 interface Props extends React.InputHTMLAttributes<HTMLInputElement> {
-  className?: string
+  className?: string;
 }
 
-export const Checkbox: React.FC<Props> = ({
-  className = '',
-  ...rest
-}) => {
+export const Checkbox: React.FC<Props> = ({ className = '', ...rest }) => {
   return (
     <div className={`checkbox ${className}`}>
-      <input
-        type="checkbox"
-        className="checkbox__checkbox"
-        {...rest}
-      />
+      <input type="checkbox" className="checkbox__checkbox" {...rest} />
       <span className="checkbox__checkbox-view">
         <svg
           className="checkbox__checkbox-icon"

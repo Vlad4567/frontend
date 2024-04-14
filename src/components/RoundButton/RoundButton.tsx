@@ -1,7 +1,7 @@
 import './RoundButton.scss';
 
 interface Props extends React.ButtonHTMLAttributes<HTMLButtonElement> {
-  children: React.ReactNode
+  children: React.ReactNode;
 }
 
 export const RoundButton: React.FC<Props> = ({
@@ -10,11 +10,7 @@ export const RoundButton: React.FC<Props> = ({
   ...rest
 }) => {
   return (
-    <button
-      type="button"
-      className={`round-button ${className}`}
-      {...rest}
-    >
+    <button type="button" className={`round-button ${className}`} {...rest}>
       <div className="round-button__border" />
       {children}
     </button>

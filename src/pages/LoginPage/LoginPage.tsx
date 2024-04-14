@@ -7,8 +7,7 @@ import { Outlet, useLocation, useNavigate } from 'react-router-dom';
 import * as appSlice from '../../features/appSlice';
 import { useAppDispatch } from '../../app/hooks';
 import { ArrowButton } from '../../components/ArrowButton/ArrowButton';
-import { LoginHeaderForm }
-  from '../../components/LoginHeaderForm/LoginHeaderForm';
+import { LoginHeaderForm } from '../../components/LoginHeaderForm/LoginHeaderForm';
 import './LoginPage.scss';
 
 const renderLoginHeaderForm = (
@@ -82,11 +81,7 @@ export const LoginPage: React.FC = () => {
         className="login-page__arrow"
         onClick={() => navigate(-1)}
       />
-      {renderLoginHeaderForm(
-        currentPathName,
-        navigate,
-        'login-page__header',
-      )}
+      {renderLoginHeaderForm(currentPathName, navigate, 'login-page__header')}
 
       <Outlet />
     </main>

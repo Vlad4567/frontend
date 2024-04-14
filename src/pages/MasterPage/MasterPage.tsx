@@ -9,23 +9,23 @@ import {
 import { useDocumentTitle, useOnClickOutside } from 'usehooks-ts';
 import { SwiperSlide, Swiper } from 'swiper/react';
 import {
-  getMaster, getRandomMasterPhotos, getReviewsMaster,
+  getMaster,
+  getRandomMasterPhotos,
+  getReviewsMaster,
 } from '../../api/master';
 import { useAppDispatch, useAppSelector } from '../../app/hooks';
 import * as notificationSlice from '../../features/notificationSlice';
 import * as publicMasterSlice from '../../features/publicMasterSlice';
 import { GalleryPhoto } from '../../types/gallery';
 import { DropDownButton } from '../../components/DropDownButton/DropDownButton';
-import { ButtonWithArrow }
-  from '../../components/ButtonWithArrow/ButtonWithArrow';
+import { ButtonWithArrow } from '../../components/ButtonWithArrow/ButtonWithArrow';
 import { websiteName } from '../../helpers/variables';
 import { SwitchButtons } from '../../components/SwitchButtons/SwitchButtons';
 import { SubCategory } from '../../types/category';
 import { getServicesBySubcategory } from '../../api/services';
 import { Service } from '../../types/services';
 import { Stars } from '../../components/Stars/Stars';
-import { ConnectWithMasterSection }
-  from '../../components/ConnectWithMasterSection/ConnectWithMasterSection';
+import { ConnectWithMasterSection } from '../../components/ConnectWithMasterSection/ConnectWithMasterSection';
 import { ArrowButton } from '../../components/ArrowButton/ArrowButton';
 import { Button } from '../../components/Button/Button';
 import { CreateModal } from '../../components/CreateModal/CreateModal';
@@ -44,14 +44,14 @@ export const MasterPage: React.FC = () => {
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
   const { master } = useAppSelector(state => state.publicMasterSlice);
-  const [activeSubcategory, setActiveSubcategory]
-    = useState<SubCategory | null>(null);
+  const [activeSubcategory, setActiveSubcategory] =
+    useState<SubCategory | null>(null);
   const [services, setServices] = useState<Service[]>([]);
   const [activeService, setActiveService] = useState<Service | null>(null);
   const [mainPhotos, setMainPhotos] = useState<GalleryPhoto[]>([]);
   const [searchParams] = useSearchParams();
-  const [reviewsCardPage, setReviewsCardPage]
-    = useState<Page<MasterReviewsCard> | null>(null);
+  const [reviewsCardPage, setReviewsCardPage] =
+    useState<Page<MasterReviewsCard> | null>(null);
   const [masterReviewsPage, setMasterReviewsPage] = useState(0);
   const [modal, setModal] = useState<Modal | ''>('');
   const modalRef = useRef<HTMLFormElement>(null);
@@ -59,30 +59,36 @@ export const MasterPage: React.FC = () => {
   useDocumentTitle(master.firstName || 'Master');
 
   const { statistics, rating } = master;
-  const sumStatisticsValues = statistics && Object
-    .values(statistics)
-    .reduce((acc, curr) => acc + curr, 0);
+  const sumStatisticsValues =
+    statistics &&
+    Object.values(statistics).reduce((acc, curr) => acc + curr, 0);
 
-  useOnClickOutside<HTMLFormElement>([
-    modalRef,
-  ], () => setModal(''));
+  useOnClickOutside<HTMLFormElement>([modalRef], () => setModal(''));
 
   const loadReviewsMaster = (page?: number) => {
     if (
-      !reviewsCardPage
-      || (page || masterReviewsPage) <= reviewsCardPage.totalPages
+      !reviewsCardPage ||
+      (page || masterReviewsPage) <= reviewsCardPage.totalPages
     ) {
-      getReviewsMaster(Number(id), (page || masterReviewsPage), 20)
-        .then(res => setReviewsCardPage(c => ((page || masterReviewsPage)
-          ? {
-            ...res,
-            content: c ? [...c.content, ...res.content] : res.content,
-          }
-          : res)))
-        .catch(() => dispatch(notificationSlice.addNotification({
-          id: +new Date(),
-          type: 'error',
-        })));
+      getReviewsMaster(Number(id), page || masterReviewsPage, 20)
+        .then(res =>
+          setReviewsCardPage(c =>
+            page || masterReviewsPage
+              ? {
+                  ...res,
+                  content: c ? [...c.content, ...res.content] : res.content,
+                }
+              : res,
+          ),
+        )
+        .catch(() =>
+          dispatch(
+            notificationSlice.addNotification({
+              id: +new Date(),
+              type: 'error',
+            }),
+          ),
+        );
       setMasterReviewsPage(c => (page || c) + 1);
     }
   };
@@ -93,19 +99,25 @@ export const MasterPage: React.FC = () => {
 
   const handleAddCard = (newCard: MasterReviewsCard) => {
     if (reviewsCardPage?.totalElements) {
-      const ratingCalculate = rating
-      && rating * reviewsCardPage?.totalElements;
+      const ratingCalculate = rating && rating * reviewsCardPage?.totalElements;
 
-      const reultRatingCalculate = ratingCalculate
-        && (ratingCalculate + newCard.grade)
-        / (reviewsCardPage?.totalElements + 1);
+      const reultRatingCalculate =
+        ratingCalculate &&
+        (ratingCalculate + newCard.grade) /
+          (reviewsCardPage?.totalElements + 1);
 
-      dispatch(publicMasterSlice.updateMaster({
-        rating: reultRatingCalculate && +reultRatingCalculate?.toFixed(1),
-      }));
+      dispatch(
+        publicMasterSlice.updateMaster({
+          rating: reultRatingCalculate && +reultRatingCalculate?.toFixed(1),
+        }),
+      );
     }
 
-    dispatch(publicMasterSlice.updateStatistics({ [`count${newCard.grade}`]: newCard.grade }));
+    dispatch(
+      publicMasterSlice.updateStatistics({
+        [`count${newCard.grade}`]: newCard.grade,
+      }),
+    );
 
     loadReviewsMaster(0);
   };
@@ -113,19 +125,25 @@ export const MasterPage: React.FC = () => {
   useEffect(() => {
     if (id) {
       getMaster(+id)
-        .then((res) => {
+        .then(res => {
           dispatch(publicMasterSlice.updateMaster(res));
           getRandomMasterPhotos(res.id)
             .then(setMainPhotos)
-            .catch(() => dispatch(notificationSlice.addNotification({
-              id: +new Date(),
-              type: 'error',
-            })));
+            .catch(() =>
+              dispatch(
+                notificationSlice.addNotification({
+                  id: +new Date(),
+                  type: 'error',
+                }),
+              ),
+            );
 
-          setActiveSubcategory(res.subcategories?.[0] || {
-            id: 0,
-            name: '',
-          });
+          setActiveSubcategory(
+            res.subcategories?.[0] || {
+              id: 0,
+              name: '',
+            },
+          );
         })
         .catch(() => navigate(-1));
     }
@@ -135,19 +153,24 @@ export const MasterPage: React.FC = () => {
     if (activeSubcategory && id) {
       getServicesBySubcategory(+id, activeSubcategory.id)
         .then(setServices)
-        .catch(() => dispatch(notificationSlice.addNotification({
-          id: +new Date(),
-          type: 'error',
-        })));
+        .catch(() =>
+          dispatch(
+            notificationSlice.addNotification({
+              id: +new Date(),
+              type: 'error',
+            }),
+          ),
+        );
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [activeSubcategory, id]);
 
   useEffect(() => {
     const timeoutId = setTimeout(() => {
       if (searchParams.get('scroll') === 'chat') {
-        const chatButton
-          = document.querySelector('.master-page__connect-with-master');
+        const chatButton = document.querySelector(
+          '.master-page__connect-with-master',
+        );
 
         if (chatButton) {
           chatButton.scrollIntoView({ behavior: 'smooth' });
@@ -173,7 +196,7 @@ export const MasterPage: React.FC = () => {
         <section className="master-page__info">
           {!!mainPhotos.length && (
             <div className="master-page__info-gallery">
-              {mainPhotos.map((photo) => (
+              {mainPhotos.map(photo => (
                 <Link
                   to="./gallery"
                   key={photo.id}
@@ -200,8 +223,8 @@ export const MasterPage: React.FC = () => {
 
               {!!master.subcategories?.length && (
                 <div className="master-page__info-title-left-subcategories">
-                  {master.subcategories
-                    && master.subcategories.map(subcategory => (
+                  {master.subcategories &&
+                    master.subcategories.map(subcategory => (
                       <DropDownButton
                         size="large"
                         className="master-page__info-title-left-subcategory"
@@ -216,8 +239,9 @@ export const MasterPage: React.FC = () => {
             <ButtonWithArrow
               className="master-page__info-title-chat"
               onClick={() => {
-                const element
-                  = document.querySelector('.master-page__connect-with-master');
+                const element = document.querySelector(
+                  '.master-page__connect-with-master',
+                );
 
                 if (element) {
                   element.scrollIntoView({ behavior: 'smooth' });
@@ -230,9 +254,7 @@ export const MasterPage: React.FC = () => {
 
           {master.description && (
             <div className="master-page__info-description">
-              <h3 className="master-page__info-description-title">
-                About me
-              </h3>
+              <h3 className="master-page__info-description-title">About me</h3>
               <p className="master-page__info-description-text">
                 {master.description}
               </p>
@@ -243,8 +265,7 @@ export const MasterPage: React.FC = () => {
         {!!master.subcategories?.length && (
           <section className="master-page__services">
             <h1 className="master-page__services-title">
-              Services to
-              {' '}
+              Services to{' '}
               <span className="master-page__services-title-span">
                 {websiteName}
               </span>
@@ -254,9 +275,7 @@ export const MasterPage: React.FC = () => {
               <article className="master-page__services-main-wrapper">
                 <SwitchButtons
                   buttons={master.subcategories}
-                  activeButton={
-                    activeSubcategory || { id: -1, name: '' }
-                  }
+                  activeButton={activeSubcategory || { id: -1, name: '' }}
                   onClickButton={(_, item) => setActiveSubcategory(item)}
                   className="master-page__services-main-subcategories"
                 />
@@ -275,7 +294,7 @@ export const MasterPage: React.FC = () => {
                       Duration, min (approx.)
                     </small>
                   </div>
-                  {services.map((service) => (
+                  {services.map(service => (
                     <div
                       key={service.id}
                       className="master-page__services-main-item"
@@ -322,21 +341,15 @@ export const MasterPage: React.FC = () => {
                       </h3>
 
                       <div className="master-page__reviews-info-header-blok">
-
                         <p
-                          className="master-page__reviews-info-header-blok-text"
+                          className="
+                          master-page__reviews-info-header-blok-text
+                          "
                         >
-                          {reviewsCardPage?.totalElements}
-                          {' '}
-                          ratings
+                          {reviewsCardPage?.totalElements} ratings
                         </p>
 
-                        {rating && (
-                          <RatingStars
-                            state={rating}
-                          />
-                        )}
-
+                        {rating && <RatingStars state={rating} />}
                       </div>
                     </div>
                     <>
@@ -360,18 +373,19 @@ export const MasterPage: React.FC = () => {
                   </div>
 
                   <ul className="master-page__reviews-info-header-list">
-                    {statistics
-                      && sumStatisticsValues
-                      && Object.entries(statistics)
+                    {statistics &&
+                      sumStatisticsValues &&
+                      Object.entries(statistics)
                         .sort((a, b) => a[0].localeCompare(b[0]))
                         .map(item => {
                           const [key, value] = item;
                           const percent = 100;
-                          const percentValue = (
-                            value / sumStatisticsValues) * percent;
+                          const percentValue =
+                            (value / sumStatisticsValues) * percent;
 
                           return (
                             <li
+                              key={item[0]}
                               className="master-page__reviews-info-header-item"
                             >
                               <p
@@ -383,7 +397,6 @@ export const MasterPage: React.FC = () => {
                               </p>
 
                               <ProgressBar completed={percentValue} />
-
                             </li>
                           );
                         })}
@@ -423,7 +436,7 @@ export const MasterPage: React.FC = () => {
                   slidesPerView="auto"
                   onReachEnd={() => loadReviewsMaster()}
                 >
-                  {reviewsCardPage?.content.map((card) => (
+                  {reviewsCardPage?.content.map(card => (
                     <SwiperSlide
                       key={card.id}
                       className="master-page__reviews-swiper-slide"
@@ -446,7 +459,6 @@ export const MasterPage: React.FC = () => {
                 </figcaption>
               </figure>
             )}
-
           </div>
         </section>
 

@@ -8,8 +8,8 @@ import { DropDownButton } from '../DropDownButton/DropDownButton';
 import './Header.scss';
 
 interface Props {
-  type: 'light' | 'dark'
-  className?: string
+  type: 'light' | 'dark';
+  className?: string;
 }
 
 export const Header: React.FC<Props> = ({ type, className = '' }) => {
@@ -37,24 +37,18 @@ export const Header: React.FC<Props> = ({ type, className = '' }) => {
                 className="header__nav-item-link"
                 to={token ? '/account' : '/login'}
               >
-                {(token || refreshToken) ? (
+                {token || refreshToken ? (
                   <DropDownButton
                     className="header__account"
                     size="small"
                     placeholder="Account"
                   />
                 ) : (
-                  <RectangleButton
-                    className="header__login"
-                    type={type}
-                  >
+                  <RectangleButton className="header__login" type={type}>
                     Sign up
                   </RectangleButton>
                 )}
-                <button
-                  type="button"
-                  className="header__account-icon"
-                >
+                <button type="button" className="header__account-icon">
                   <AccountIcon type={type} />
                 </button>
               </Link>

@@ -3,9 +3,9 @@ import './Button.scss';
 
 /* eslint-disable react/button-has-type */
 interface Props extends React.ButtonHTMLAttributes<HTMLButtonElement> {
-  className?: string
-  children: React.ReactNode
-  size: 'large' | 'small'
+  className?: string;
+  children: React.ReactNode;
+  size: 'large' | 'small';
 }
 
 export const Button: React.FC<Props> = ({

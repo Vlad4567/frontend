@@ -16,11 +16,9 @@ import './App.scss';
 import { convertHyphenToSpace } from './helpers/functions';
 
 export const App: React.FC = () => {
-  const {
-    headerShown,
-    headerType,
-    footerShown,
-  } = useAppSelector(state => state.appSlice);
+  const { headerShown, headerType, footerShown } = useAppSelector(
+    state => state.appSlice,
+  );
   const navigate = useNavigate();
   const { pathname } = useLocation();
   const [searchParams] = useSearchParams();
@@ -32,7 +30,7 @@ export const App: React.FC = () => {
     if (!searchParams.get('scroll')) {
       window.scroll({ top: 0, behavior: 'smooth' });
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [pathname]);
 
   globalRouter.navigate = navigate;

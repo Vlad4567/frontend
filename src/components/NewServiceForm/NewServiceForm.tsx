@@ -7,8 +7,7 @@ import classNames from 'classnames';
 import { Button } from '../Button/Button';
 import { LoginInput } from '../LoginInput/LoginInput';
 import { CreateModal } from '../CreateModal/CreateModal';
-import { MasterGallery }
-  from '../MasterGallery/MasterGallery';
+import { MasterGallery } from '../MasterGallery/MasterGallery';
 import photoPlus from '../../img/icons/tabler-photo-plus.svg';
 import deleteBasket from '../../img/icons/delete-basket.svg';
 import { Service } from '../../types/services';
@@ -17,18 +16,17 @@ import { debounceDelay } from '../../helpers/variables';
 import { GalleryPhoto } from '../../types/gallery';
 import * as notificationSlice from '../../features/notificationSlice';
 import { DropDownButton } from '../DropDownButton/DropDownButton';
-import { ModalEditingService }
-  from '../ModalEditingService/ModalEditingService';
+import { ModalEditingService } from '../ModalEditingService/ModalEditingService';
 import './NewServiceForm.scss';
 import { useAppDispatch } from '../../app/hooks';
 
 interface Props {
-  className?: string
-  value?: Service
-  activeSubcategory: SubCategory | null
-  onDelete?: (e: React.MouseEvent<HTMLImageElement, MouseEvent>) => void
-  onAddService?: (service: Service) => Promise<unknown>
-  onChange?: (service: Service) => void
+  className?: string;
+  value?: Service;
+  activeSubcategory: SubCategory | null;
+  onDelete?: (e: React.MouseEvent<HTMLImageElement, MouseEvent>) => void;
+  onAddService?: (service: Service) => Promise<unknown>;
+  onChange?: (service: Service) => void;
 }
 
 const newService: Service = {
@@ -58,12 +56,11 @@ export const NewServiceForm: React.FC<Props> = ({
 
   useEffect(() => {
     if (value) {
-      if (JSON.stringify(value)
-      !== JSON.stringify(debouncedForm)) {
+      if (JSON.stringify(value) !== JSON.stringify(debouncedForm)) {
         onChange(debouncedForm);
       }
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [debouncedForm]);
 
   useOnClickOutside(modalRef, () => {
@@ -88,10 +85,14 @@ export const NewServiceForm: React.FC<Props> = ({
   const handleAddService = () => {
     onAddService(form)
       .then(() => setForm(newService))
-      .catch(() => dispatch(notificationSlice.addNotification({
-        id: +new Date(),
-        type: 'error',
-      })));
+      .catch(() =>
+        dispatch(
+          notificationSlice.addNotification({
+            id: +new Date(),
+            type: 'error',
+          }),
+        ),
+      );
   };
 
   return (
@@ -111,15 +112,15 @@ export const NewServiceForm: React.FC<Props> = ({
         className="new-service-form__field"
         placeholder="₴ Price"
         value={form.price || ''}
-        onChange={e => setForm({
-          ...form,
-          price: +e.target.value.replace(/\D/g, ''),
-        })}
+        onChange={e =>
+          setForm({
+            ...form,
+            price: +e.target.value.replace(/\D/g, ''),
+          })
+        }
       />
 
-      <p className="new-service-form__field-paragraph">
-        {form.name}
-      </p>
+      <p className="new-service-form__field-paragraph">{form.name}</p>
 
       <div className="new-service-form__field-group">
         <LoginInput
@@ -128,10 +129,12 @@ export const NewServiceForm: React.FC<Props> = ({
           className="new-service-form__field"
           placeholder="Duration"
           value={form.duration || ''}
-          onChange={e => setForm({
-            ...form,
-            duration: +e.target.value.replace(/\D/g, ''),
-          })}
+          onChange={e =>
+            setForm({
+              ...form,
+              duration: +e.target.value.replace(/\D/g, ''),
+            })
+          }
         />
 
         <div className="new-service-form__buttons">
@@ -164,9 +167,11 @@ export const NewServiceForm: React.FC<Props> = ({
             <img
               src={form.photo?.photoUrl || photoPlus}
               alt="Plus"
-              className={form.photo?.id
-                ? 'new-service-form__picture'
-                : 'new-service-form__icon'}
+              className={
+                form.photo?.id
+                  ? 'new-service-form__picture'
+                  : 'new-service-form__icon'
+              }
             />
           </div>
 
@@ -196,16 +201,17 @@ export const NewServiceForm: React.FC<Props> = ({
               type="button"
               className="new-service-form__add"
               size="small"
-              disabled={form.name === ''
-                || form.price === null
-                || form.duration === null
-                || form.photo === null}
+              disabled={
+                form.name === '' ||
+                form.price === null ||
+                form.duration === null ||
+                form.photo === null
+              }
               onClick={handleAddService}
             >
               +
             </Button>
           )}
-
         </div>
       </div>
     </form>

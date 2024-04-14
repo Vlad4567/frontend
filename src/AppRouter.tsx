@@ -7,11 +7,7 @@ interface Props extends Omit<RouterProps, 'location' | 'navigator'> {
   history: BrowserHistory;
 }
 
-export const AppRouter: React.FC<Props> = ({
-  children,
-  history,
-  ...rest
-}) => {
+export const AppRouter: React.FC<Props> = ({ children, history, ...rest }) => {
   const [state, setState] = React.useState({
     action: history.action,
     location: history.location,

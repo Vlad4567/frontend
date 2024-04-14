@@ -1,16 +1,10 @@
 import React, { useEffect, useRef, useState } from 'react';
-import {
-  NavLink,
-  Outlet,
-  useLocation,
-  useNavigate,
-} from 'react-router-dom';
+import { NavLink, Outlet, useLocation, useNavigate } from 'react-router-dom';
 import classNames from 'classnames';
 import { createPortal } from 'react-dom';
 import { useMediaQuery, useOnClickOutside } from 'usehooks-ts';
 import { Transition } from 'history';
-import { convertSpaceToHyphen }
-  from '../../helpers/functions';
+import { convertSpaceToHyphen } from '../../helpers/functions';
 import { DropDownButton } from '../../components/DropDownButton/DropDownButton';
 import styleVariables from '../../styles/variables.module.scss';
 import { useAppDispatch, useAppSelector } from '../../app/hooks';
@@ -25,14 +19,18 @@ import * as createMasterSlice from '../../features/createMasterSlice';
 import iconBasket from '../../img/icons/icon-basket.svg';
 import { Button } from '../../components/Button/Button';
 import { CreateModal } from '../../components/CreateModal/CreateModal';
-import { ModalAlertMessage }
-  from '../../components/ModalAlertMessage/ModalAlertMessage';
+import { ModalAlertMessage } from '../../components/ModalAlertMessage/ModalAlertMessage';
 import * as userSlice from '../../features/userSlice';
 import './EditPublicProfilePage.scss';
 import { browserHistory } from '../../utils/history';
 
-const navButtons
-  = ['Area of work', 'Contacts', 'Address', 'Gallery', 'Services'];
+const navButtons = [
+  'Area of work',
+  'Contacts',
+  'Address',
+  'Gallery',
+  'Services',
+];
 
 type ActiveModal = '' | 'deleteMaster' | 'hideMaster' | 'blockedURL';
 
@@ -41,19 +39,26 @@ export const EditPublicProfilePage: React.FC = () => {
   const createMaster = useAppSelector(state => state.createMasterSlice);
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
-  const isDesktop = useMediaQuery(`(min-width: ${styleVariables['desktop-min-width']})`);
+  const isDesktop = useMediaQuery(
+    `(min-width: ${styleVariables['desktop-min-width']})`,
+  );
   const [activeNavButton, setActiveNavButton] = useState(navButtons[0]);
   const [activeModal, setActiveModal] = useState<ActiveModal>('');
   const [isBlockedURL, setIsBlockedURL] = useState(true);
-  const [browserBlock, setBrowserBlock]
-    = useState<Generator<undefined, void, unknown> | null>(null);
-  const accountContentTitle
-    = document.querySelector('.account-page__main-title-wrapper');
+  const [browserBlock, setBrowserBlock] = useState<Generator<
+    undefined,
+    void,
+    unknown
+  > | null>(null);
+  const accountContentTitle = document.querySelector(
+    '.account-page__main-title-wrapper',
+  );
   const alertRef = useRef<HTMLDivElement>(null);
   const pathArray = useLocation().pathname.split('/');
-  const pathAfterEditPublicProfile
-    = pathArray[pathArray
-      .findIndex(path => path === 'edit-public-profile') + 1] || '';
+  const pathAfterEditPublicProfile =
+    pathArray[
+      pathArray.findIndex(path => path === 'edit-public-profile') + 1
+    ] || '';
 
   useOnClickOutside(alertRef, () => {
     setActiveModal('');
@@ -64,7 +69,7 @@ export const EditPublicProfilePage: React.FC = () => {
     const saveUnBlock = unblock;
 
     // eslint-disable-next-line generator-star-spacing, func-names
-    return function*() {
+    return function* () {
       setActiveModal('blockedURL');
       yield;
       saveUnBlock();
@@ -82,17 +87,16 @@ export const EditPublicProfilePage: React.FC = () => {
     if (!isBlockedURL && browserBlock) {
       browserBlock.next();
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isBlockedURL]);
 
   useEffect(() => {
     let unblock: () => void | undefined;
 
     if (createMaster.editMode) {
-      unblock = browserHistory
-        .block((tx) => {
-          setBrowserBlock(createBrowserBlock(tx, unblock));
-        });
+      unblock = browserHistory.block(tx => {
+        setBrowserBlock(createBrowserBlock(tx, unblock));
+      });
     }
 
     return () => {
@@ -111,7 +115,7 @@ export const EditPublicProfilePage: React.FC = () => {
       navigate('./area-of-work');
     }
 
-    window.onbeforeunload = (e) => {
+    window.onbeforeunload = e => {
       if (e) {
         // eslint-disable-next-line no-param-reassign
         e.returnValue = 'Sure?';
@@ -125,7 +129,7 @@ export const EditPublicProfilePage: React.FC = () => {
 
       dispatch(createMasterSlice.deleteMaster());
     };
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const setNavLinkClassName = (isActive: boolean, button: string) => {
@@ -133,34 +137,47 @@ export const EditPublicProfilePage: React.FC = () => {
       setActiveNavButton(button);
     }
 
-    return classNames(
-      'edit-public-profile-page__nav-link',
-      {
-        'edit-public-profile-page__nav-link--active': isActive,
-      },
-    );
+    return classNames('edit-public-profile-page__nav-link', {
+      'edit-public-profile-page__nav-link--active': isActive,
+    });
   };
 
   const handleHideProfile = () => {
     setActiveModal('');
     if (createMaster.hidden) {
       unhideMaster()
-        .then(() => dispatch(createMasterSlice.editOptions({
-          hidden: !createMaster.hidden,
-        })))
-        .catch(() => dispatch(notificationSlice.addNotification({
-          id: +new Date(),
-          type: 'error',
-        })));
+        .then(() =>
+          dispatch(
+            createMasterSlice.editOptions({
+              hidden: !createMaster.hidden,
+            }),
+          ),
+        )
+        .catch(() =>
+          dispatch(
+            notificationSlice.addNotification({
+              id: +new Date(),
+              type: 'error',
+            }),
+          ),
+        );
     } else {
       hideMaster()
-        .then(() => dispatch(createMasterSlice.editOptions({
-          hidden: !createMaster.hidden,
-        })))
-        .catch(() => dispatch(notificationSlice.addNotification({
-          id: +new Date(),
-          type: 'error',
-        })));
+        .then(() =>
+          dispatch(
+            createMasterSlice.editOptions({
+              hidden: !createMaster.hidden,
+            }),
+          ),
+        )
+        .catch(() =>
+          dispatch(
+            notificationSlice.addNotification({
+              id: +new Date(),
+              type: 'error',
+            }),
+          ),
+        );
     }
   };
 
@@ -171,18 +188,22 @@ export const EditPublicProfilePage: React.FC = () => {
         dispatch(userSlice.deleteMaster());
         navigate('..');
       })
-      .catch(() => dispatch(
-        notificationSlice.addNotification({
-          id: +new Date(),
-          type: 'error',
-        }),
-      ));
+      .catch(() =>
+        dispatch(
+          notificationSlice.addNotification({
+            id: +new Date(),
+            type: 'error',
+          }),
+        ),
+      );
   };
 
   const toggleEdit = () => {
-    dispatch(createMasterSlice.editOptions({
-      editMode: !createMaster.editMode,
-    }));
+    dispatch(
+      createMasterSlice.editOptions({
+        editMode: !createMaster.editMode,
+      }),
+    );
   };
 
   const handleSaveChanges = () => {
@@ -196,24 +217,30 @@ export const EditPublicProfilePage: React.FC = () => {
         createMaster.master.subcategories?.map(item => item.id) || null,
     })
       .then(() => {
-        dispatch(createMasterSlice.editOptions({
-          editMode: false,
-        }));
+        dispatch(
+          createMasterSlice.editOptions({
+            editMode: false,
+          }),
+        );
         setIsBlockedURL(false);
         setActiveModal('');
       })
       .catch(() => {
-        dispatch(notificationSlice.addNotification({
-          id: +new Date(),
-          type: 'error',
-        }));
+        dispatch(
+          notificationSlice.addNotification({
+            id: +new Date(),
+            type: 'error',
+          }),
+        );
       });
   };
 
   const handleDeleteChanges = () => {
-    dispatch(createMasterSlice.editOptions({
-      editMode: false,
-    }));
+    dispatch(
+      createMasterSlice.editOptions({
+        editMode: false,
+      }),
+    );
     setIsBlockedURL(false);
     setActiveModal('');
   };
@@ -233,78 +260,79 @@ export const EditPublicProfilePage: React.FC = () => {
           />
         </CreateModal>
       )}
-      {accountContentTitle
-      && user.master
-      && createPortal(
-        <div className="edit-public-profile-page__controls">
-          <DropDownButton
-            // eslint-disable-next-line max-len
-            className="edit-public-profile-page__controls-btn edit-public-profile-page__controls-btn--small"
-            size="large"
-            onClick={() => setActiveModal('deleteMaster')}
-          >
-            <img src={iconBasket} alt="delete master" />
-          </DropDownButton>
-          <DropDownButton
-            className="edit-public-profile-page__controls-btn"
-            size="large"
-            onClick={() => setActiveModal('hideMaster')}
-            placeholder={createMaster.hidden
-              ? 'Show profile'
-              : 'Hide profile'}
-          />
-          <DropDownButton
-            className="edit-public-profile-page__controls-btn"
-            size="large"
-            placeholder="Preview"
-            onClick={() => navigate(`/master/${createMaster.masterId}`)}
-          />
-          {!createMaster.editMode
-          && pathAfterEditPublicProfile !== 'gallery'
-          && pathAfterEditPublicProfile !== 'services'
-          && (
-            <Button
-              className="edit-public-profile-page__controls-btn"
-              size="small"
-              onClick={toggleEdit}
+      {accountContentTitle &&
+        user.master &&
+        createPortal(
+          <div className="edit-public-profile-page__controls">
+            <DropDownButton
+              // eslint-disable-next-line max-len
+              className="edit-public-profile-page__controls-btn edit-public-profile-page__controls-btn--small"
+              size="large"
+              onClick={() => setActiveModal('deleteMaster')}
             >
-              Edit
-            </Button>
-          )}
-          <>
-            {activeModal === 'hideMaster' && (
-              <CreateModal>
-                <ModalAlertMessage
-                  ref={alertRef}
-                  onClose={() => setActiveModal('')}
-                  title={createMaster.hidden
+              <img src={iconBasket} alt="delete master" />
+            </DropDownButton>
+            <DropDownButton
+              className="edit-public-profile-page__controls-btn"
+              size="large"
+              onClick={() => setActiveModal('hideMaster')}
+              placeholder={
+                createMaster.hidden ? 'Show profile' : 'Hide profile'
+              }
+            />
+            <DropDownButton
+              className="edit-public-profile-page__controls-btn"
+              size="large"
+              placeholder="Preview"
+              onClick={() => navigate(`/master/${createMaster.masterId}`)}
+            />
+            {!createMaster.editMode &&
+              pathAfterEditPublicProfile !== 'gallery' &&
+              pathAfterEditPublicProfile !== 'services' && (
+                <Button
+                  className="edit-public-profile-page__controls-btn"
+                  size="small"
+                  onClick={toggleEdit}
+                >
+                  Edit
+                </Button>
+              )}
+            <>
+              {activeModal === 'hideMaster' && (
+                <CreateModal>
+                  <ModalAlertMessage
+                    ref={alertRef}
+                    onClose={() => setActiveModal('')}
+                    title={
+                      createMaster.hidden
+                        ? // eslint-disable-next-line max-len
+                          'If you click Unhide, the profile will be visible to other users'
+                        : // eslint-disable-next-line max-len
+                          'If you click Hide, the profile will not be visible to other users'
+                    }
+                    dangerPlaceholder={
+                      createMaster.hidden ? 'Unhide profile' : 'Hide profile'
+                    }
+                    onClickDanger={handleHideProfile}
+                  />
+                </CreateModal>
+              )}
+              {activeModal === 'deleteMaster' && (
+                <CreateModal>
+                  <ModalAlertMessage
+                    ref={alertRef}
+                    onClose={() => setActiveModal('')}
                     // eslint-disable-next-line max-len
-                    ? 'If you click Unhide, the profile will be visible to other users'
-                    // eslint-disable-next-line max-len
-                    : 'If you click Hide, the profile will not be visible to other users'}
-                  dangerPlaceholder={createMaster.hidden
-                    ? 'Unhide profile'
-                    : 'Hide profile'}
-                  onClickDanger={handleHideProfile}
-                />
-              </CreateModal>
-            )}
-            {activeModal === 'deleteMaster' && (
-              <CreateModal>
-                <ModalAlertMessage
-                  ref={alertRef}
-                  onClose={() => setActiveModal('')}
-                  // eslint-disable-next-line max-len
-                  title="Are you sure you want to delete your public profile permanently? (recovery is not possible)"
-                  dangerPlaceholder="Delete profile"
-                  onClickDanger={handleDeleteMaster}
-                />
-              </CreateModal>
-            )}
-          </>
-        </div>,
-        accountContentTitle,
-      )}
+                    title="Are you sure you want to delete your public profile permanently? (recovery is not possible)"
+                    dangerPlaceholder="Delete profile"
+                    onClickDanger={handleDeleteMaster}
+                  />
+                </CreateModal>
+              )}
+            </>
+          </div>,
+          accountContentTitle,
+        )}
       <nav className="edit-public-profile-page__nav">
         {navButtons.map((button, index) => (
           <React.Fragment key={button}>
@@ -313,15 +341,17 @@ export const EditPublicProfilePage: React.FC = () => {
                 return setNavLinkClassName(isActive, button);
               }}
               to={`./${convertSpaceToHyphen(button)}`}
-              style={(!user.master && index > 2)
-                || (user.master
-                    && createMaster.master.subcategories?.length === 0
-                    && index > 2)
-                ? { pointerEvents: 'none' }
-                : {}}
+              style={
+                (!user.master && index > 2) ||
+                (user.master &&
+                  createMaster.master.subcategories?.length === 0 &&
+                  index > 2)
+                  ? { pointerEvents: 'none' }
+                  : {}
+              }
             >
               <DropDownButton
-                placeholder={`${index + 1}${(isDesktop || activeNavButton === button) ? ` ${button}` : ''}`}
+                placeholder={`${index + 1}${isDesktop || activeNavButton === button ? ` ${button}` : ''}`}
                 size="small"
                 className="edit-public-profile-page__nav-link-btn"
               />
@@ -334,10 +364,7 @@ export const EditPublicProfilePage: React.FC = () => {
         ))}
       </nav>
 
-      {(createMaster.editFormShown || !user.master) && (
-        <Outlet />
-      )}
-
+      {(createMaster.editFormShown || !user.master) && <Outlet />}
     </div>
   );
 };

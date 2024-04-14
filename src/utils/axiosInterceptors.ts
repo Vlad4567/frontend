@@ -18,7 +18,7 @@ instance.interceptors.response.use(
   response => {
     return response;
   },
-  async (error) => {
+  async error => {
     const originalRequest = error.config;
 
     if (error.response?.status === 401) {
@@ -26,10 +26,14 @@ instance.interceptors.response.use(
 
       if (refreshToken) {
         try {
-          const { data: { token } }
-            = await axios.post<{ token: string }>(`${instance.defaults.baseURL}/auth/refresh`, {
+          const {
+            data: { token },
+          } = await axios.post<{ token: string }>(
+            `${instance.defaults.baseURL}/auth/refresh`,
+            {
               refreshToken,
-            });
+            },
+          );
 
           localStorage.setItem('token', token);
           originalRequest.headers.Authorization = `Bearer ${token}`;
@@ -48,7 +52,7 @@ instance.interceptors.response.use(
 );
 
 instance.interceptors.request.use(
-  (config) => {
+  config => {
     const token = localStorage.getItem('token');
 
     if (token) {
@@ -57,7 +61,7 @@ instance.interceptors.request.use(
 
     return config;
   },
-  (error) => Promise.reject(error),
+  error => Promise.reject(error),
 );
 
 export default instance;

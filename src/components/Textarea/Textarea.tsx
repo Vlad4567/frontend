@@ -3,11 +3,11 @@ import classNames from 'classnames';
 import './Textarea.scss';
 
 interface Props extends React.TextareaHTMLAttributes<HTMLTextAreaElement> {
-  className?: string
-  placeholder?: string
-  autoGrow?: boolean
-  title?: string
-  errorText?: string
+  className?: string;
+  placeholder?: string;
+  autoGrow?: boolean;
+  title?: string;
+  errorText?: string;
 }
 
 export const Textarea: React.FC<Props> = ({
@@ -20,19 +20,24 @@ export const Textarea: React.FC<Props> = ({
 }) => {
   return (
     <div className={`textarea ${className}`}>
-      <small className={classNames('textarea__title', {
-        'textarea__title--show': rest.value,
-      })}
+      <small
+        className={classNames('textarea__title', {
+          'textarea__title--show': rest.value,
+        })}
       >
         {title || placeholder}
       </small>
       <textarea
         className="textarea__text"
         placeholder={placeholder}
-        onInput={autoGrow ? (e: React.ChangeEvent<HTMLTextAreaElement>) => {
-          e.target.style.height = 'auto';
-          e.target.style.height = `${e.target.scrollHeight}px`;
-        } : undefined}
+        onInput={
+          autoGrow
+            ? (e: React.ChangeEvent<HTMLTextAreaElement>) => {
+                e.target.style.height = 'auto';
+                e.target.style.height = `${e.target.scrollHeight}px`;
+              }
+            : undefined
+        }
         {...rest}
       />
 

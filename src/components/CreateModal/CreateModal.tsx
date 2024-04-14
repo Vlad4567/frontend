@@ -8,10 +8,10 @@ interface Props {
   children: React.ReactNode;
   className?: string;
   media?: {
-    onPhone?: boolean
-    onTablet?: boolean
-    onDesktop?: boolean
-  }
+    onPhone?: boolean;
+    onTablet?: boolean;
+    onDesktop?: boolean;
+  };
 }
 
 export const CreateModal: React.FC<Props> = ({
@@ -23,19 +23,25 @@ export const CreateModal: React.FC<Props> = ({
     onDesktop: true,
   },
 }) => {
-  const onTablet = useMediaQuery(`(min-width: ${variables['tablet-min-width']})`);
-  const onDesktop = useMediaQuery(`(min-width: ${variables['desktop-min-width']})`);
+  const onTablet = useMediaQuery(
+    `(min-width: ${variables['tablet-min-width']})`,
+  );
+  const onDesktop = useMediaQuery(
+    `(min-width: ${variables['desktop-min-width']})`,
+  );
   const onPhone = !(onTablet || onDesktop);
 
-  const checkMedia = (media.onPhone && onPhone)
-    || (media.onTablet && onTablet)
-    || (media.onDesktop && onDesktop);
+  const checkMedia =
+    (media.onPhone && onPhone) ||
+    (media.onTablet && onTablet) ||
+    (media.onDesktop && onDesktop);
 
-  return checkMedia ? createPortal(
-    <div className={`modal ${className}`}>
-      {children}
-    </div>,
-    document.body,
-  )
-    : <>{children}</>;
+  return checkMedia ? (
+    createPortal(
+      <div className={`modal ${className}`}>{children}</div>,
+      document.body,
+    )
+  ) : (
+    <>{children}</>
+  );
 };

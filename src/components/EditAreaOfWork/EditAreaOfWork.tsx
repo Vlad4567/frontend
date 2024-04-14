@@ -43,12 +43,14 @@ export const EditAreaOfWork: React.FC = () => {
 
   const handleInputChange = (
     e:
-    | React.ChangeEvent<HTMLInputElement>
-    | React.ChangeEvent<HTMLTextAreaElement>,
+      | React.ChangeEvent<HTMLInputElement>
+      | React.ChangeEvent<HTMLTextAreaElement>,
   ) => {
-    dispatch(createMasterSlice.editMaster({
-      [e.target.name]: e.target.value || null,
-    }));
+    dispatch(
+      createMasterSlice.editMaster({
+        [e.target.name]: e.target.value || null,
+      }),
+    );
   };
 
   const handleClickSubcategory = (item: SubCategory) => {
@@ -56,30 +58,32 @@ export const EditAreaOfWork: React.FC = () => {
       if (createMaster.master.subcategories?.find(sub => sub.id === item.id)) {
         deleteMasterSubcategory(item.id)
           .then(() => {
-            dispatch(
-              createMasterSlice.toggleSubcategory(item),
-            );
+            dispatch(createMasterSlice.toggleSubcategory(item));
           })
-          .catch(() => dispatch(notificationSlice.addNotification({
-            id: +new Date(),
-            type: 'error',
-          })));
+          .catch(() =>
+            dispatch(
+              notificationSlice.addNotification({
+                id: +new Date(),
+                type: 'error',
+              }),
+            ),
+          );
       } else {
         addMasterSubcategory(item.id)
           .then(() => {
-            dispatch(
-              createMasterSlice.toggleSubcategory(item),
-            );
+            dispatch(createMasterSlice.toggleSubcategory(item));
           })
-          .catch(() => dispatch(notificationSlice.addNotification({
-            id: +new Date(),
-            type: 'error',
-          })));
+          .catch(() =>
+            dispatch(
+              notificationSlice.addNotification({
+                id: +new Date(),
+                type: 'error',
+              }),
+            ),
+          );
       }
     } else {
-      dispatch(
-        createMasterSlice.toggleSubcategory(item),
-      );
+      dispatch(createMasterSlice.toggleSubcategory(item));
     }
   };
 
@@ -95,14 +99,20 @@ export const EditAreaOfWork: React.FC = () => {
           createMaster.master.subcategories?.map(item => item.id) || null,
       })
         .then(() => {
-          dispatch(createMasterSlice.editOptions({
-            editMode: false,
-          }));
+          dispatch(
+            createMasterSlice.editOptions({
+              editMode: false,
+            }),
+          );
         })
-        .catch(() => dispatch(notificationSlice.addNotification({
-          id: +new Date(),
-          type: 'error',
-        })));
+        .catch(() =>
+          dispatch(
+            notificationSlice.addNotification({
+              id: +new Date(),
+              type: 'error',
+            }),
+          ),
+        );
     } else {
       navigate('../contacts');
     }
@@ -115,14 +125,12 @@ export const EditAreaOfWork: React.FC = () => {
         style={
           user.master && !createMaster.editMode
             ? {
-              pointerEvents: 'none',
-            }
+                pointerEvents: 'none',
+              }
             : {}
         }
       >
-        <h3 className="edit-area-of-work__title">
-          Area of work
-        </h3>
+        <h3 className="edit-area-of-work__title">Area of work</h3>
 
         <div className="edit-area-of-work__name">
           <LoginInput
@@ -156,12 +164,12 @@ export const EditAreaOfWork: React.FC = () => {
             autoGrow
           />
 
-          <div
-            className="edit-area-of-work__description-subcategories-wrapper"
-          >
+          <div className="edit-area-of-work__description-subcategories-wrapper">
             {createMaster.master.subcategories && (
               <small
-                className="edit-area-of-work__description-subcategories-title"
+                className="
+                edit-area-of-work__description-subcategories-title
+                "
               >
                 Category
               </small>
@@ -170,12 +178,11 @@ export const EditAreaOfWork: React.FC = () => {
               {createMaster.master.subcategories?.map(item => (
                 <DropDownButton
                   key={item.id}
-                  icon={!user.master
-                    || (user.master && createMaster.editMode)}
-                  input={!user.master
-                    || (user.master && createMaster.editMode)}
-                  active={!user.master
-                    || (user.master && createMaster.editMode)}
+                  icon={!user.master || (user.master && createMaster.editMode)}
+                  input={!user.master || (user.master && createMaster.editMode)}
+                  active={
+                    !user.master || (user.master && createMaster.editMode)
+                  }
                   size="large"
                   className="edit-area-of-work__description-subcategory"
                   onClick={() => handleClickSubcategory(item)}
@@ -196,16 +203,17 @@ export const EditAreaOfWork: React.FC = () => {
                 <CreateModal>
                   <ModalCategories
                     subCategoriesStyle="row"
-                    onClean={() => dispatch(
-                      createMasterSlice
-                        .editMaster({ subcategories: null }),
-                    )}
+                    onClean={() =>
+                      dispatch(
+                        createMasterSlice.editMaster({ subcategories: null }),
+                      )
+                    }
                     onApply={handleOnClickOutside}
                     onClickSubcategory={handleClickSubcategory}
-                    activeSubcategories={createMaster
-                      .master
-                      .subcategories
-                      ?.map(item => item.id) || []}
+                    activeSubcategories={
+                      createMaster.master.subcategories?.map(item => item.id) ||
+                      []
+                    }
                     className="edit-area-of-work__description-modal-categories"
                     ref={modalCategoriesRef}
                   >
@@ -237,11 +245,7 @@ export const EditAreaOfWork: React.FC = () => {
             className="edit-area-of-work__controls-button"
             onClick={handleSubmit}
           >
-            {
-              createMaster.editMode
-                ? 'Save changes'
-                : 'Continue'
-            }
+            {createMaster.editMode ? 'Save changes' : 'Continue'}
           </Button>
         </div>
       )}

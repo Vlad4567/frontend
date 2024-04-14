@@ -7,8 +7,7 @@ import { getMaster } from '../../api/master';
 import * as publicMasterSlice from '../../features/publicMasterSlice';
 import { useAppDispatch, useAppSelector } from '../../app/hooks';
 import * as notificationSlice from '../../features/notificationSlice';
-import { ConnectWithMasterSection }
-  from '../../components/ConnectWithMasterSection/ConnectWithMasterSection';
+import { ConnectWithMasterSection } from '../../components/ConnectWithMasterSection/ConnectWithMasterSection';
 
 export const MasterGalleryPage: React.FC = () => {
   const urlParams = useParams();
@@ -17,18 +16,21 @@ export const MasterGalleryPage: React.FC = () => {
   const navigate = useNavigate();
 
   useEffect(() => {
-    if ((publicMaster.master.id.toString() !== urlParams.id)
-      && urlParams.id) {
+    if (publicMaster.master.id.toString() !== urlParams.id && urlParams.id) {
       getMaster(+urlParams.id)
-        .then((res) => {
+        .then(res => {
           dispatch(publicMasterSlice.updateMaster(res));
         })
-        .catch(() => dispatch(notificationSlice.addNotification({
-          id: +new Date(),
-          type: 'error',
-        })));
+        .catch(() =>
+          dispatch(
+            notificationSlice.addNotification({
+              id: +new Date(),
+              type: 'error',
+            }),
+          ),
+        );
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   return (
@@ -39,11 +41,7 @@ export const MasterGalleryPage: React.FC = () => {
           position="left"
           onClick={() => navigate(`/master/${urlParams.id}`)}
         />
-        <h3
-          className="master-gallery-page__back-title"
-        >
-          Portfolio
-        </h3>
+        <h3 className="master-gallery-page__back-title">Portfolio</h3>
       </div>
       <MasterGallery
         subcategories={publicMaster.master.subcategories || []}

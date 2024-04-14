@@ -2,10 +2,9 @@ import searchIconWhite from '../../img/icons/icon-search.svg';
 import searchIconDark from '../../img/icons/icon-search-dark.svg';
 import './FilterSearchInput.scss';
 
-interface Props
-  extends React.InputHTMLAttributes<HTMLInputElement> {
-  className?: string
-  color?: 'dark' | 'light'
+interface Props extends React.InputHTMLAttributes<HTMLInputElement> {
+  className?: string;
+  color?: 'dark' | 'light';
 }
 
 export const FilterSearchInput: React.FC<Props> = ({

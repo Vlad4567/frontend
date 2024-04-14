@@ -6,27 +6,24 @@ import { useNavigate } from 'react-router-dom';
 import { Button } from '../Button/Button';
 import { LoginInput } from '../LoginInput/LoginInput';
 import { LoginHeaderForm } from '../LoginHeaderForm/LoginHeaderForm';
-import {
-  changeObjectStateKey, objectKeys,
-} from '../../helpers/functions';
-import { checkUserEmail, checkUsername, registrateUser }
-  from '../../api/login';
+import { changeObjectStateKey, objectKeys } from '../../helpers/functions';
+import { checkUserEmail, checkUsername, registrateUser } from '../../api/login';
 import { ErrorData } from '../../types/main';
 import './SignUpForm.scss';
 import * as notificationSlice from '../../features/notificationSlice';
 import { useAppDispatch } from '../../app/hooks';
 
 export interface InitialData {
-  username: string
-  email: string
-  password: string
-  repeatPassword: string
+  username: string;
+  email: string;
+  password: string;
+  repeatPassword: string;
 }
 
 export interface InitialErrors {
-  username: string
-  email: string
-  password: string
+  username: string;
+  email: string;
+  password: string;
 }
 
 export const initialData: InitialData = {
@@ -54,138 +51,125 @@ export const SignUpForm: React.FC = () => {
   useEffect(() => {
     if (debouncedUsername) {
       checkUsername(debouncedUsername)
-        .then(res => typeof res === 'boolean' && (res ? changeObjectStateKey(
-          'This username already exists',
-          'username',
-          setFormErrors,
-        ) : changeObjectStateKey(
-          '',
-          'username',
-          setFormErrors,
-        )))
-        .catch((err: AxiosError<ErrorData<string>>) => err.response?.data.error
-          && changeObjectStateKey(
-            err.response?.data.error,
-            'username',
-            setFormErrors,
-          ));
+        .then(
+          res =>
+            typeof res === 'boolean' &&
+            (res
+              ? changeObjectStateKey(
+                  'This username already exists',
+                  'username',
+                  setFormErrors,
+                )
+              : changeObjectStateKey('', 'username', setFormErrors)),
+        )
+        .catch(
+          (err: AxiosError<ErrorData<string>>) =>
+            err.response?.data.error &&
+            changeObjectStateKey(
+              err.response?.data.error,
+              'username',
+              setFormErrors,
+            ),
+        );
     } else {
-      changeObjectStateKey(
-        '',
-        'username',
-        setFormErrors,
-      );
+      changeObjectStateKey('', 'username', setFormErrors);
     }
   }, [debouncedUsername]);
 
   useEffect(() => {
     if (debouncedEmail) {
       checkUserEmail(debouncedEmail)
-        .then(res => typeof res === 'boolean' && (res ? changeObjectStateKey(
-          'This email already exists',
-          'email',
-          setFormErrors,
-        ) : changeObjectStateKey(
-          '',
-          'email',
-          setFormErrors,
-        )))
-        .catch((err: AxiosError<ErrorData<string>>) => err.response?.data.error
-          && changeObjectStateKey(
-            err.response?.data.error,
-            'email',
-            setFormErrors,
-          ));
+        .then(
+          res =>
+            typeof res === 'boolean' &&
+            (res
+              ? changeObjectStateKey(
+                  'This email already exists',
+                  'email',
+                  setFormErrors,
+                )
+              : changeObjectStateKey('', 'email', setFormErrors)),
+        )
+        .catch(
+          (err: AxiosError<ErrorData<string>>) =>
+            err.response?.data.error &&
+            changeObjectStateKey(
+              err.response?.data.error,
+              'email',
+              setFormErrors,
+            ),
+        );
     } else {
-      changeObjectStateKey(
-        '',
-        'email',
-        setFormErrors,
-      );
+      changeObjectStateKey('', 'email', setFormErrors);
     }
   }, [debouncedEmail]);
 
   const handleButtonRegistration = () => {
     registrateUser(formData)
       .then(() => {
-        dispatch(notificationSlice.addNotification({
-          id: +new Date(),
-          type: 'confirmationEmail',
-        }));
+        dispatch(
+          notificationSlice.addNotification({
+            id: +new Date(),
+            type: 'confirmationEmail',
+          }),
+        );
         navigate('/login');
       })
-      .catch((err: AxiosError<ErrorData<string>>) => setFormErrors(c => {
-        if (err.response?.data.error) {
-          const objectErrors = { ...c };
+      .catch((err: AxiosError<ErrorData<string>>) =>
+        setFormErrors(c => {
+          if (err.response?.data.error) {
+            const objectErrors = { ...c };
 
-          objectKeys(initialErrors).forEach(key => {
-            objectErrors[key] = err.response?.data.error as string;
-          });
+            objectKeys(initialErrors).forEach(key => {
+              objectErrors[key] = err.response?.data.error as string;
+            });
 
-          return objectErrors;
-        }
+            return objectErrors;
+          }
 
-        if (err.response?.data.errors) {
-          const objectErrors = { ...c };
+          if (err.response?.data.errors) {
+            const objectErrors = { ...c };
 
-          objectKeys(initialErrors).forEach(key => {
-            objectErrors[key] = err.response?.data.errors
-              ? err.response?.data.errors[key]
-              : '';
-          });
+            objectKeys(initialErrors).forEach(key => {
+              objectErrors[key] = err.response?.data.errors
+                ? err.response?.data.errors[key]
+                : '';
+            });
 
-          return objectErrors;
-        }
+            return objectErrors;
+          }
 
-        return c;
-      }));
+          return c;
+        }),
+      );
   };
 
   useEffect(() => {
-    if (!(
-      formData.password
-      && formData.repeatPassword
-      && formData.password !== formData.repeatPassword
-    )) {
-      changeObjectStateKey(
-        '',
-        ['password'],
-        setFormErrors,
-      );
+    if (
+      !(
+        formData.password &&
+        formData.repeatPassword &&
+        formData.password !== formData.repeatPassword
+      )
+    ) {
+      changeObjectStateKey('', ['password'], setFormErrors);
     } else {
-      changeObjectStateKey(
-        'Password mismatch',
-        ['password'],
-        setFormErrors,
-      );
+      changeObjectStateKey('Password mismatch', ['password'], setFormErrors);
     }
   }, [formData.password, formData.repeatPassword]);
 
-  const {
-    username,
-    email,
-    password,
-    repeatPassword,
-  } = formData;
+  const { username, email, password, repeatPassword } = formData;
 
-  const handleInputOnChange = (
-    e: React.ChangeEvent<HTMLInputElement>,
-  ) => {
+  const handleInputOnChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
 
     setFormErrors(c => ({ ...c, [name]: '' }));
 
-    changeObjectStateKey(
-      value,
-      name as keyof InitialData,
-      setFormData,
-    );
+    changeObjectStateKey(value, name as keyof InitialData, setFormData);
   };
 
   return (
-    <form
-      className="sign-up-form"
-    >
+    <form className="sign-up-form">
       <LoginHeaderForm
         className="sign-up-form__header"
         title="Sign up"
@@ -261,8 +245,8 @@ export const SignUpForm: React.FC = () => {
         </div>
         <div className="sign-up-form__footer">
           <small className="sign-up-form__policy-text">
-            By clicking &quot;Sign up&quot; you agree to our
-            Terms of service and Privacy policy
+            By clicking &quot;Sign up&quot; you agree to our Terms of service
+            and Privacy policy
           </small>
           <Button
             size="large"

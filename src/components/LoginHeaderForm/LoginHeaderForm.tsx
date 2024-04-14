@@ -3,11 +3,11 @@
 import './LoginHeaderForm.scss';
 
 interface Props {
-  className?: string
-  title?: string
-  description?: string
-  textLink?: string
-  onClick?: (value: React.MouseEvent<HTMLParagraphElement, MouseEvent>) => void
+  className?: string;
+  title?: string;
+  description?: string;
+  textLink?: string;
+  onClick?: (value: React.MouseEvent<HTMLParagraphElement, MouseEvent>) => void;
 }
 
 export const LoginHeaderForm: React.FC<Props> = ({
@@ -15,25 +15,15 @@ export const LoginHeaderForm: React.FC<Props> = ({
   title = '',
   description = '',
   textLink = '',
-  onClick = () => { },
+  onClick = () => {},
 }) => {
   return (
-    <div
-      className={`login-header-form ${className}`}
-    >
-      {title && (
-        <h3 className="login-header-form__title">{title}</h3>
-      )}
+    <div className={`login-header-form ${className}`}>
+      {title && <h3 className="login-header-form__title">{title}</h3>}
 
       {description && textLink && (
         <p className="login-header-form__description">
-
-          {description && (
-            <>
-              {description}
-              {' '}
-            </>
-          )}
+          {description && <>{description} </>}
 
           {textLink && (
             <p

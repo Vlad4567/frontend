@@ -8,28 +8,16 @@ import defaultAvatar from '../../img/default-avatar.svg';
 import './ServiceCard.scss';
 
 interface Props {
-  className?: string
-  service: types.ServiceCard
+  className?: string;
+  service: types.ServiceCard;
 }
 
-export const ServiceCard: React.FC<Props> = ({
-  className = '',
-  service,
-}) => {
+export const ServiceCard: React.FC<Props> = ({ className = '', service }) => {
   const navigate = useNavigate();
 
-  const {
-    name,
-    photo,
-    price,
-  } = service;
+  const { name, photo, price } = service;
 
-  const {
-    firstName,
-    lastName,
-    address,
-    rating,
-  } = service.masterCard;
+  const { firstName, lastName, address, rating } = service.masterCard;
 
   return (
     <article className={`service-card ${className}`}>
@@ -52,9 +40,7 @@ export const ServiceCard: React.FC<Props> = ({
         <div className="service-card__info">
           {firstName && lastName && (
             <h3 className="service-card__info-name">
-              {firstName && firstName}
-              {' '}
-              {lastName && lastName}
+              {firstName && firstName} {lastName && lastName}
             </h3>
           )}
 
@@ -65,17 +51,13 @@ export const ServiceCard: React.FC<Props> = ({
               {`${price}₴`}
             </small>
           )}
-
         </div>
       )}
 
       {(address.houseNumber || address.street || address.city) && (
         <p className="service-card__address">
-          {address.houseNumber && address.houseNumber}
-          {' '}
-          {address.street && address.street}
-          {' '}
-          {address.city && address.city}
+          {address.houseNumber && address.houseNumber}{' '}
+          {address.street && address.street} {address.city && address.city}
         </p>
       )}
 
@@ -83,7 +65,9 @@ export const ServiceCard: React.FC<Props> = ({
         <Button
           size="large"
           className="service-card__buttons-chat"
-          onClick={() => navigate(`/master/${service.masterCard.id}?scroll=chat`)}
+          onClick={() =>
+            navigate(`/master/${service.masterCard.id}?scroll=chat`)
+          }
         >
           Chat
         </Button>

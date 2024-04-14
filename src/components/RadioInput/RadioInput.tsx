@@ -6,15 +6,8 @@ interface Props
   className?: string;
 }
 
-export const RadioInput: React.FC<Props> = ({
-  className = '',
-  ...rest
-}) => {
+export const RadioInput: React.FC<Props> = ({ className = '', ...rest }) => {
   return (
-    <input
-      className={`radio-input ${className}`}
-      type="radio"
-      {...rest}
-    />
+    <input className={`radio-input ${className}`} type="radio" {...rest} />
   );
 };

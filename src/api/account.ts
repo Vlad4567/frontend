@@ -27,8 +27,10 @@ export const getUser = async () => {
 };
 
 export const putUser = (data: UpdateUserData) => {
-  return client
-    .put<UpdateUserData & { newEmail: string | null }>('/user', data);
+  return client.put<UpdateUserData & { newEmail: string | null }>(
+    '/user',
+    data,
+  );
 };
 
 export const putPassword = (data: PasswordData) => {

@@ -19,8 +19,8 @@ export const getPaginationItems = (
     const sideLength = deductedMaxLength / 2;
 
     if (
-      currentPage - firstPage < sideLength
-      || lastPage - currentPage < sideLength
+      currentPage - firstPage < sideLength ||
+      lastPage - currentPage < sideLength
     ) {
       for (let j = 1; j <= sideLength + firstPage; j += 1) {
         res.push(j);
@@ -32,8 +32,8 @@ export const getPaginationItems = (
         res.push(k);
       }
     } else if (
-      currentPage - firstPage >= deductedMaxLength
-      && lastPage - currentPage >= deductedMaxLength
+      currentPage - firstPage >= deductedMaxLength &&
+      lastPage - currentPage >= deductedMaxLength
     ) {
       const deductedSideLength = sideLength - 1;
 
@@ -63,11 +63,7 @@ export const getPaginationItems = (
         res.push(NaN);
         remainingLength -= 1;
 
-        for (
-          let n = lastPage - (remainingLength - 1);
-          n <= lastPage;
-          n += 1
-        ) {
+        for (let n = lastPage - (remainingLength - 1); n <= lastPage; n += 1) {
           res.push(n);
         }
       } else {
@@ -86,12 +82,10 @@ export const getPaginationItems = (
     }
   }
 
-  return res.map((pageNum, index) => (
-    {
-      pageNum,
-      id: Math.random() + index,
-    }
-  ));
+  return res.map((pageNum, index) => ({
+    pageNum,
+    id: Math.random() + index,
+  }));
 };
 
 export const getSearchWith = (
@@ -153,9 +147,11 @@ export const objectKeys = <Obj extends object>(obj: Obj): (keyof Obj)[] => {
 export const convertHyphenToSpace = (str: string) => {
   return str
     .split('-')
-    .map((word, index) => (index === 0
-      ? word.charAt(0).toUpperCase() + word.slice(1).toLowerCase()
-      : word))
+    .map((word, index) =>
+      index === 0
+        ? word.charAt(0).toUpperCase() + word.slice(1).toLowerCase()
+        : word,
+    )
     .join(' ');
 };
 
@@ -166,8 +162,13 @@ export const convertSpaceToHyphen = (str: string) => {
     .join('-');
 };
 
-type ModifyPhotoNameKeys
-  = 'Gallery' | 'Category' | 'Main' | 'MainMini' | 'ReviewCard' | 'ServiceCard';
+type ModifyPhotoNameKeys =
+  | 'Gallery'
+  | 'Category'
+  | 'Main'
+  | 'MainMini'
+  | 'ReviewCard'
+  | 'ServiceCard';
 
 export const modifyPhotoName = (name: string, key: ModifyPhotoNameKeys) => {
   const dotIndex = name.lastIndexOf('.');
@@ -198,7 +199,7 @@ export const modifyPhotoName = (name: string, key: ModifyPhotoNameKeys) => {
 };
 
 export const fixUrl = (url: string) => {
-  return (url.startsWith('http://') || url.startsWith('https://'))
+  return url.startsWith('http://') || url.startsWith('https://')
     ? url
     : `http://${url}`;
 };

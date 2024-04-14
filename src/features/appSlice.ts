@@ -4,9 +4,9 @@ import { PayloadAction, createSlice } from '@reduxjs/toolkit';
 type HeaderType = 'dark' | 'light';
 
 const initialState: {
-  headerShown: boolean,
-  headerType: HeaderType,
-  footerShown: boolean,
+  headerShown: boolean;
+  headerType: HeaderType;
+  footerShown: boolean;
 } = {
   headerShown: true,
   headerType: 'dark',
@@ -29,9 +29,6 @@ const appSlice = createSlice({
   },
 });
 
-export const {
-  setShownHeader,
-  setHeaderType,
-  setShownFooter,
-} = appSlice.actions;
+export const { setShownHeader, setHeaderType, setShownFooter } =
+  appSlice.actions;
 export default appSlice.reducer;

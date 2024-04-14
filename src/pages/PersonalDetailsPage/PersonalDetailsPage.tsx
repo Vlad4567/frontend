@@ -3,15 +3,12 @@ import { useNavigate } from 'react-router-dom';
 import { useEffect, useRef, useState } from 'react';
 import { useDebounce, useOnClickOutside } from 'usehooks-ts';
 import { AxiosError } from 'axios';
-import {
-  changeObjectStateKey,
-} from '../../helpers/functions';
+import { changeObjectStateKey } from '../../helpers/functions';
 import { Checkbox } from '../../components/Checkbox/Checkbox';
 import { DropDownButton } from '../../components/DropDownButton/DropDownButton';
 import { LoginInput } from '../../components/LoginInput/LoginInput';
 import './PersonalDetailsPage.scss';
-import { UnderlinedSmall }
-  from '../../components/UnderlinedSmall/UnderlinedSmall';
+import { UnderlinedSmall } from '../../components/UnderlinedSmall/UnderlinedSmall';
 import { useAppDispatch, useAppSelector } from '../../app/hooks';
 import { PasswordData, TypeModal, UpdateUserData } from '../../types/account';
 import { debounceDelay } from '../../helpers/variables';
@@ -21,14 +18,13 @@ import * as notificationSlice from '../../features/notificationSlice';
 import { putPassword, putUser, changeEmail } from '../../api/account';
 import * as userSlice from '../../features/userSlice';
 import { CreateModal } from '../../components/CreateModal/CreateModal';
-import { ModalAlertMessage }
-  from '../../components/ModalAlertMessage/ModalAlertMessage';
+import { ModalAlertMessage } from '../../components/ModalAlertMessage/ModalAlertMessage';
 
 interface InitialDataErrors {
-  email: string,
-  username: string,
-  currentPassword: string,
-  newPassword: string,
+  email: string;
+  username: string;
+  currentPassword: string;
+  newPassword: string;
 }
 
 const initialDataErrors: InitialDataErrors = {
@@ -59,25 +55,24 @@ export const PersonalDetailsPage: React.FC = () => {
   };
 
   const [showPassword, setShowPassword] = useState(false);
-  const [userData, setUserData] = useState<UpdateUserData
-  & PasswordData>(initialUserData);
+  const [userData, setUserData] = useState<UpdateUserData & PasswordData>(
+    initialUserData,
+  );
   const [errors, setErrors] = useState<InitialDataErrors>(initialDataErrors);
 
   const debouncedUsername = useDebounce(userData.username, debounceDelay);
   const debouncedEmail = useDebounce(userData.email, debounceDelay);
 
-  const isApplyDisabled = JSON.stringify(userData)
-    === JSON.stringify(initialUserData)
-    || JSON.stringify(errors) !== JSON.stringify(initialDataErrors);
+  const isApplyDisabled =
+    JSON.stringify(userData) === JSON.stringify(initialUserData) ||
+    JSON.stringify(errors) !== JSON.stringify(initialDataErrors);
 
   const handleClickOutside = () => {
     setModal('');
     setUserData(c => ({ ...c, email: user.email }));
   };
 
-  useOnClickOutside<HTMLFormElement>([
-    modalRef,
-  ], handleClickOutside);
+  useOnClickOutside<HTMLFormElement>([modalRef], handleClickOutside);
 
   const handleChangeEmail = () => {
     changeEmail({
@@ -87,10 +82,12 @@ export const PersonalDetailsPage: React.FC = () => {
       .then(() => {
         setModal('');
         setPassword('');
-        dispatch(notificationSlice.addNotification({
-          id: +new Date(),
-          type: 'confirmationEmail',
-        }));
+        dispatch(
+          notificationSlice.addNotification({
+            id: +new Date(),
+            type: 'confirmationEmail',
+          }),
+        );
       })
       .catch((err: AxiosError<ErrorData<string>>) => {
         setErrorPassword(err.response?.data.error || 'Error updating email');
@@ -105,18 +102,25 @@ export const PersonalDetailsPage: React.FC = () => {
   const handleResetPassword = () => {
     if (user.email) {
       forgotPassword(user.email)
-        .then(() => dispatch(notificationSlice.addNotification({
-          id: +new Date(),
-          type: 'resetPassword',
-        })))
+        .then(() =>
+          dispatch(
+            notificationSlice.addNotification({
+              id: +new Date(),
+              type: 'resetPassword',
+            }),
+          ),
+        )
         .catch((err: AxiosError<ErrorData<string>>) => {
-          dispatch(notificationSlice.addNotification({
-            id: +new Date(),
-            type: 'error',
-          }));
+          dispatch(
+            notificationSlice.addNotification({
+              id: +new Date(),
+              type: 'error',
+            }),
+          );
           if (err.response?.data) {
-            const resError = err.response.data.error
-              || Object.values(err.response.data.errors || {})[0];
+            const resError =
+              err.response.data.error ||
+              Object.values(err.response.data.errors || {})[0];
 
             setErrors(c => ({
               ...c,
@@ -130,13 +134,8 @@ export const PersonalDetailsPage: React.FC = () => {
   const handleButtonApply = (e: React.FormEvent<HTMLButtonElement>) => {
     e.preventDefault();
 
-    if (
-      JSON.stringify(errors) === JSON.stringify(initialDataErrors)
-    ) {
-      if (
-        userData.currentPassword.length
-        && userData.newPassword.length
-      ) {
+    if (JSON.stringify(errors) === JSON.stringify(initialDataErrors)) {
+      if (userData.currentPassword.length && userData.newPassword.length) {
         putPassword({
           currentPassword: userData.currentPassword,
           newPassword: userData.newPassword,
@@ -149,10 +148,12 @@ export const PersonalDetailsPage: React.FC = () => {
             }));
           })
           .catch((err: AxiosError<ErrorData<string>>) => {
-            dispatch(notificationSlice.addNotification({
-              id: +new Date(),
-              type: 'error',
-            }));
+            dispatch(
+              notificationSlice.addNotification({
+                id: +new Date(),
+                type: 'error',
+              }),
+            );
 
             if (err.response?.data.error) {
               const res = err.response.data.error;
@@ -165,10 +166,9 @@ export const PersonalDetailsPage: React.FC = () => {
             }
 
             if (err.response?.data.errors) {
-              const resErrorCurrentPassword
-                = err.response.data.errors.currentPassword;
-              const resErrorNewPassword
-                = err.response.data.errors.newPassword;
+              const resErrorCurrentPassword =
+                err.response.data.errors.currentPassword;
+              const resErrorNewPassword = err.response.data.errors.newPassword;
 
               setErrors(c => ({
                 ...c,
@@ -180,27 +180,31 @@ export const PersonalDetailsPage: React.FC = () => {
       }
 
       if (
-        userData.email !== user.email
-        || userData.username !== user.username
+        userData.email !== user.email ||
+        userData.username !== user.username
       ) {
         putUser({
           email: userData.email,
           username: userData.username,
         })
-          .then((res) => {
+          .then(res => {
             if (res.newEmail) {
               setModal('ResetEmail');
             }
 
-            dispatch(userSlice.updateUser({
-              username: userData.username,
-            }));
+            dispatch(
+              userSlice.updateUser({
+                username: userData.username,
+              }),
+            );
           })
           .catch((err: AxiosError<ErrorData<string>>) => {
-            dispatch(notificationSlice.addNotification({
-              id: +new Date(),
-              type: 'error',
-            }));
+            dispatch(
+              notificationSlice.addNotification({
+                id: +new Date(),
+                type: 'error',
+              }),
+            );
 
             if (err.response?.data.error) {
               const res = err.response.data.error;
@@ -213,10 +217,8 @@ export const PersonalDetailsPage: React.FC = () => {
             }
 
             if (err.response?.data.errors) {
-              const resErrorEmail
-                = err.response.data.errors.email;
-              const resErrorUsername
-                = err.response.data.errors.username;
+              const resErrorEmail = err.response.data.errors.email;
+              const resErrorUsername = err.response.data.errors.username;
 
               setErrors(c => ({
                 ...c,
@@ -227,29 +229,40 @@ export const PersonalDetailsPage: React.FC = () => {
           });
       }
     } else {
-      dispatch(notificationSlice.addNotification({
-        id: +new Date(),
-        type: 'error',
-      }));
+      dispatch(
+        notificationSlice.addNotification({
+          id: +new Date(),
+          type: 'error',
+        }),
+      );
     }
   };
 
   useEffect(() => {
     if (debouncedUsername !== user.username) {
       checkUsername(debouncedUsername)
-        .then(res => typeof res === 'boolean' && (res ? setErrors(c => ({
-          ...c,
-          username: 'This username already exists',
-        })) : setErrors(c => ({
-          ...c,
-          username: '',
-        }))))
-        .catch((err: AxiosError<ErrorData<string>>) => err.response?.data.error
-          && changeObjectStateKey(
-            err.response?.data.error,
-            'username',
-            setErrors,
-          ));
+        .then(
+          res =>
+            typeof res === 'boolean' &&
+            (res
+              ? setErrors(c => ({
+                  ...c,
+                  username: 'This username already exists',
+                }))
+              : setErrors(c => ({
+                  ...c,
+                  username: '',
+                }))),
+        )
+        .catch(
+          (err: AxiosError<ErrorData<string>>) =>
+            err.response?.data.error &&
+            changeObjectStateKey(
+              err.response?.data.error,
+              'username',
+              setErrors,
+            ),
+        );
     } else {
       setErrors(c => ({
         ...c,
@@ -262,19 +275,24 @@ export const PersonalDetailsPage: React.FC = () => {
   useEffect(() => {
     if (debouncedEmail !== user.email) {
       checkUserEmail(debouncedEmail)
-        .then(res => typeof res === 'boolean' && (res ? setErrors(c => ({
-          ...c,
-          email: 'This username already exists',
-        })) : setErrors(c => ({
-          ...c,
-          email: '',
-        }))))
-        .catch((err: AxiosError<ErrorData<string>>) => err.response?.data.error
-          && changeObjectStateKey(
-            err.response?.data.error,
-            'email',
-            setErrors,
-          ));
+        .then(
+          res =>
+            typeof res === 'boolean' &&
+            (res
+              ? setErrors(c => ({
+                  ...c,
+                  email: 'This username already exists',
+                }))
+              : setErrors(c => ({
+                  ...c,
+                  email: '',
+                }))),
+        )
+        .catch(
+          (err: AxiosError<ErrorData<string>>) =>
+            err.response?.data.error &&
+            changeObjectStateKey(err.response?.data.error, 'email', setErrors),
+        );
     } else {
       setErrors(c => ({
         ...c,
@@ -284,18 +302,12 @@ export const PersonalDetailsPage: React.FC = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [debouncedEmail]);
 
-  const handleInputOnChange = (
-    e: React.ChangeEvent<HTMLInputElement>,
-  ) => {
+  const handleInputOnChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
 
     setErrors(c => ({ ...c, [name]: '' }));
 
-    changeObjectStateKey(
-      value,
-      name as keyof InitialDataErrors,
-      setUserData,
-    );
+    changeObjectStateKey(value, name as keyof InitialDataErrors, setUserData);
   };
 
   return (
@@ -357,10 +369,12 @@ export const PersonalDetailsPage: React.FC = () => {
               Reset password
             </h3>
             <p
-              className="personal-details-page__main-password-header-paragraph"
+              className="
+              personal-details-page__main-password-header-paragraph
+              "
             >
-              Enter your password you used to register earlier to
-              change a password
+              Enter your password you used to register earlier to change a
+              password
             </p>
           </div>
           <LoginInput

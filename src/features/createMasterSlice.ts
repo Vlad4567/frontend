@@ -5,8 +5,8 @@ import { EditMaster } from '../types/master';
 import { client } from '../utils/axiosClient';
 
 interface UpdateEditMaster extends EditMaster {
-  hidden: boolean
-  id: number
+  hidden: boolean;
+  id: number;
 }
 
 export const updateEditMaster = createAsyncThunk(
@@ -19,7 +19,7 @@ export const updateEditMaster = createAsyncThunk(
 );
 
 export interface CreateMasterState {
-  master: EditMaster
+  master: EditMaster;
   hidden: boolean;
   editMode: boolean;
   masterId: number | null;
@@ -137,7 +137,7 @@ const createMasterSlice = createSlice({
       return initialState;
     },
   },
-  extraReducers: (builder) => {
+  extraReducers: builder => {
     builder.addCase(updateEditMaster.fulfilled, (state, action) => {
       const {
         firstName,

@@ -11,22 +11,19 @@ import { getSearchWith } from '../../helpers/functions';
 import './HomeFilter.scss';
 
 interface Props {
-  className?: string
+  className?: string;
 }
 
-export const HomeFilter: React.FC<Props> = ({
-  className = '',
-}) => {
+export const HomeFilter: React.FC<Props> = ({ className = '' }) => {
   const navigate = useNavigate();
   const [searchParams, setSearchParams] = useSearchParams();
   const [activeCategory, setActiveCategory] = useState<Category | null>(null);
   const [categories, setCategories] = useState<Category[]>([]);
 
   useEffect(() => {
-    getCategories()
-      .then((response) => {
-        setCategories(response);
-      });
+    getCategories().then(response => {
+      setCategories(response);
+    });
   }, []);
 
   useEffect(() => {
@@ -48,13 +45,11 @@ export const HomeFilter: React.FC<Props> = ({
     setSearchParams(search);
   };
 
-  const handleCategoryOnClick = (
-    category: Category,
-  ) => {
+  const handleCategoryOnClick = (category: Category) => {
     if (activeCategory !== category) {
       setActiveCategory(category);
       setSearchWith({
-        subCategories: category.subcategories.map((item) => item.id),
+        subCategories: category.subcategories.map(item => item.id),
       });
     } else {
       setActiveCategory(null);
@@ -69,10 +64,7 @@ export const HomeFilter: React.FC<Props> = ({
   };
 
   return (
-    <form
-      onSubmit={handleOnSubmit}
-      className={`home-filter ${className}`}
-    >
+    <form onSubmit={handleOnSubmit} className={`home-filter ${className}`}>
       <div className="home-filter__categories">
         {categories.map(category => (
           <DropDownButton
@@ -91,13 +83,10 @@ export const HomeFilter: React.FC<Props> = ({
       <div className="home-filter__search">
         <FilterSearchInput
           value={searchParams.get('text') || ''}
-          onChange={(e) => setSearchWith({ text: e.target.value })}
+          onChange={e => setSearchWith({ text: e.target.value })}
           placeholder="Enter the name of the service"
         />
-        <RoundButton
-          type="submit"
-          className="home-filter__search-submit"
-        >
+        <RoundButton type="submit" className="home-filter__search-submit">
           Search
         </RoundButton>
       </div>

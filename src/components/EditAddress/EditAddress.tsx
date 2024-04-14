@@ -41,17 +41,23 @@ export const EditAddress: React.FC = () => {
           cityId: address.city?.id || null,
         },
         subcategories:
-        createMasterState.master.subcategories?.map(item => item.id) || null,
+          createMasterState.master.subcategories?.map(item => item.id) || null,
       })
         .then(() => {
-          dispatch(createMasterSlice.editOptions({
-            editMode: false,
-          }));
+          dispatch(
+            createMasterSlice.editOptions({
+              editMode: false,
+            }),
+          );
         })
-        .catch(() => dispatch(notificationSlice.addNotification({
-          id: +new Date(),
-          type: 'error',
-        })));
+        .catch(() =>
+          dispatch(
+            notificationSlice.addNotification({
+              id: +new Date(),
+              type: 'error',
+            }),
+          ),
+        );
     } else {
       createMaster({
         ...createMasterState.master,
@@ -60,21 +66,27 @@ export const EditAddress: React.FC = () => {
           cityId: address.city?.id || null,
         },
         subcategories:
-        createMasterState.master.subcategories?.map(item => item.id) || null,
+          createMasterState.master.subcategories?.map(item => item.id) || null,
       })
         .then(() => {
           dispatch(createMasterSlice.updateEditMaster());
-          dispatch(userSlice.updateUser({
-            master: true,
-          }));
+          dispatch(
+            userSlice.updateUser({
+              master: true,
+            }),
+          );
           if (createMasterState.master.subcategories?.length !== 0) {
             navigate('../gallery');
           }
         })
-        .catch(() => dispatch(notificationSlice.addNotification({
-          id: +new Date(),
-          type: 'error',
-        })));
+        .catch(() =>
+          dispatch(
+            notificationSlice.addNotification({
+              id: +new Date(),
+              type: 'error',
+            }),
+          ),
+        );
     }
   };
 
@@ -88,9 +100,11 @@ export const EditAddress: React.FC = () => {
   };
 
   const handleCityClick = (item: City) => {
-    dispatch(createMasterSlice.editAddress({
-      city: item,
-    }));
+    dispatch(
+      createMasterSlice.editAddress({
+        city: item,
+      }),
+    );
     setCityValue(item.name);
     setActiveModal('');
   };
@@ -100,9 +114,11 @@ export const EditAddress: React.FC = () => {
     setActiveModal(e.target.value ? 'city' : '');
 
     if (!e.target.value) {
-      dispatch(createMasterSlice.editAddress({
-        city: null,
-      }));
+      dispatch(
+        createMasterSlice.editAddress({
+          city: null,
+        }),
+      );
     }
   };
 
@@ -110,14 +126,18 @@ export const EditAddress: React.FC = () => {
     if (debouncedCityValue) {
       getCities(0, 4, debouncedCityValue)
         .then(res => setCityList(res.content))
-        .catch(() => dispatch(notificationSlice.addNotification({
-          id: +new Date(),
-          type: 'error',
-        })));
+        .catch(() =>
+          dispatch(
+            notificationSlice.addNotification({
+              id: +new Date(),
+              type: 'error',
+            }),
+          ),
+        );
     } else {
       setCityList([]);
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [debouncedCityValue]);
 
   useOnClickOutside(cityListRef, () => {
@@ -132,18 +152,14 @@ export const EditAddress: React.FC = () => {
         style={
           user.master && !createMasterState.editMode
             ? {
-              pointerEvents: 'none',
-            }
+                pointerEvents: 'none',
+              }
             : {}
         }
       >
         <div className="edit-address__header">
-          <h3 className="edit-address__title">
-            Address
-          </h3>
-          <small className="edit-address__subtitle">
-            Add your work adress
-          </small>
+          <h3 className="edit-address__title">Address</h3>
+          <small className="edit-address__subtitle">Add your work adress</small>
         </div>
 
         <div className="edit-address__inputs">
@@ -156,10 +172,7 @@ export const EditAddress: React.FC = () => {
             />
 
             {activeModal === 'city' && (
-              <ul
-                className="edit-address__inputs-city-list"
-                ref={cityListRef}
-              >
+              <ul className="edit-address__inputs-city-list" ref={cityListRef}>
                 {cityList.map(item => (
                   <li
                     className="edit-address__inputs-city-item"
@@ -176,17 +189,25 @@ export const EditAddress: React.FC = () => {
             title="Street"
             placeholder="Street"
             value={address.street || ''}
-            onChange={e => dispatch(createMasterSlice.editAddress({
-              street: e.target.value || null,
-            }))}
+            onChange={e =>
+              dispatch(
+                createMasterSlice.editAddress({
+                  street: e.target.value || null,
+                }),
+              )
+            }
           />
           <LoginInput
             title="Building"
             placeholder="Building"
             value={address.houseNumber || ''}
-            onChange={e => dispatch(createMasterSlice.editAddress({
-              houseNumber: e.target.value || null,
-            }))}
+            onChange={e =>
+              dispatch(
+                createMasterSlice.editAddress({
+                  houseNumber: e.target.value || null,
+                }),
+              )
+            }
           />
           <Textarea
             // eslint-disable-next-line max-len
@@ -194,9 +215,13 @@ export const EditAddress: React.FC = () => {
             title="Additional (optional)"
             autoGrow
             value={address.description || ''}
-            onChange={e => dispatch(createMasterSlice.editAddress({
-              description: e.target.value || null,
-            }))}
+            onChange={e =>
+              dispatch(
+                createMasterSlice.editAddress({
+                  description: e.target.value || null,
+                }),
+              )
+            }
           />
         </div>
       </form>
@@ -215,12 +240,10 @@ export const EditAddress: React.FC = () => {
             className="edit-address__controls-button"
             onClick={handleSubmit}
           >
-            {
-              createMasterState.master.subcategories?.length !== 0
-                || createMasterState.editMode
-                ? 'Continue'
-                : 'Save changes'
-            }
+            {createMasterState.master.subcategories?.length !== 0 ||
+            createMasterState.editMode
+              ? 'Continue'
+              : 'Save changes'}
           </Button>
         </div>
       )}

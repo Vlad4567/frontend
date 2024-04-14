@@ -7,11 +7,11 @@ import eyePasswordShow from '../../img/icons/eye-password-show.svg';
 import './LoginInput.scss';
 
 interface Props extends React.InputHTMLAttributes<HTMLInputElement> {
-  className?: string
-  title?: string
-  errorText?: string
-  showPassword?: boolean
-  setShowPassword?: React.Dispatch<React.SetStateAction<boolean>>
+  className?: string;
+  title?: string;
+  errorText?: string;
+  showPassword?: boolean;
+  setShowPassword?: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
 export const LoginInput: React.FC<Props> = ({
@@ -20,7 +20,7 @@ export const LoginInput: React.FC<Props> = ({
   title = '',
   errorText = '',
   showPassword = false,
-  setShowPassword = () => { },
+  setShowPassword = () => {},
   ...rest
 }) => {
   const typePassword = type === 'password';
@@ -29,9 +29,10 @@ export const LoginInput: React.FC<Props> = ({
   return (
     <label className={`login-input ${className}`}>
       <div className="login-input__block">
-        <small className={classNames('login-input__title', {
-          'login-input__title--show': rest.value,
-        })}
+        <small
+          className={classNames('login-input__title', {
+            'login-input__title--show': rest.value,
+          })}
         >
           {title}
         </small>

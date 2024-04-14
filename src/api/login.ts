@@ -1,6 +1,4 @@
-import {
-  DataLogin, Login, Registration, Token,
-} from '../types/login';
+import { DataLogin, Login, Registration, Token } from '../types/login';
 import { client } from '../utils/axiosClient';
 
 export const checkUsername = (username: string) => {

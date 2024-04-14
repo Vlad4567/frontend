@@ -6,7 +6,9 @@ import { client } from '../utils/axiosClient';
 import { downloadPhoto } from './account';
 
 export const getCities = (page: number, size: number, text: string) => {
-  return client.get<Page<City>>(`/city/search?page=${page}&size=${size}&text=${text}`);
+  return client.get<Page<City>>(
+    `/city/search?page=${page}&size=${size}&text=${text}`,
+  );
 };
 
 export const getFilteredMasterCards = async (
@@ -19,7 +21,7 @@ export const getFilteredMasterCards = async (
   );
 
   const masterCardsWithPhotos = await Promise.all(
-    masterCards.content.map(async (masterCard) => {
+    masterCards.content.map(async masterCard => {
       if (masterCard.mainPhoto) {
         const photo = await downloadPhoto(
           modifyPhotoName(masterCard.mainPhoto, 'MainMini'),
@@ -49,7 +51,7 @@ export const getFilteredServiceCards = async (
   );
 
   const serviceCardsWithPhotos = await Promise.all(
-    serviceCards.content.map(async (serviceCard) => {
+    serviceCards.content.map(async serviceCard => {
       if (serviceCard.photo) {
         const photo = await downloadPhoto(
           modifyPhotoName(serviceCard.photo, 'ServiceCard'),

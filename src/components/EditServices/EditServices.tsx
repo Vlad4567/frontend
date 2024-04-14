@@ -13,12 +13,11 @@ import { Service } from '../../types/services';
 import * as notificationSlice from '../../features/notificationSlice';
 import { DropDownButton } from '../DropDownButton/DropDownButton';
 import { CreateModal } from '../CreateModal/CreateModal';
-import { ModalEditingService }
-  from '../ModalEditingService/ModalEditingService';
+import { ModalEditingService } from '../ModalEditingService/ModalEditingService';
 import './EditServices.scss';
 
 interface Props {
-  className?: string
+  className?: string;
 }
 
 type Modal = 'Service';
@@ -29,10 +28,10 @@ export const EditServices: React.FC<Props> = () => {
   const { master } = createMaster;
   const [modal, setModal] = useState<Modal | ''>('');
   const [services, setServices] = useState<Service[]>([]);
-  const [activeSubcategory, setActiveSubcategory]
-    = useState<SubCategory | null>(master.subcategories
-      ? master.subcategories[0]
-      : null);
+  const [activeSubcategory, setActiveSubcategory] =
+    useState<SubCategory | null>(
+      master.subcategories ? master.subcategories[0] : null,
+    );
   const modalRef = useRef<HTMLFormElement>(null);
 
   const handleModalClose = () => {
@@ -45,12 +44,16 @@ export const EditServices: React.FC<Props> = () => {
         .then(res => {
           setServices(res);
         })
-        .catch(() => dispatch(notificationSlice.addNotification({
-          id: +new Date(),
-          type: 'error',
-        })));
+        .catch(() =>
+          dispatch(
+            notificationSlice.addNotification({
+              id: +new Date(),
+              type: 'error',
+            }),
+          ),
+        );
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [activeSubcategory?.id, createMaster.masterId]);
 
   const handleAddService = async (item: Service) => {
@@ -64,20 +67,25 @@ export const EditServices: React.FC<Props> = () => {
           photoId: item.photo.id,
         });
 
-        setServices([...services, {
-          ...item,
-          subcategoryId: activeSubcategory.id,
-          id: res.id,
-        }]);
+        setServices([
+          ...services,
+          {
+            ...item,
+            subcategoryId: activeSubcategory.id,
+            id: res.id,
+          },
+        ]);
 
         setModal('');
 
         return res;
       } catch (err) {
-        dispatch(notificationSlice.addNotification({
-          id: +new Date(),
-          type: 'error',
-        }));
+        dispatch(
+          notificationSlice.addNotification({
+            id: +new Date(),
+            type: 'error',
+          }),
+        );
 
         setModal('');
 
@@ -95,10 +103,14 @@ export const EditServices: React.FC<Props> = () => {
       .then(() => {
         setServices(services.filter(service => service.id !== id));
       })
-      .catch(() => dispatch(notificationSlice.addNotification({
-        id: +new Date(),
-        type: 'error',
-      })));
+      .catch(() =>
+        dispatch(
+          notificationSlice.addNotification({
+            id: +new Date(),
+            type: 'error',
+          }),
+        ),
+      );
   };
 
   const handleChangeService = (item: Service) => {
@@ -107,14 +119,20 @@ export const EditServices: React.FC<Props> = () => {
       photoId: item.photo?.id || null,
     })
       .then(() => {
-        setServices(c => c.map(currService => (currService.id === item.id
-          ? item
-          : currService)));
+        setServices(c =>
+          c.map(currService =>
+            currService.id === item.id ? item : currService,
+          ),
+        );
       })
-      .catch(() => dispatch(notificationSlice.addNotification({
-        id: +new Date(),
-        type: 'error',
-      })));
+      .catch(() =>
+        dispatch(
+          notificationSlice.addNotification({
+            id: +new Date(),
+            type: 'error',
+          }),
+        ),
+      );
   };
 
   return (
@@ -122,10 +140,9 @@ export const EditServices: React.FC<Props> = () => {
       <div className="edit-services__header">
         <h3 className="edit-services__title">Services</h3>
         <small className="edit-services__description">
-          Add to each selected category (your specialisation)
-          the name of your service, price, approximate duration
-          and 1 photo (optional, these photos will then be saved
-          in the gallery)
+          Add to each selected category (your specialisation) the name of your
+          service, price, approximate duration and 1 photo (optional, these
+          photos will then be saved in the gallery)
         </small>
       </div>
 
@@ -138,19 +155,15 @@ export const EditServices: React.FC<Props> = () => {
       )}
 
       <div className="edit-services__options">
-        <small className="edit-services__options-title">
-          Service
-        </small>
-        <small className="edit-services__options-title">
-          Price, ₴
-        </small>
+        <small className="edit-services__options-title">Service</small>
+        <small className="edit-services__options-title">Price, ₴</small>
         <small className="edit-services__options-title">
           Duration, min (approx.)
         </small>
       </div>
 
       <ul className="edit-services__services-list">
-        {!!services.length && (
+        {!!services.length &&
           services.map(service => (
             <li className="edit-services__services-item" key={service.id}>
               <NewServiceForm
@@ -160,8 +173,7 @@ export const EditServices: React.FC<Props> = () => {
                 onChange={handleChangeService}
               />
             </li>
-          ))
-        )}
+          ))}
         <>
           <DropDownButton
             size="small"
@@ -186,9 +198,7 @@ export const EditServices: React.FC<Props> = () => {
           onAddService={handleAddService}
           activeSubcategory={activeSubcategory}
         />
-
       </ul>
-
     </div>
   );
 };

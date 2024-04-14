@@ -9,14 +9,14 @@ import './ConnectWithMasterSection.scss';
 import { fixUrl } from '../../helpers/functions';
 
 interface Props {
-  className?: string
-  name: string
+  className?: string;
+  name: string;
   contacts: {
-    instagram: string | null
-    facebook: string | null
-    telegram: string | null
-    phone: string | null
-  }
+    instagram: string | null;
+    facebook: string | null;
+    telegram: string | null;
+    phone: string | null;
+  };
 }
 
 const showContactInfo = (contact: [string, string | null]) => {
@@ -72,9 +72,7 @@ export const ConnectWithMasterSection: React.FC<Props> = ({
     phone: null,
   },
 }) => {
-  const renderContactLink = (
-    [type, value]: string[],
-  ) => {
+  const renderContactLink = ([type, value]: string[]) => {
     if (type === 'phone') {
       return `tel:+${value.replace(/\D/g, '')}`;
     }
@@ -87,37 +85,33 @@ export const ConnectWithMasterSection: React.FC<Props> = ({
   };
 
   return (
-    <section
-      className={`connect-with-master-section ${className}`}
-    >
-      <h1
-        className="connect-with-master-section__title"
-      >
+    <section className={`connect-with-master-section ${className}`}>
+      <h1 className="connect-with-master-section__title">
         Connect with&#160;
-        <span
-          className="connect-with-master-section__title-span"
-        >
+        <span className="connect-with-master-section__title-span">
           {name}
           <Stars size="large" type="dark" />
         </span>
       </h1>
-      <article
-        className="connect-with-master-section__contacts"
-      >
-        {Object.entries(contacts).map(contact => contact[1] && (
-          <Link
-            target="_blank"
-            className="connect-with-master-section__contacts-item-link"
-            to={renderContactLink([contact[0], contact[1]])}
-          >
-            <DropDownButton
-              className="connect-with-master-section__contacts-item"
-              size="large"
-            >
-              {showContactInfo(contact)}
-            </DropDownButton>
-          </Link>
-        ))}
+      <article className="connect-with-master-section__contacts">
+        {Object.entries(contacts).map(
+          contact =>
+            contact[1] && (
+              <Link
+                key={contact[0]}
+                target="_blank"
+                className="connect-with-master-section__contacts-item-link"
+                to={renderContactLink([contact[0], contact[1]])}
+              >
+                <DropDownButton
+                  className="connect-with-master-section__contacts-item"
+                  size="large"
+                >
+                  {showContactInfo(contact)}
+                </DropDownButton>
+              </Link>
+            ),
+        )}
       </article>
     </section>
   );

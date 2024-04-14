@@ -14,7 +14,7 @@ type TypeNotification =
   | 'login';
 
 const initialState: {
-  notifications: Notification[],
+  notifications: Notification[];
 } = {
   notifications: [],
 };
@@ -23,11 +23,14 @@ const notificationSlice = createSlice({
   name: 'notificationSlice',
   initialState,
   reducers: {
-    addNotification: (state, action: PayloadAction<{
-      id: number,
-      type: TypeNotification
-      description?: string,
-    }>) => {
+    addNotification: (
+      state,
+      action: PayloadAction<{
+        id: number;
+        type: TypeNotification;
+        description?: string;
+      }>,
+    ) => {
       let notification: Notification;
 
       switch (action.payload.type) {
@@ -52,8 +55,7 @@ const notificationSlice = createSlice({
         case 'confirmationEmail':
           notification = {
             id: action.payload.id,
-            title:
-              'A confirmation email has been sent to your email address.',
+            title: 'A confirmation email has been sent to your email address.',
             description: `In addition to your inbox, check your spam folder.
             The email may have ended up there`,
           };
@@ -62,8 +64,7 @@ const notificationSlice = createSlice({
         case 'resetPassword':
           notification = {
             id: action.payload.id,
-            title:
-              'A new password has been sent to your email address.',
+            title: 'A new password has been sent to your email address.',
             description: `In addition to your inbox, check your spam folder.
             The email may have ended up there.`,
           };
@@ -82,28 +83,25 @@ const notificationSlice = createSlice({
           notification = {
             id: action.payload.id,
             title: 'Oops something went wrong',
-            description: action.payload.description
-              || 'Reload the page or try again later',
+            description:
+              action.payload.description ||
+              'Reload the page or try again later',
           };
           break;
       }
 
       state.notifications = [...state.notifications, notification];
     },
-    removeNotification: (
-      state,
-      action: PayloadAction<Notification['id']>,
-    ) => {
-      state.notifications
-        = state.notifications.filter(item => item.id !== action.payload);
+    removeNotification: (state, action: PayloadAction<Notification['id']>) => {
+      state.notifications = state.notifications.filter(
+        item => item.id !== action.payload,
+      );
     },
   },
 });
 
-export const {
-  addNotification,
-  removeNotification,
-} = notificationSlice.actions;
+export const { addNotification, removeNotification } =
+  notificationSlice.actions;
 export default notificationSlice.reducer;
 
 listenerMiddleware.startListening({

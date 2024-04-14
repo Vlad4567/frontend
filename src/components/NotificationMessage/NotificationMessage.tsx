@@ -5,11 +5,11 @@ import './NotificationMessage.scss';
 import iconClose from '../../img/icons/icon-dropdown-close.svg';
 
 interface Props {
-  className?: string
-  icon?: string
-  title?: string
-  description?: string
-  onClose?: (e: React.MouseEvent<HTMLImageElement, MouseEvent>) => void
+  className?: string;
+  icon?: string;
+  title?: string;
+  description?: string;
+  onClose?: (e: React.MouseEvent<HTMLImageElement, MouseEvent>) => void;
 }
 
 export const NotificationMessage: React.FC<Props> = ({
@@ -23,15 +23,9 @@ export const NotificationMessage: React.FC<Props> = ({
     <article className={`notification-message ${className}`}>
       {icon && <img src={icon} alt="stars" />}
       <div className="notification-message__wrapper">
-        {title && (
-          <p className="notification-message__title">
-            {title}
-          </p>
-        )}
+        {title && <p className="notification-message__title">{title}</p>}
         {description && (
-          <small
-            className="notification-message__description"
-          >
+          <small className="notification-message__description">
             {description}
           </small>
         )}

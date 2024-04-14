@@ -11,81 +11,79 @@ import { Category, SubCategory } from '../../types/category';
 import './ModalCategories.scss';
 
 interface Props extends React.HTMLAttributes<HTMLDivElement> {
-  onClickCategory?: (category: Category | null) => void
-  activeCategory?: Category | null
-  activeSubcategories?: SubCategory['id'][]
-  onApply?: (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => void
-  onClean?: (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => void
-  onClickSubcategory?: (subCategory: SubCategory, checked: boolean,) => void
-  className?: string
+  onClickCategory?: (category: Category | null) => void;
+  activeCategory?: Category | null;
+  activeSubcategories?: SubCategory['id'][];
+  onApply?: (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => void;
+  onClean?: (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => void;
+  onClickSubcategory?: (subCategory: SubCategory, checked: boolean) => void;
+  className?: string;
   children?: React.ReactNode;
-  subCategoriesStyle?: 'column' | 'row'
+  subCategoriesStyle?: 'column' | 'row';
 }
 
-export const ModalCategories = forwardRef<HTMLDivElement, Props>(({
-  onClickCategory = () => { },
-  activeCategory = null,
-  activeSubcategories = [],
-  onApply = () => { },
-  onClickSubcategory = () => { },
-  onClean = () => { },
-  className = '',
-  children,
-  subCategoriesStyle = 'column',
-  ...rest
-}, ref) => {
-  const [categories, setCategories] = useState<Category[]>([]);
-  const [activeCategoryDefault, setActiveCategoryDefault]
-    = useState<Category | null>(activeCategory);
+export const ModalCategories = forwardRef<HTMLDivElement, Props>(
+  (
+    {
+      onClickCategory = () => {},
+      activeCategory = null,
+      activeSubcategories = [],
+      onApply = () => {},
+      onClickSubcategory = () => {},
+      onClean = () => {},
+      className = '',
+      children,
+      subCategoriesStyle = 'column',
+      ...rest
+    },
+    ref,
+  ) => {
+    const [categories, setCategories] = useState<Category[]>([]);
+    const [activeCategoryDefault, setActiveCategoryDefault] =
+      useState<Category | null>(activeCategory);
 
-  useIsomorphicLayoutEffect(() => {
-    getCategories()
-      .then(res => {
+    useIsomorphicLayoutEffect(() => {
+      getCategories().then(res => {
         setCategories(res);
       });
-  }, []);
+    }, []);
 
-  useEffect(() => {
-    setActiveCategoryDefault(activeCategory);
-  }, [activeCategory]);
+    useEffect(() => {
+      setActiveCategoryDefault(activeCategory);
+    }, [activeCategory]);
 
-  useEffect(() => {
-    onClickCategory(activeCategoryDefault);
-  }, [activeCategoryDefault, onClickCategory]);
+    useEffect(() => {
+      onClickCategory(activeCategoryDefault);
+    }, [activeCategoryDefault, onClickCategory]);
 
-  const handleClickCategory = (category: Category | null) => {
-    setActiveCategoryDefault(c => (c?.id === category?.id ? null : category));
-  };
+    const handleClickCategory = (category: Category | null) => {
+      setActiveCategoryDefault(c => (c?.id === category?.id ? null : category));
+    };
 
-  return (
-    <article
-      className={`modal-categories ${className}`}
-      ref={ref}
-      {...rest}
-    >
-      {children}
+    return (
+      <article className={`modal-categories ${className}`} ref={ref} {...rest}>
+        {children}
 
-      <div className="modal-categories__dropdown-categories-main">
-        <div className="modal-categories__dropdown-categories-buttons">
-          {categories.map((category) => {
-            const { id, name } = category;
+        <div className="modal-categories__dropdown-categories-main">
+          <div className="modal-categories__dropdown-categories-buttons">
+            {categories.map(category => {
+              const { id, name } = category;
 
-            return (
-              <DropDownButton
-                className="modal-categories__dropdown-categories-main-button"
-                size="small"
-                icon
-                key={id}
-                placeholder={name}
-                active={activeCategoryDefault?.id === category.id}
-                onClick={() => handleClickCategory(category)}
-              />
-            );
-          })}
-        </div>
+              return (
+                <DropDownButton
+                  className="modal-categories__dropdown-categories-main-button"
+                  size="small"
+                  icon
+                  key={id}
+                  placeholder={name}
+                  active={activeCategoryDefault?.id === category.id}
+                  onClick={() => handleClickCategory(category)}
+                />
+              );
+            })}
+          </div>
 
-        {activeCategoryDefault && !!activeCategoryDefault.subcategories
-          && (
+          {activeCategoryDefault && !!activeCategoryDefault.subcategories && (
             <ul
               className={classNames(
                 'modal-categories__dropdown-subcategories',
@@ -95,11 +93,10 @@ export const ModalCategories = forwardRef<HTMLDivElement, Props>(({
                 },
               )}
             >
-              {activeCategoryDefault.subcategories.map((subcategory) => {
-                const isSubcategoryChecked
-                  = activeSubcategories.some(
-                    (id) => +id === subcategory.id,
-                  );
+              {activeCategoryDefault.subcategories.map(subcategory => {
+                const isSubcategoryChecked = activeSubcategories.some(
+                  id => +id === subcategory.id,
+                );
 
                 return (
                   <li
@@ -112,10 +109,9 @@ export const ModalCategories = forwardRef<HTMLDivElement, Props>(({
                             modal-categories__dropdown-subcategory-check
                           "
                         checked={isSubcategoryChecked}
-                        onChange={(e) => onClickSubcategory(
-                          subcategory,
-                          e.target.checked,
-                        )}
+                        onChange={e =>
+                          onClickSubcategory(subcategory, e.target.checked)
+                        }
                       />
                       {subcategory.name}
                     </label>
@@ -124,25 +120,27 @@ export const ModalCategories = forwardRef<HTMLDivElement, Props>(({
               })}
             </ul>
           )}
-      </div>
+        </div>
 
-      <hr className="modal-categories__dropdown-hr" />
+        <hr className="modal-categories__dropdown-hr" />
 
-      <div className="modal-categories__dropdown-buttons">
-        <DropDownButton
-          size="small"
-          placeholder="Clean"
-          className="modal-categories__dropdown-button"
-          onClick={onClean}
-        />
-        <Button
-          size="small"
-          className="modal-categories__dropdown-button"
-          onClick={onApply}
-        >
-          Apply
-        </Button>
-      </div>
-    </article>
-  );
-});
+        <div className="modal-categories__dropdown-buttons">
+          <DropDownButton
+            size="small"
+            placeholder="Clean"
+            className="modal-categories__dropdown-button"
+            onClick={onClean}
+          />
+          <Button
+            size="small"
+            className="modal-categories__dropdown-button"
+            onClick={onApply}
+          >
+            Apply
+          </Button>
+        </div>
+      </article>
+    );
+  },
+);
+ModalCategories.displayName = 'ModalCategories';

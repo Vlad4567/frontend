@@ -14,7 +14,7 @@ export const getGalleryPhotos = async (
   );
 
   const photosWithPhotos = await Promise.all(
-    photos.content.map(async (photo) => {
+    photos.content.map(async photo => {
       if (photo.photoUrl) {
         const downloadedPhoto = await downloadPhoto(
           modifyPhotoName(photo.photoUrl, 'Gallery'),
@@ -43,11 +43,15 @@ export const postGalleryPhoto = (id: number, file: FormData) => {
 };
 
 export const addGalleryPhoto = (id: number, file: FormData) => {
-  return client.post<GalleryPhoto>(`/mastercard/upload?subcategoryId=${id}`, file, {
-    headers: {
-      'Content-Type': 'multipart/form-data',
+  return client.post<GalleryPhoto>(
+    `/mastercard/upload?subcategoryId=${id}`,
+    file,
+    {
+      headers: {
+        'Content-Type': 'multipart/form-data',
+      },
     },
-  });
+  );
 };
 
 export const updateMainPhoto = (id: number) => {

@@ -50,9 +50,7 @@ export const EditContacts: React.FC = () => {
   const createMaster = useAppSelector(state => state.createMasterSlice);
   const {
     master: {
-      contacts: {
-        instagram, facebook, telegram, phone,
-      },
+      contacts: { instagram, facebook, telegram, phone },
     },
   } = useAppSelector(state => state.createMasterSlice);
 
@@ -66,14 +64,18 @@ export const EditContacts: React.FC = () => {
   };
 
   const handleSubmit = () => {
-    const contacts: typeof createMaster.master.contacts
-      = { ...createMaster.master.contacts };
+    const contacts: typeof createMaster.master.contacts = {
+      ...createMaster.master.contacts,
+    };
 
-    Object.entries(contacts).forEach((contact) => {
-      if (contact?.[1]
-        && contact?.[0] !== 'phone' && contact?.[0] !== 'telegram') {
-        contacts[contact[0] as keyof typeof contacts]
-          = contact[1]?.match(linkValidation)?.[0] || null;
+    Object.entries(contacts).forEach(contact => {
+      if (
+        contact?.[1] &&
+        contact?.[0] !== 'phone' &&
+        contact?.[0] !== 'telegram'
+      ) {
+        contacts[contact[0] as keyof typeof contacts] =
+          contact[1]?.match(linkValidation)?.[0] || null;
       }
     });
 
@@ -91,25 +93,31 @@ export const EditContacts: React.FC = () => {
           createMaster.master.subcategories?.map(item => item.id) || null,
       })
         .then(() => {
-          dispatch(createMasterSlice.editOptions({
-            editMode: false,
-          }));
+          dispatch(
+            createMasterSlice.editOptions({
+              editMode: false,
+            }),
+          );
         })
-        .catch(() => dispatch(notificationSlice.addNotification({
-          id: +new Date(),
-          type: 'error',
-        })));
+        .catch(() =>
+          dispatch(
+            notificationSlice.addNotification({
+              id: +new Date(),
+              type: 'error',
+            }),
+          ),
+        );
     } else {
       navigate('../address');
     }
   };
 
-  const handleSetPhoneValue = (
-    e: React.ChangeEvent<HTMLInputElement>,
-  ) => {
-    dispatch(createMasterSlice.editContacts({
-      phone: e.target.value.replace(/\D/g, '') || null,
-    }));
+  const handleSetPhoneValue = (e: React.ChangeEvent<HTMLInputElement>) => {
+    dispatch(
+      createMasterSlice.editContacts({
+        phone: e.target.value.replace(/\D/g, '') || null,
+      }),
+    );
   };
 
   return (
@@ -119,8 +127,8 @@ export const EditContacts: React.FC = () => {
         style={
           user.master && !createMaster.editMode
             ? {
-              pointerEvents: 'none',
-            }
+                pointerEvents: 'none',
+              }
             : {}
         }
       >
@@ -140,9 +148,13 @@ export const EditContacts: React.FC = () => {
               title="Instagram link"
               placeholder="Instagram link"
               value={instagram || ''}
-              onChange={e => dispatch(createMasterSlice.editContacts({
-                instagram: e.target.value || null,
-              }))}
+              onChange={e =>
+                dispatch(
+                  createMasterSlice.editContacts({
+                    instagram: e.target.value || null,
+                  }),
+                )
+              }
             />
           </label>
 
@@ -159,9 +171,13 @@ export const EditContacts: React.FC = () => {
               title="Facebook link"
               placeholder="Facebook link"
               value={facebook || ''}
-              onChange={e => dispatch(createMasterSlice.editContacts({
-                facebook: e.target.value || null,
-              }))}
+              onChange={e =>
+                dispatch(
+                  createMasterSlice.editContacts({
+                    facebook: e.target.value || null,
+                  }),
+                )
+              }
             />
           </label>
 
@@ -178,9 +194,13 @@ export const EditContacts: React.FC = () => {
               title="Telegram username"
               placeholder="Telegram username"
               value={telegram || ''}
-              onChange={(e) => dispatch(createMasterSlice.editContacts({
-                telegram: e.target.value || null,
-              }))}
+              onChange={e =>
+                dispatch(
+                  createMasterSlice.editContacts({
+                    telegram: e.target.value || null,
+                  }),
+                )
+              }
             />
           </label>
 
@@ -206,7 +226,6 @@ export const EditContacts: React.FC = () => {
 
       {(!user.master || (user.master && createMaster.editMode)) && (
         <div className="edit-contacts__profile">
-
           <DropDownButton
             size="large"
             className="edit-contacts__profile-button"
@@ -219,13 +238,8 @@ export const EditContacts: React.FC = () => {
             className="edit-contacts__profile-button"
             onClick={handleSubmit}
           >
-            {
-              createMaster.editMode
-                ? 'Save changes'
-                : 'Continue'
-            }
+            {createMaster.editMode ? 'Save changes' : 'Continue'}
           </Button>
-
         </div>
       )}
     </>

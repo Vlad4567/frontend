@@ -8,11 +8,11 @@ import './RatingStars.scss';
 type TypeStars = 'ready' | 'select';
 
 interface Props {
-  className?: string
-  type?: TypeStars
-  state?: number
-  setState?: React.Dispatch<React.SetStateAction<number>>
-  stars?: number
+  className?: string;
+  type?: TypeStars;
+  state?: number;
+  setState?: React.Dispatch<React.SetStateAction<number>>;
+  stars?: number;
 }
 
 const getPrepareRare = (value: number, maxValue: number) => {
@@ -23,7 +23,7 @@ export const RatingStars: React.FC<Props> = ({
   className = '',
   type = 'ready',
   state = 0,
-  setState = () => { },
+  setState = () => {},
   stars = 5,
 }) => {
   return (
@@ -38,12 +38,12 @@ export const RatingStars: React.FC<Props> = ({
               'rating-stars__star--selected': type === 'select',
               'rating-stars__star--ready': type === 'ready',
             })}
-            onClick={() => setState(
-              getPrepareRare(currentRating, stars),
-            )}
-            style={currentRating >= getPrepareRare(state, stars)
-              ? { backgroundImage: `url(${fullStarIcon})` }
-              : undefined}
+            onClick={() => setState(getPrepareRare(currentRating, stars))}
+            style={
+              currentRating >= getPrepareRare(state, stars)
+                ? { backgroundImage: `url(${fullStarIcon})` }
+                : undefined
+            }
           />
         );
       })}

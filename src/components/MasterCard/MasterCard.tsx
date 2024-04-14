@@ -8,25 +8,15 @@ import { DropDownButton } from '../DropDownButton/DropDownButton';
 import defaultAvatar from '../../img/default-avatar.svg';
 
 interface Props {
-  className?: string
-  master: types.MasterCard
+  className?: string;
+  master: types.MasterCard;
 }
 
-export const MasterCard: React.FC<Props> = ({
-  className = '',
-  master,
-}) => {
+export const MasterCard: React.FC<Props> = ({ className = '', master }) => {
   const navigate = useNavigate();
 
-  const {
-    firstName,
-    lastName,
-    subcategories,
-    mainPhoto,
-    address,
-    rating,
-    id,
-  } = master;
+  const { firstName, lastName, subcategories, mainPhoto, address, rating, id } =
+    master;
 
   return (
     <article className={`master-card ${className}`}>
@@ -37,11 +27,7 @@ export const MasterCard: React.FC<Props> = ({
       />
 
       <div className="master-card__rating">
-        <img
-          src={starRate}
-          alt="Star rate"
-          className="master-card__img-star"
-        />
+        <img src={starRate} alt="Star rate" className="master-card__img-star" />
         {rating.toFixed(1)}
       </div>
 
@@ -49,9 +35,7 @@ export const MasterCard: React.FC<Props> = ({
         <div className="master-card__info">
           {firstName && lastName && (
             <h3 className="master-card__info-name">
-              {firstName && firstName}
-              {' '}
-              {lastName && lastName}
+              {firstName && firstName} {lastName && lastName}
             </h3>
           )}
 
@@ -62,11 +46,9 @@ export const MasterCard: React.FC<Props> = ({
                   className="master-card__info-subcategory"
                   key={subcategory.categoryId}
                 >
-                  {
-                    subcategories.length === index + 1
-                      ? `${subcategory.name}`
-                      : `${subcategory.name},`
-                  }
+                  {subcategories.length === index + 1
+                    ? `${subcategory.name}`
+                    : `${subcategory.name},`}
                 </div>
               ))}
             </small>
@@ -76,11 +58,8 @@ export const MasterCard: React.FC<Props> = ({
 
       {(address.houseNumber || address.street || address.city) && (
         <p className="master-card__address">
-          {address.houseNumber && address.houseNumber}
-          {' '}
-          {address.street && address.street}
-          {' '}
-          {address.city && address.city}
+          {address.houseNumber && address.houseNumber}{' '}
+          {address.street && address.street} {address.city && address.city}
         </p>
       )}
 

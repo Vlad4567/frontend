@@ -3,39 +3,44 @@ import { SubCategory } from '../types/category';
 import { GalleryPhoto } from '../types/gallery';
 import { Page } from '../types/main';
 import {
-  EditMaster, FormReview, MasterCard, PublicMaster,
+  EditMaster,
+  FormReview,
+  MasterCard,
+  PublicMaster,
 } from '../types/master';
 import { MasterReviewsCard } from '../types/reviews';
 import { City } from '../types/searchPage';
 import { client } from '../utils/axiosClient';
 import { downloadPhoto } from './account';
 
-export const getRatingMasterCard
-  = async (pageNumber: number, pageSize: number) => {
-    const masterCards = await client.get<Page<MasterCard>>(
-      `/masterSortByRating?pageNumber=${pageNumber}&pageSize=${pageSize}`,
-    );
+export const getRatingMasterCard = async (
+  pageNumber: number,
+  pageSize: number,
+) => {
+  const masterCards = await client.get<Page<MasterCard>>(
+    `/masterSortByRating?pageNumber=${pageNumber}&pageSize=${pageSize}`,
+  );
 
-    const masterCardsWithRating = await Promise.all(
-      masterCards.content.map(async (masterCard) => {
-        if (masterCard.mainPhoto) {
-          const photo = await downloadPhoto(
-            modifyPhotoName(masterCard.mainPhoto, 'MainMini'),
-          );
+  const masterCardsWithRating = await Promise.all(
+    masterCards.content.map(async masterCard => {
+      if (masterCard.mainPhoto) {
+        const photo = await downloadPhoto(
+          modifyPhotoName(masterCard.mainPhoto, 'MainMini'),
+        );
 
-          // eslint-disable-next-line no-param-reassign
-          masterCard.mainPhoto = URL.createObjectURL(new Blob([photo]));
-        }
+        // eslint-disable-next-line no-param-reassign
+        masterCard.mainPhoto = URL.createObjectURL(new Blob([photo]));
+      }
 
-        return masterCard;
-      }),
-    );
+      return masterCard;
+    }),
+  );
 
-    return {
-      ...masterCards,
-      content: masterCardsWithRating,
-    };
+  return {
+    ...masterCards,
+    content: masterCardsWithRating,
   };
+};
 
 interface CreateMaster extends Omit<EditMaster, 'address' | 'subcategories'> {
   address: {
@@ -59,7 +64,7 @@ export const getRandomMasterPhotos = async (id: number) => {
   const photos = await client.get<GalleryPhoto[]>(`/photo?masterCardId=${id}`);
 
   const photosWithPhotos = await Promise.all(
-    photos.map(async (item) => {
+    photos.map(async item => {
       const photo = await downloadPhoto(
         modifyPhotoName(item.photoUrl, 'Gallery'),
       );
@@ -108,7 +113,7 @@ export const getReviewsMaster = async (
   );
 
   const masterReviewsWithPhoto = await Promise.all(
-    masterReviews.content.map(async (masterReview) => {
+    masterReviews.content.map(async masterReview => {
       if (masterReview.user.profilePhoto) {
         const photo = await downloadPhoto(
           modifyPhotoName(masterReview.user.profilePhoto, 'ReviewCard'),

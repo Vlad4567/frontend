@@ -19,14 +19,14 @@ import telegramIcon from '../../img/icons/icon-telegram.svg';
 import './LoginForm.scss';
 
 interface InitialErrors {
-  email: string
-  password: string
+  email: string;
+  password: string;
 }
 
 interface InitialData {
-  email: string,
-  password: string,
-  remember: boolean
+  email: string;
+  password: string;
+  remember: boolean;
 }
 
 const initialErrors: InitialErrors = {
@@ -48,10 +48,7 @@ export const LoginForm: React.FC = () => {
   const [formErrors, setFormErrors] = useState(initialErrors);
   const [formData, setFormData] = useState<InitialData>(initialData);
 
-  const {
-    email,
-    password,
-  } = formData;
+  const { email, password } = formData;
 
   useEffect(() => {
     if (searchParams.get('notification') === 'registration') {
@@ -59,10 +56,12 @@ export const LoginForm: React.FC = () => {
 
       params.delete('notification');
       setSearchParams(params);
-      dispatch(notificationSlice.addNotification({
-        id: +new Date(),
-        type: 'registration',
-      }));
+      dispatch(
+        notificationSlice.addNotification({
+          id: +new Date(),
+          type: 'registration',
+        }),
+      );
     }
   }, [dispatch, searchParams, setSearchParams]);
 
@@ -70,40 +69,44 @@ export const LoginForm: React.FC = () => {
     e.preventDefault();
 
     loginUser(formData)
-      .then((res) => {
+      .then(res => {
         localStorage.setItem('token', res.token);
         localStorage.setItem('refreshToken', `${res.refreshToken}`);
-        dispatch(notificationSlice.addNotification({
-          id: +new Date(),
-          type: 'login',
-        }));
+        dispatch(
+          notificationSlice.addNotification({
+            id: +new Date(),
+            type: 'login',
+          }),
+        );
         navigate('/account');
       })
-      .catch((err: AxiosError<ErrorData<string>>) => setFormErrors(c => {
-        if (err.response?.data.error) {
-          const objectErrors = { ...c };
+      .catch((err: AxiosError<ErrorData<string>>) =>
+        setFormErrors(c => {
+          if (err.response?.data.error) {
+            const objectErrors = { ...c };
 
-          objectKeys(initialErrors).forEach(key => {
-            objectErrors[key] = err.response?.data.error as string;
-          });
+            objectKeys(initialErrors).forEach(key => {
+              objectErrors[key] = err.response?.data.error as string;
+            });
 
-          return objectErrors;
-        }
+            return objectErrors;
+          }
 
-        if (err.response?.data.errors) {
-          const objectErrors = { ...c };
+          if (err.response?.data.errors) {
+            const objectErrors = { ...c };
 
-          objectKeys(initialErrors).forEach(key => {
-            objectErrors[key] = err.response?.data.errors
-              ? err.response?.data.errors[key]
-              : '';
-          });
+            objectKeys(initialErrors).forEach(key => {
+              objectErrors[key] = err.response?.data.errors
+                ? err.response?.data.errors[key]
+                : '';
+            });
 
-          return objectErrors;
-        }
+            return objectErrors;
+          }
 
-        return c;
-      }));
+          return c;
+        }),
+      );
   };
 
   return (
@@ -122,10 +125,12 @@ export const LoginForm: React.FC = () => {
             placeholder="E-mail"
             title="E-mail"
             value={email}
-            onChange={(e) => setFormData(c => ({
-              ...c,
-              email: e.target.value,
-            }))}
+            onChange={e =>
+              setFormData(c => ({
+                ...c,
+                email: e.target.value,
+              }))
+            }
             errorText={formErrors.email}
           />
           <LoginInput
@@ -133,10 +138,12 @@ export const LoginForm: React.FC = () => {
             placeholder="Password"
             title="Password"
             value={password}
-            onChange={(e) => setFormData(c => ({
-              ...c,
-              password: e.target.value,
-            }))}
+            onChange={e =>
+              setFormData(c => ({
+                ...c,
+                password: e.target.value,
+              }))
+            }
             errorText={formErrors.password}
             showPassword={showPassword}
             setShowPassword={setShowPassword}
@@ -149,24 +156,20 @@ export const LoginForm: React.FC = () => {
           </UnderlinedSmall>
         </div>
         <div className="login-form__footer">
-          <label
-            className="login-form__checkbox-label"
-          >
+          <label className="login-form__checkbox-label">
             <Checkbox
               checked={formData.remember}
-              onChange={(e) => setFormData(c => ({
-                ...c,
-                remember: e.target.checked,
-              }))}
+              onChange={e =>
+                setFormData(c => ({
+                  ...c,
+                  remember: e.target.checked,
+                }))
+              }
             />
             Stay logged in
           </label>
           <div className="login-form__buttons">
-            <Button
-              type="submit"
-              size="large"
-              className="login-form__login"
-            >
+            <Button type="submit" size="large" className="login-form__login">
               Log in
             </Button>
 
@@ -177,7 +180,6 @@ export const LoginForm: React.FC = () => {
               onClick={() => navigate('telegram')}
             >
               <img src={telegramIcon} alt="Telegram" />
-
               Log in with Telegram
             </DropDownButton>
           </div>

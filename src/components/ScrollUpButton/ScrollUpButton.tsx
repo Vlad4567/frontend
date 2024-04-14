@@ -1,7 +1,7 @@
 import './ScrollUpButton.scss';
 
 interface Props extends React.ButtonHTMLAttributes<HTMLButtonElement> {
-  size: 'large' | 'small'
+  size: 'large' | 'small';
 }
 
 const scrollUp = () => {

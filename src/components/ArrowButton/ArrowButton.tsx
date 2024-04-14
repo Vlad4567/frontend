@@ -5,8 +5,8 @@ import rightArrow from '../../img/icons/right-arrow-button.svg';
 
 /* eslint-disable react/button-has-type */
 interface Props extends React.ButtonHTMLAttributes<HTMLButtonElement> {
-  position: 'left' | 'right'
-  className?: string
+  position: 'left' | 'right';
+  className?: string;
 }
 
 export const ArrowButton: React.FC<Props> = ({
@@ -17,17 +17,8 @@ export const ArrowButton: React.FC<Props> = ({
   const pathToArrow = position === 'left' ? leftArrow : rightArrow;
 
   return (
-    <button
-      className={
-        `arrow-button ${className}`
-      }
-      {...rest}
-    >
-      <img
-        className="arrow-button__arrow"
-        src={pathToArrow}
-        alt="arrow"
-      />
+    <button className={`arrow-button ${className}`} {...rest}>
+      <img className="arrow-button__arrow" src={pathToArrow} alt="arrow" />
     </button>
   );
 };

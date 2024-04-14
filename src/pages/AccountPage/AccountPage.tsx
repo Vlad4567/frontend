@@ -6,12 +6,7 @@ import {
   useOnClickOutside,
 } from 'usehooks-ts';
 import { AxiosError } from 'axios';
-import {
-  NavLink,
-  Outlet,
-  useLocation,
-  useNavigate,
-} from 'react-router-dom';
+import { NavLink, Outlet, useLocation, useNavigate } from 'react-router-dom';
 import classNames from 'classnames';
 import { useAppDispatch, useAppSelector } from '../../app/hooks';
 import * as appSlice from '../../features/appSlice';
@@ -21,8 +16,7 @@ import { DropDownButton } from '../../components/DropDownButton/DropDownButton';
 import styleVariables from '../../styles/variables.module.scss';
 import { ArrowButton } from '../../components/ArrowButton/ArrowButton';
 import { convertHyphenToSpace } from '../../helpers/functions';
-import { UnderlinedSmall }
-  from '../../components/UnderlinedSmall/UnderlinedSmall';
+import { UnderlinedSmall } from '../../components/UnderlinedSmall/UnderlinedSmall';
 import {
   deleteRefreshToken,
   disconnectTelegram,
@@ -34,12 +28,10 @@ import * as notificationSlice from '../../features/notificationSlice';
 import * as userSlice from '../../features/userSlice';
 import telegramIcon from '../../img/icons/icon-telegram.svg';
 import './AccountPage.scss';
-import { LoginFormTelegram }
-  from '../../components/LoginFormTelegram/LoginFormTelegram';
+import { LoginFormTelegram } from '../../components/LoginFormTelegram/LoginFormTelegram';
 import { CreateModal } from '../../components/CreateModal/CreateModal';
 import { TypeModal } from '../../types/account';
-import { ModalAlertMessage }
-  from '../../components/ModalAlertMessage/ModalAlertMessage';
+import { ModalAlertMessage } from '../../components/ModalAlertMessage/ModalAlertMessage';
 import { ErrorData } from '../../types/main';
 
 export const AccountPage: React.FC = () => {
@@ -47,10 +39,12 @@ export const AccountPage: React.FC = () => {
   const { user } = useAppSelector(state => state.userSlice);
   const pathArray = useLocation().pathname.split('/');
   const currentPath = pathArray[pathArray.length - 1];
-  const pathAfterAccount
-    = pathArray[pathArray.findIndex(path => path === 'account') + 1] || '';
+  const pathAfterAccount =
+    pathArray[pathArray.findIndex(path => path === 'account') + 1] || '';
   const navigate = useNavigate();
-  const isNotPhone = useMediaQuery(`(min-width: ${styleVariables['tablet-min-width']})`);
+  const isNotPhone = useMediaQuery(
+    `(min-width: ${styleVariables['tablet-min-width']})`,
+  );
   const [isShownTabs, setIsShownTabs] = useState(false);
   const [modal, setModal] = useState<TypeModal | ''>('');
   const modalRef = useRef(null);
@@ -71,19 +65,21 @@ export const AccountPage: React.FC = () => {
         dispatch(userSlice.updateUser(res));
         setIsShownTabs(true);
       })
-      .catch(() => dispatch(notificationSlice.addNotification({
-        id: +new Date(),
-        type: 'error',
-      })));
+      .catch(() =>
+        dispatch(
+          notificationSlice.addNotification({
+            id: +new Date(),
+            type: 'error',
+          }),
+        ),
+      );
 
     return () => {
       dispatch(appSlice.setShownFooter(true));
     };
   }, []);
 
-  const handleAvatarChange = (
-    e: React.ChangeEvent<HTMLInputElement>,
-  ) => {
+  const handleAvatarChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const avatarFile = e.target.files?.item(0);
 
     if (avatarFile) {
@@ -93,14 +89,20 @@ export const AccountPage: React.FC = () => {
 
       sendProfilePhoto(formData)
         .then(() => {
-          dispatch(userSlice.updateUser({
-            profilePhoto: URL.createObjectURL(avatarFile),
-          }));
+          dispatch(
+            userSlice.updateUser({
+              profilePhoto: URL.createObjectURL(avatarFile),
+            }),
+          );
         })
-        .catch(() => dispatch(notificationSlice.addNotification({
-          id: +new Date(),
-          type: 'error',
-        })));
+        .catch(() =>
+          dispatch(
+            notificationSlice.addNotification({
+              id: +new Date(),
+              type: 'error',
+            }),
+          ),
+        );
     }
   };
 
@@ -109,35 +111,43 @@ export const AccountPage: React.FC = () => {
       .then(() => {
         navigate('/login');
       })
-      .catch(() => dispatch(notificationSlice.addNotification({
-        id: +new Date(),
-        type: 'error',
-      })));
+      .catch(() =>
+        dispatch(
+          notificationSlice.addNotification({
+            id: +new Date(),
+            type: 'error',
+          }),
+        ),
+      );
   };
 
   const handleClickOutside = () => {
     setModal('');
   };
 
-  useOnClickOutside<HTMLFormElement>([
-    modalRef,
-  ], handleClickOutside);
+  useOnClickOutside<HTMLFormElement>([modalRef], handleClickOutside);
 
   const handleConnectTelegram = (code: string) => {
     verificationTelegram(code)
-      .then((res) => {
+      .then(res => {
         setModal('');
 
-        dispatch(userSlice.updateUser({
-          telegramAccount: {
-            telegramUsername: res,
-          },
-        }));
+        dispatch(
+          userSlice.updateUser({
+            telegramAccount: {
+              telegramUsername: res,
+            },
+          }),
+        );
       })
-      .catch(() => dispatch(notificationSlice.addNotification({
-        id: +new Date(),
-        type: 'error',
-      })));
+      .catch(() =>
+        dispatch(
+          notificationSlice.addNotification({
+            id: +new Date(),
+            type: 'error',
+          }),
+        ),
+      );
   };
 
   const handleOpenModal = () => {
@@ -151,19 +161,23 @@ export const AccountPage: React.FC = () => {
   const handleDisconnectTelegram = () => {
     disconnectTelegram()
       .then(() => {
-        dispatch(userSlice.updateUser({
-          telegramAccount: null,
-        }));
+        dispatch(
+          userSlice.updateUser({
+            telegramAccount: null,
+          }),
+        );
 
         setModal('');
       })
-      .catch((err: AxiosError<ErrorData<string>>) => dispatch(
-        notificationSlice.addNotification({
-          id: +new Date(),
-          type: 'error',
-          description: err.response?.data.error,
-        }),
-      ));
+      .catch((err: AxiosError<ErrorData<string>>) =>
+        dispatch(
+          notificationSlice.addNotification({
+            id: +new Date(),
+            type: 'error',
+            description: err.response?.data.error,
+          }),
+        ),
+      );
   };
 
   return (
@@ -181,11 +195,8 @@ export const AccountPage: React.FC = () => {
       </div>
 
       <div className="account-page__main">
-        {((!isNotPhone && currentPath === 'account')
-          || isNotPhone) && (
-          <aside
-            className="account-page__menu"
-          >
+        {((!isNotPhone && currentPath === 'account') || isNotPhone) && (
+          <aside className="account-page__menu">
             <label>
               <div className="account-page__menu-avatar">
                 <input
@@ -211,9 +222,7 @@ export const AccountPage: React.FC = () => {
             </label>
 
             {user.username && (
-              <p className="account-page__menu-username">
-                {user.username}
-              </p>
+              <p className="account-page__menu-username">{user.username}</p>
             )}
 
             <hr className="account-page__menu-hr" />
@@ -237,8 +246,8 @@ export const AccountPage: React.FC = () => {
                     />
                   </NavLink>
                 </li>
-                {(user.master
-                  || pathAfterAccount === 'edit-public-profile') && (
+                {(user.master ||
+                  pathAfterAccount === 'edit-public-profile') && (
                   <li className="account-page__menu-nav-item">
                     <NavLink
                       to="./edit-public-profile/area-of-work"
@@ -263,10 +272,7 @@ export const AccountPage: React.FC = () => {
             <hr className="account-page__menu-hr" />
 
             <div className="account-page__menu-log-out-wrapper">
-              <NavLink
-                to="/login"
-                className="account-page__menu-log-out-link"
-              >
+              <NavLink to="/login" className="account-page__menu-log-out-link">
                 <DropDownButton
                   className="account-page__menu-log-out"
                   size="small"
@@ -308,7 +314,6 @@ export const AccountPage: React.FC = () => {
                     {telegramAccount?.telegramUsername
                       ? `Disconnect @${telegramAccount.telegramUsername}`
                       : 'Connect your Telegram'}
-
                   </DropDownButton>
 
                   {modal === 'formTelegram' && (
@@ -346,13 +351,11 @@ export const AccountPage: React.FC = () => {
                   )}
                 </>
               )}
-
             </div>
 
             <Outlet />
           </div>
         )}
-
       </div>
     </main>
   );

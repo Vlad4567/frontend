@@ -13,7 +13,7 @@ import './FeelBeautySection.scss';
 import { useAppDispatch } from '../../app/hooks';
 
 interface Props {
-  className?: string
+  className?: string;
 }
 
 export const FeelBeautySection: React.FC<Props> = ({ className = '' }) => {
@@ -37,13 +37,19 @@ export const FeelBeautySection: React.FC<Props> = ({ className = '' }) => {
 
   const loadMasterCards = () => {
     getRatingMasterCard(masterCardsPage, 20)
-      .then((response) => setMasterCards(c => (c.length
-        ? [...c, ...response.content]
-        : response.content)))
-      .catch(() => dispatch(notificationSlice.addNotification({
-        id: +new Date(),
-        type: 'error',
-      })));
+      .then(response =>
+        setMasterCards(c =>
+          c.length ? [...c, ...response.content] : response.content,
+        ),
+      )
+      .catch(() =>
+        dispatch(
+          notificationSlice.addNotification({
+            id: +new Date(),
+            type: 'error',
+          }),
+        ),
+      );
     setMasterCardsPage(c => c + 1);
   };
 
@@ -52,9 +58,7 @@ export const FeelBeautySection: React.FC<Props> = ({ className = '' }) => {
       <div className="feel-beauty__header">
         <h1 className="feel-beauty__title">
           Feel your inner&#160;
-          <span className="feel-beauty__title-span">
-            beauty
-          </span>
+          <span className="feel-beauty__title-span">beauty</span>
           <br className="feel-beauty__title-br" />
           with our best beauticians !
         </h1>
@@ -72,7 +76,7 @@ export const FeelBeautySection: React.FC<Props> = ({ className = '' }) => {
           slidesPerView="auto"
           onReachEnd={loadMasterCards}
         >
-          {masterCards.map((card) => (
+          {masterCards.map(card => (
             <SwiperSlide
               key={card.id}
               className="feel-beauty__swiper-slide"

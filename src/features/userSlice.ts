@@ -3,7 +3,7 @@ import { PayloadAction, createSlice } from '@reduxjs/toolkit';
 import { UserData } from '../types/account';
 
 const initialState: {
-  user: UserData
+  user: UserData;
 } = {
   user: {
     email: '',
@@ -36,7 +36,7 @@ const userSlice = createSlice({
         },
       };
     },
-    deleteMaster: (state) => {
+    deleteMaster: state => {
       return {
         ...state,
         user: {
@@ -48,9 +48,6 @@ const userSlice = createSlice({
   },
 });
 
-export const {
-  updateUser,
-  updateProfilePhoto,
-  deleteMaster,
-} = userSlice.actions;
+export const { updateUser, updateProfilePhoto, deleteMaster } =
+  userSlice.actions;
 export default userSlice.reducer;

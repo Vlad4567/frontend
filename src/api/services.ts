@@ -7,10 +7,12 @@ export const getServicesBySubcategory = async (
   masterId: number,
   subcategoryId: number,
 ) => {
-  const services = await client.get<Service[]>(`/master/${masterId}/servicecard?subcategoryId=${subcategoryId}`);
+  const services = await client.get<Service[]>(
+    `/master/${masterId}/servicecard?subcategoryId=${subcategoryId}`,
+  );
 
   const servicesWithPhotos = await Promise.all(
-    services.map(async (service) => {
+    services.map(async service => {
       if (service.photo) {
         const photo = await downloadPhoto(
           modifyPhotoName(service.photo.photoUrl, 'Category'),
@@ -28,7 +30,7 @@ export const getServicesBySubcategory = async (
 };
 
 interface AddNewService extends Required<Omit<Service, 'id' | 'photo'>> {
-  photoId: number
+  photoId: number;
 }
 
 export const addNewService = (service: AddNewService) => {
@@ -40,7 +42,7 @@ export const deleteService = (serviceId: number) => {
 };
 
 interface PutService extends Omit<Service, 'photo'> {
-  photoId: number | null
+  photoId: number | null;
 }
 
 export const putService = (service: PutService) => {
