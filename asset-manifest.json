@@ -1,7 +1,7 @@
 {
   "files": {
     "main.css": "/sparkle/static/css/main.d27f9f93.css",
-    "main.js": "/sparkle/static/js/main.bfdfd159.js",
+    "main.js": "/sparkle/static/js/main.cb9bd4bc.js",
     "static/media/home-page-header.jpg": "/sparkle/static/media/home-page-header.ba847476165f5a751bb7.jpg",
     "static/media/three.png": "/sparkle/static/media/three.4a4e5654aba6332f82a4.png",
     "static/media/two.png": "/sparkle/static/media/two.a804ac932595386dc41c.png",
@@ -28,9 +28,9 @@
     "static/media/icon-phone.svg": "/sparkle/static/media/icon-phone.5e2e2d3fe8828ddfd8eae80e616ebff6.svg",
     "static/media/icon-search.svg": "/sparkle/static/media/icon-search.6a518efbb77881d2f828e59903ba136d.svg",
     "static/media/icon-search-dark.svg": "/sparkle/static/media/icon-search-dark.dec43379e605ff7fc4d93aed8cdb2e06.svg",
+    "index.html": "/sparkle/index.html",
     "static/media/icon-basket.svg": "/sparkle/static/media/icon-basket.7bdee5452abf5a3e2944761e249a92a1.svg",
     "static/media/arrow-up-large.svg": "/sparkle/static/media/arrow-up-large.1a56e54d370bfa48c4bd.svg",
-    "index.html": "/sparkle/index.html",
     "static/media/account-icon-dark.svg": "/sparkle/static/media/account-icon-dark.9adb5c178c3dd43047255d370d33d0d7.svg",
     "static/media/account-icon-light.svg": "/sparkle/static/media/account-icon-light.3965917d9a3fd4ccbbdb05115b2601b5.svg",
     "static/media/delete-basket.svg": "/sparkle/static/media/delete-basket.6fc397f6de8528948942ad674cfef6d6.svg",
@@ -48,10 +48,10 @@
     "static/media/icon-dropdown-close.svg": "/sparkle/static/media/icon-dropdown-close.c760d79ed3dd862f454c17983c817d17.svg",
     "static/media/icon-dropdown-up-white.svg": "/sparkle/static/media/icon-dropdown-up-white.4f45b58d0e441047359772b19302a061.svg",
     "main.d27f9f93.css.map": "/sparkle/static/css/main.d27f9f93.css.map",
-    "main.bfdfd159.js.map": "/sparkle/static/js/main.bfdfd159.js.map"
+    "main.cb9bd4bc.js.map": "/sparkle/static/js/main.cb9bd4bc.js.map"
   },
   "entrypoints": [
     "static/css/main.d27f9f93.css",
-    "static/js/main.bfdfd159.js"
+    "static/js/main.cb9bd4bc.js"
   ]
 }
