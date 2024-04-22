@@ -1,0 +1,78 @@
+@use '../../styles/mixin.scss' as mixin;
+
+.modal-categories {
+  padding: 20px;
+  max-width: 633px;
+
+  z-index: 10000;
+
+  display: flex;
+  justify-content: flex-start;
+  flex-direction: column;
+  gap: 20px;
+
+  background-color: mixin.$gray100;
+  border-radius: 30px;
+  box-shadow: -1px 4px 15px 0 rgba(0, 0, 0, 0.25);
+
+  @include mixin.on-tablet {
+    padding: 40px;
+  }
+
+  &__dropdown-categories-main {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+  }
+
+  &__dropdown-categories-buttons {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+  }
+
+  &__dropdown-categories-main-button {
+    flex: 1;
+    padding-inline: 10px;
+  }
+
+  &__dropdown-subcategories {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+
+    &--row {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+    }
+  }
+
+  &__dropdown-subcategory-item {
+    display: flex;
+    align-items: center;
+  }
+
+  &__dropdown-subcategory {
+    display: flex;
+    align-items: center;
+    cursor: pointer;
+  }
+
+  &__dropdown-hr {
+    width: 100%;
+    border: none;
+    height: mixin.$line-width;
+    background-color: mixin.$gray70;
+  }
+
+  &__dropdown-buttons {
+    display: flex;
+    flex-wrap: nowrap;
+    justify-content: flex-end;
+    gap: 10px;
+  }
+
+  &__dropdown-button {
+    width: 100px;
+  }
+}

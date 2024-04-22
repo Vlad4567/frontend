@@ -7,6 +7,21 @@
   scroll-behavior: smooth;
 }
 
+:root {
+  --content-padding: 20px;
+  --content-padding-top: 20px;
+  --content-padding-bottom: 20px;
+}
+
+main {
+  position: relative;
+  flex: 1;
+
+  display: flex;
+  flex-direction: column;
+}
+
+
 input,
 textarea,
 button,
@@ -29,4 +44,10 @@ body {
   display: flex;
   flex-direction: column;
   flex: 1;
+
+  width: 100%;
+}
+
+button {
+  color: mixin.$gray10;
 }

@@ -1,0 +1,95 @@
+@use '../../styles/mixin.scss' as mixin;
+
+.space-to-enjoy {
+  display: flex;
+  flex-direction: column;
+  gap: 40px;
+
+  @include mixin.on-tablet {
+    gap: 60px;
+  }
+
+  &__title {
+    width: fit-content;
+
+    font-size: 28px;
+    line-height: 100%;
+
+    @include mixin.on-tablet {
+      font-size: 48px;
+      line-height: 44px;
+    }
+
+    @include mixin.on-desktop {
+      font-size: 64px;
+      line-height: 64px;
+    }
+
+    &-website-name {
+      position: relative;
+      color: mixin.$primary100;
+      font-family: Kharkiv-Tone, sans-serif;
+
+      @include mixin.on-tablet {
+        & &-stars {
+          width: 46px;
+          height: 42px;
+        }
+      }
+    }
+  }
+
+  &__images {
+    height: 50vw;
+
+    display: flex;
+    justify-content: flex-end;
+    gap: 9px;
+
+    @media (min-width: 500px) {
+      height: 274px;
+    }
+
+    @include mixin.on-tablet {
+      height: 406px;
+
+      gap: 12px;
+    }
+
+    @include mixin.on-desktop {
+      height: 514px;
+
+      gap: 15px;
+    }
+
+    &-one, &-two, &-three {
+      height:100%;
+    }
+
+    &-one {
+      animation: space-to-enjoy-img-up-down 8s infinite;
+    }
+
+    &-two {
+      animation: space-to-enjoy-img-up-down 11s infinite reverse;
+    }
+
+    &-three {
+      animation: space-to-enjoy-img-up-down 6s infinite;
+    }
+
+    @keyframes space-to-enjoy-img-up-down {
+      0% {
+        transform: translateY(10%);
+      }
+
+      50% {
+        transform: translateY(-10%)
+      }
+
+      100% {
+        transform: translateY(10%)
+      }
+    }
+  }
+}

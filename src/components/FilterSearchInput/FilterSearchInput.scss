@@ -1,0 +1,67 @@
+@use '../../styles/mixin.scss' as mixin;
+
+.filter-search-input {
+  display: flex;
+  justify-content: center;
+  flex-direction: column;
+  gap: 5px;
+
+  @include mixin.on-tablet {
+    gap: 10px;
+  }
+
+  &--light::after {
+    background-color: mixin.$gray100;
+  }
+
+  &--light &__search-input {
+    color: mixin.$gray100;
+
+    &::placeholder {
+      color: mixin.$gray100;
+    }
+
+    &:focus::placeholder {
+      color: mixin.$gray30;
+    }
+  }
+
+  &--dark::after {
+    background-color: mixin.$gray10;
+  }
+
+  &--dark &__search-input {
+    color: mixin.$gray10;
+
+    &::placeholder {
+      color: mixin.$gray10;
+    }
+
+    &:focus::placeholder {
+      color: mixin.$gray30;
+    }
+  }
+
+  &::after {
+    content: "";
+    height: mixin.$line-width;
+  }
+
+  &__block {
+    display: flex;
+    gap: 5px;
+
+    @include mixin.on-tablet {
+      gap: 20px;
+    }
+  }
+
+  &__search-input {
+    width: 100%;
+    padding: 0;
+
+    border: none;
+    outline: none;
+    background: none;
+  }
+}

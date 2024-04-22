@@ -1,0 +1,66 @@
+@use '../../styles/mixin.scss' as mixin;
+
+.edit-public-profile-page {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+
+  @include mixin.on-desktop {
+    gap: 15px;
+  }
+
+  &__controls {
+    display: flex;
+    gap: 5px;
+
+    @include mixin.on-tablet {
+      gap: 10px;
+    }
+  }
+
+  &__controls-btn {
+    height: 50px;
+    width: 100%;
+    max-width: 130px;
+
+    &--small {
+      width: 50px;
+    }
+  }
+
+  &__nav {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+  }
+
+  &__nav-link {
+    text-decoration: none;
+    color: mixin.$gray10;
+
+    &:not(.edit-public-profile-page__nav-link--active) .edit-public-profile-page__nav-link-btn {
+      width: fit-content;
+    }
+
+    &--active .edit-public-profile-page__nav-link-btn {
+      background: mixin.$gray100;
+    }
+
+    &--active {
+      pointer-events: none;
+    }
+  }
+
+  &__nav-link-btn {
+    width: fit-content;
+    background: none;
+    border: none;
+  }
+
+  &__nav-hr {
+    border: none;
+    height: mixin.$line-width;
+    background-color: mixin.$gray10;
+    flex: 1;
+  }
+}

@@ -1,0 +1,41 @@
+@use '../../styles/mixin.scss' as mixin;
+
+.notifications {
+  padding: 0 var(--content-padding) var(--content-padding) 0;
+
+  position: fixed;
+  right: 0;
+  bottom: 0;
+  z-index: 10000;
+
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+
+  background: none;
+  overflow: hidden;
+
+  &__notification {
+    &.enter {
+      opacity: 0;
+      transform: translateY(1000%);
+    }
+
+    &.enter-active {
+      transition: all mixin.$effect-duration;
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    &.exit {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    &.exit-active {
+      transition: all mixin.$effect-duration;
+      opacity: 0;
+      transform: translateY(-100%);
+    }
+  }
+}

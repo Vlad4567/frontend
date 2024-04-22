@@ -23,18 +23,12 @@ export const NotFoundPage: React.FC = () => {
   };
 
   return (
-    <div className="not-found-page">
+    <main className="not-found-page">
       <article className="not-found-page__error">
-        <img
-          className="not-found-page__error-img"
-          src={errorImg}
-          alt="error"
-        />
+        <img className="not-found-page__error-img" src={errorImg} alt="error" />
 
         <div className="not-found-page__error-text">
-          <h1 className="not-found-page__error-title">
-            oh, no
-          </h1>
+          <h1 className="not-found-page__error-title">oh, no</h1>
           <p className="not-found-page__error-subtitle">
             Sorry, we did not find the page you were looking for
           </p>
@@ -42,10 +36,8 @@ export const NotFoundPage: React.FC = () => {
       </article>
 
       <div className="not-found-page__button-go-back">
-        <RoundButton onClick={goBack}>
-          Go back
-        </RoundButton>
+        <RoundButton onClick={goBack}>Go back</RoundButton>
       </div>
-    </div>
+    </main>
   );
 };

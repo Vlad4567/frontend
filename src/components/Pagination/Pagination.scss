@@ -1,0 +1,23 @@
+@use '../../styles/mixin.scss' as mixin;
+
+.pagination {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 10px;
+
+  &__page {
+    transition-duration: mixin.$effect-duration;
+
+    &:hover {
+      color: mixin.$link;
+      transform: translateY(-2px);
+    }
+  }
+
+  &__disabled {
+    color: mixin.$gray70;
+    pointer-events: none;
+
+  }
+}

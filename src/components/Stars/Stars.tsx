@@ -8,11 +8,7 @@ interface Props {
   size: 'large' | 'small';
 }
 
-export const Stars: React.FC<Props> = ({
-  type,
-  className = '',
-  size,
-}) => {
+export const Stars: React.FC<Props> = ({ type, className = '', size }) => {
   const pathStars = type === 'dark' ? darkStars : lightStars;
 
   return (

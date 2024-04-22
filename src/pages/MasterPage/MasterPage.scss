@@ -1,0 +1,436 @@
+@use '../../styles/mixin.scss' as mixin;
+
+.master-page {
+  padding-block: 5px 150px;
+
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+
+  @include mixin.on-tablet {
+    padding-block: 10px 214px;
+    gap: 10px;
+  }
+
+  @include mixin.on-desktop {
+    padding-bottom: 280px;
+  }
+
+  &__body {
+    display: flex;
+    flex-direction: column;
+    gap: 80px;
+
+    @include mixin.on-tablet {
+      gap: 120px;
+    }
+  }
+
+  &__info {
+    display: flex;
+    flex-direction: column;
+    gap: 30px;
+
+    @include mixin.on-tablet {
+      gap: 40px;
+    }
+  }
+
+  &__info-gallery {
+    display: none;
+    flex-direction: column;
+    gap: 10px;
+
+    &:has(> *) {
+      height: 470px;
+      display: flex;
+    }
+
+    & :nth-child(n+3) {
+      display: none;
+    }
+
+    & :nth-of-type(2) {
+      height: 138px;
+    }
+
+    @include mixin.on-tablet {
+      &:has(> *) {
+        height: 321px;
+        display: grid;
+        grid-template-columns: repeat(8, 1fr);
+        grid-template-rows: repeat(2, 1fr);
+      }
+
+      & :nth-child(n) {
+        display: block;
+      }
+
+      & :nth-child(1) {
+        grid-column: 1 / -1;
+        grid-row: 1 / -1;
+
+        &:has(+ *) {
+          grid-column: 1 / 6;
+        }
+      }
+
+      & :nth-child(2) {
+        height: 100%;
+        grid-column: 6 / -1;
+        grid-row: 1 / -1;
+
+        &:has(+ *) {
+          grid-row: 2 / -1;
+        }
+      }
+
+      & :nth-child(3) {
+        grid-column: 6 / -1;
+        grid-row: 1 / 2;
+
+        &:has(+ *) {
+          grid-column: 6 / -2;
+        }
+      }
+
+      & :nth-child(4) {
+        grid-column: -2 / -1;
+        grid-row: 1 / 2;
+      }
+    }
+
+    @include mixin.on-desktop {
+      &:has(> *) {
+        height: 436px;
+      }
+    }
+  }
+
+  &__info-gallery-item-link {
+    width: 100%;
+    height: 100%;
+    position: relative;
+    pointer-events: none;
+    border-radius: 20px;
+    overflow: hidden;
+
+    @include mixin.on-tablet {
+      border-radius: 30px;
+    }
+
+    &:nth-child(n) {
+      .master-page__info-gallery-item-link-title {
+        display: none;
+      }
+    }
+
+    &:nth-child(2),
+    &:nth-child(1):nth-last-child(1) {
+      pointer-events: all;
+
+      .master-page__info-gallery-item-link-title {
+        background-color: rgba(0, 0, 0, 0.2);
+
+        position: absolute;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        inset: 0;
+        color: mixin.$gray100;
+        text-decoration: underline;
+
+        transition-duration: mixin.$effect-duration;
+
+        &:hover {
+          background-color: rgba(0, 0, 0, 0.54);
+          color: mixin.$secondary-pink;
+        }
+      }
+    }
+
+  }
+
+  &__info-gallery-item {
+    width: 100%;
+    height: 100%;
+    background-size: cover;
+    background-position: center;
+  }
+
+  &__info-title {
+    display: flex;
+    justify-content: space-between;
+    flex-wrap: wrap;
+  }
+
+  &__info-title-left {
+    max-width: 50%;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+
+    @include mixin.on-tablet {
+      gap: 15px;
+    }
+  }
+
+  &__info-title-left-name {
+    margin: 0;
+  }
+
+  &__info-title-left-subcategories {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 5px;
+  }
+
+  &__info-title-left-subcategory {
+    width: auto;
+    pointer-events: none;
+  }
+
+  &__info-title-chat {
+    background-color: mixin.$gray100;
+    border: none;
+  }
+
+  &__info-description {
+    max-width: 50%;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  &__services {
+    display: flex;
+    flex-direction: column;
+    gap: 30px;
+
+    @include mixin.on-desktop {
+      gap: 40px;
+    }
+  }
+
+  &__services-title {
+    margin: 0;
+    width: fit-content;
+    position: relative;
+  }
+
+  &__services-title-span {
+    color: mixin.$primary100;
+  }
+
+  &__services-main {
+    height: fit-content;
+    display: flex;
+    gap: 20px;
+
+    @include mixin.on-desktop {
+      gap: 24px;
+    }
+  }
+
+  &__services-main-wrapper {
+    padding: 20px;
+    width: 100%;
+
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+
+    background-color: mixin.$gray100;
+    border-radius: 30px;
+
+    @include mixin.on-tablet {
+      padding: 40px;
+      gap: 20px;
+    }
+  }
+
+  &__services-main-divider {
+    width: 100%;
+    height: mixin.$line-width;
+    border: none;
+    background-color: mixin.$gray70;
+  }
+
+  &__services-main-item {
+    height: 40px;
+    padding-inline: 15px;
+    display: grid;
+    align-items: center;
+    grid-template-columns: repeat(3, 1fr);
+    border-radius: 20px;
+    pointer-events: none;
+
+    @include mixin.on-tablet {
+      pointer-events: all;
+
+      &:nth-child(n+2) {
+        cursor: pointer;
+
+        &:hover {
+          background-color: mixin.$gray70;
+        }
+      }
+    }
+  }
+
+  &__services-main-item-small {
+    color: mixin.$gray30;
+  }
+
+  &__services-main-item-p {
+    &::first-letter {
+      text-transform: uppercase;
+    }
+  }
+
+  &__reviews {
+    display: flex;
+    flex-direction: column;
+    gap: 40px;
+
+    @include mixin.on-tablet {
+      gap: 30px;
+    }
+  }
+
+  &__reviews-title {
+    font-size: 28px;
+    line-height: 28px;
+
+    @include mixin.on-tablet {
+      font-size: 48px;
+      line-height: 64px;
+    }
+  }
+
+  &__reviews-body {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 60px;
+
+    @include mixin.on-tablet {
+      flex-direction: row;
+    }
+  }
+
+  &__reviews-info {
+    width: fit-content;
+    display: flex;
+    justify-content: flex-start;
+    gap: 26px;
+
+    @include mixin.on-tablet {
+      flex-direction: column;
+    }
+  }
+
+  &__reviews-info-header {
+    display: flex;
+    flex-direction: column;
+
+    gap: 11px;
+  }
+
+  &__reviews-info-header-wraper {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+  }
+
+  &__reviews-info-header-blok {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+  }
+
+  &__reviews-info-header-blok-stars {
+    display: flex;
+  }
+
+  &__reviews-info-header-blok-stars-star-img {
+    height: 15px;
+    width: 15px;
+  }
+
+  &__reviews-info-header-rating {
+    font-size: 48px;
+    line-height: 64px;
+  }
+
+  &__reviews-info-header-progress {
+    color: #000;
+  }
+
+  &__reviews-info-header-list {
+    display: flex;
+    flex-direction: column-reverse;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  &__reviews-info-header-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 15px;
+  }
+
+  &__reviews-button-first {
+    @include mixin.on-tablet {
+      display: none;
+    }
+  }
+
+  &__reviews-button-second {
+    width: 100%;
+    display: none;
+
+    @include mixin.on-tablet {
+      display: block;
+    }
+  }
+
+  &__reviews-swiper {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    width: 100%;
+    overflow: hidden;
+
+    @include mixin.on-desktop {
+      gap: 30px;
+    }
+  }
+
+  &__reviews-swiper-slides {
+    width: 100%;
+  }
+
+  &__reviews-swiper-control {
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
+  }
+
+  &__services-main-image {
+    height: 100%;
+    display: none;
+    border-radius: 30px;
+
+    @include mixin.on-tablet {
+      width: 301px;
+      display: block;
+    }
+
+    @include mixin.on-desktop {
+      width: 498px;
+    }
+  }
+}

@@ -1,0 +1,219 @@
+@use '../../styles/mixin.scss' as mixin;
+
+.account-page {
+  padding-top: 5px;
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+
+  @include mixin.on-tablet {
+    padding-top: 10px;
+    gap: 10px;
+  }
+
+  &__header {
+    position: relative;
+    display: flex;
+    align-items: center;
+  }
+
+  &__header-back {
+    justify-content: flex-start;
+    z-index: 1;
+  }
+
+  &__header-title {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: absolute;
+    inset: 0;
+
+    font-weight: 500;
+
+    @include mixin.on-tablet {
+      display: none;
+    }
+  }
+
+  &__main {
+    @include mixin.on-tablet {
+      display: flex;
+      justify-content: center;
+      gap: 20px;
+    }
+
+    @include mixin.on-desktop {
+      gap: 30px;
+    }
+  }
+
+  &__menu {
+    max-width: 335px;
+    height: fit-content;
+    padding: 40px 20px;
+
+    position: relative;
+    left: 50%;
+    transform: translateX(-50%);
+
+    display: flex;
+    align-items: center;
+    flex-direction: column;
+    gap: 22px;
+    flex: 1;
+
+    background-color: mixin.$gray100;
+    border-radius: 30px;
+    box-shadow: -1px 4px 15px 0 rgba(0, 0, 0, 0.25);
+
+    @include mixin.on-tablet {
+      position: static;
+      transform: none;
+    }
+  }
+
+  &__menu-avatar {
+    width: 162px;
+    height: 162px;
+
+    position: relative;
+    cursor: pointer;
+  }
+
+  &__menu-avatar-input {
+    width: 100%;
+    height: 100%;
+    position: absolute;
+    opacity: 0;
+  }
+
+  &__menu-avatar-img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    border-radius: 50%;
+  }
+
+  &__menu-avatar-edit {
+    width: 24px;
+    height: 24px;
+
+    position: absolute;
+    top: 0;
+    left: 70%;
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    background-color: mixin.$gray5;
+    border-radius: 50%;
+  }
+
+  &__menu-hr {
+    width: 100%;
+    height: mixin.$line-width;
+
+    border: none;
+    background-color: mixin.$gray70;
+  }
+
+  &__menu-nav {
+    width: 100%;
+  }
+
+  &__menu-nav-list {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  &__menu-nav-link {
+    text-decoration: none;
+
+    &--active {
+      pointer-events: none;
+    }
+  }
+
+  &__menu-nav-button {
+    width: 100%;
+  }
+
+  &__menu-log-out-wrapper {
+    display: flex;
+    align-items: center;
+    flex-direction: column;
+    gap: 10px;
+    width: 100%;
+  }
+
+  &__menu-log-out-link {
+    text-decoration: none;
+    width: 100%;
+  }
+
+  &__menu-log-out {
+    width: 100%;
+  }
+
+  &__menu-log-out img {
+    display: none;
+  }
+
+  &__menu-log-out-terminate {
+    text-align: center;
+  }
+
+  &__main-content {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+
+    @include mixin.on-desktop {
+      gap: 30px;
+    }
+  }
+
+  &__main-title-wrapper {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 10px;
+
+    @include mixin.on-desktop {
+      flex-direction: row;
+      align-items: center;
+    }
+  }
+
+  &__main-title {
+    margin: 0;
+
+    display: none;
+
+    @include mixin.on-tablet {
+      display: block;
+    }
+  }
+
+  &__login {
+    width: 100%;
+
+    @include mixin.on-tablet {
+      width: fit-content;
+    }
+  }
+
+  &__login--telegram {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 5px;
+    color: mixin.$gray10;
+    border: mixin.$line-width solid mixin.$gray10;
+  }
+}

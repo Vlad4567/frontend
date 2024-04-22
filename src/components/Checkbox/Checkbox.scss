@@ -1,0 +1,46 @@
+@use '../../styles/mixin.scss' as mixin;
+
+.checkbox {
+  display: flex;
+  align-items: center;
+  position: relative;
+
+  font-size: 16px;
+  line-height: 24px;
+  cursor: pointer;
+
+  &__checkbox {
+    position: absolute;
+    appearance: none;
+  }
+
+  &__checkbox-view {
+    margin-right: 10px;
+    width: 25px;
+    height: 25px;
+
+    border-radius: 6px;
+    border: mixin.$line-width solid mixin.$gray10;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    background: mixin.$gray100;
+    transition: mixin.$effect-duration;
+  }
+
+  &__checkbox-icon {
+    opacity: 0;
+    transition: mixin.$effect-duration;
+  }
+
+  &__checkbox:checked + &__checkbox-view {
+    border-color: #ffffff00;
+    background-color: mixin.$pink;
+  }
+
+  &__checkbox:checked + &__checkbox-view &__checkbox-icon {
+    opacity: 1;
+  }
+}

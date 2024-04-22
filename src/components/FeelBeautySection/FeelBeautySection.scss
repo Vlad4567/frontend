@@ -1,0 +1,65 @@
+@use '../../styles/mixin.scss' as mixin;
+
+@import '/node_modules/swiper/swiper';
+
+.feel-beauty {
+  display: flex;
+  flex-direction: column;
+  gap: 80px;
+
+  &__swiper {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+
+    @include mixin.on-desktop {
+      gap: 30px;
+    }
+  }
+
+  &__swiper-slides {
+    width: 100%;
+  }
+
+  &__swiper-control {
+    display: flex;
+    gap: 10px;
+  }
+
+  &__header {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    align-items: flex-end;
+
+    @include mixin.on-tablet {
+      flex-direction: row;
+      align-items: center;
+    }
+  }
+
+  &__title {
+    width: 100%;
+    font-size: 28px;
+    line-height: 100%;
+
+    text-align: left;
+
+    @include mixin.on-tablet {
+      font-size: 48px;
+      line-height: 44px;
+
+      width: fit-content;
+    }
+
+    @include mixin.on-desktop {
+      font-size: 64px;
+      line-height: 64px;
+    }
+  }
+
+  &__title-span {
+    font-family: Kharkiv-Tone, sans-serif;
+    color: mixin.$primary100;
+  }
+}

@@ -1,0 +1,7 @@
+@use './mixin.scss' as mixin;
+
+:export {
+  tablet-min-width: mixin.$tablet-min-width;
+  desktop-min-width: mixin.$desktop-min-width;
+  effect-duration: mixin.$effect-duration;
+}

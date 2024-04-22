@@ -1,0 +1,30 @@
+@use '../../styles/mixin.scss' as mixin;
+
+.login-page {
+  padding-top: 25px;
+  gap: 70px;
+  transition: box-shadow mixin.$effect-duration;
+  color: mixin.$gray10;
+
+  @include mixin.on-tablet {
+    justify-content: center;
+  }
+
+  &__header {
+    width: fit-content;
+
+    position: relative;
+    left: 50%;
+    transform: translateX(-50%);
+
+    @include mixin.on-tablet {
+      display: none;
+    }
+  }
+
+  &__arrow {
+    position: absolute;
+    top: 10px;
+    left: 0;
+  }
+}

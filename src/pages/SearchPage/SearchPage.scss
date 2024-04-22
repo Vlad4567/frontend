@@ -1,0 +1,378 @@
+@use '../../styles/mixin.scss' as mixin;
+
+.search-page {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+  padding-block: 25px 20px;
+
+  @include mixin.on-tablet {
+    padding-block: 15px 30px;
+  }
+
+  &__dropdown-categories {
+    @include mixin.on-tablet {
+      position: absolute;
+      bottom: -5px;
+      right: 0%;
+      transform: translateY(100%);
+    }
+  }
+
+  &__dropdown-categories-header {
+    display: flex;
+    justify-content: space-between;
+
+    @include mixin.on-tablet {
+      display: none;
+    }
+  }
+
+  &__dropdown-categories-title {
+    color: mixin.$gray15;
+  }
+
+  &__dropdown-categories-icon {
+    cursor: pointer;
+  }
+
+  &__filter {
+    padding: 20px;
+
+    position: relative;
+
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+
+    background-color: mixin.$gray100;
+    border-radius: 30px;
+
+    @include mixin.on-desktop {
+      flex-direction: row;
+    }
+  }
+
+  &__filter-input {
+    flex: 1;
+  }
+
+  &__filter-header {
+    display: flex;
+    flex: 1;
+    flex-direction: column;
+    justify-content: center;
+    gap: 20px;
+
+    @include mixin.on-desktop {
+      flex-direction: row-reverse;
+    }
+  }
+
+  &__filter-search-by {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+  }
+
+  &__filter-search-by-title {
+    font-weight: bold;
+  }
+
+  &__filter-search-by-buttons {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 15px;
+  }
+
+  &__filter-search-by-button {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+
+    cursor: pointer;
+  }
+
+  &__filter-dropdown-buttons {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+  }
+
+  &__filter-dropdown-button {
+    white-space: nowrap;
+    flex: 1;
+
+    &:disabled {
+      &:hover {
+        cursor: auto;
+      }
+    }
+  }
+  /*start-dropdown-sort*/
+
+  &__dropdown-sort {
+    padding: 20px;
+    max-width: 449px;
+
+    z-index: 10000;
+
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+
+    background-color: mixin.$gray100;
+    border-radius: 30px;
+    box-shadow: -1px 4px 15px 0 rgba(0, 0, 0, 0.25);
+
+    @include mixin.on-tablet {
+      position: absolute;
+      bottom: -5px;
+      right: 0;
+      transform: translateY(100%);
+    }
+  }
+
+  &__dropdown-sort-header {
+    display: flex;
+    justify-content: space-between;
+  }
+
+  &__dropdown-sort-header-icon {
+    cursor: pointer;
+
+    @include mixin.on-tablet {
+      display: none;
+    }
+  }
+
+  &__dropdown-sort-header-title {
+    text-align: left;
+
+    color: mixin.$gray15;
+  }
+
+  &__dropdown-sort-categories {
+    display: flex;
+    flex-direction: column;
+    flex-wrap: wrap;
+    gap: 15px;
+
+    @include mixin.on-tablet {
+      flex-direction: row;
+    }
+  }
+
+  &__dropdown-sort-category {
+    min-width: 184px;
+
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+  }
+
+  &__dropdown-sort-category-title {
+    text-align: left;
+  }
+
+  &__dropdown-sort-category-radio {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+  }
+
+  &__dropdown-hr {
+    width: 100%;
+    border: none;
+    height: mixin.$line-width;
+    background-color: mixin.$gray70;
+  }
+
+  &__dropdown-buttons {
+    display: flex;
+    flex-wrap: nowrap;
+    justify-content: flex-end;
+    gap: 10px;
+  }
+
+  &__dropdown-button {
+    width: 100px;
+  }
+
+  /*end-sort-category*/
+
+  /*start-price-range*/
+
+  &__dropdown-price-range {
+    padding: 20px;
+    max-width: 335px;
+
+    z-index: 10000;
+
+    display: flex;
+    justify-content: flex-start;
+    flex-direction: column;
+    gap: 20px;
+
+    background-color: mixin.$gray100;
+    border-radius: 30px;
+    box-shadow: -1px 4px 15px 0 rgba(0, 0, 0, 0.25);
+
+    @include mixin.on-tablet {
+      max-width: 271px;
+      padding: 40px;
+      position: absolute;
+      bottom: -5px;
+      right: 50%;
+      transform: translate(40%, 100%);
+    }
+
+    @include mixin.on-desktop {
+      right: 20%;
+    }
+  }
+
+  &__dropdown-header {
+    display: flex;
+    justify-content: space-between;
+
+    @include mixin.on-tablet {
+      display: none;
+    }
+  }
+
+  &__dropdown-header-title {
+    color: mixin.$gray15;
+  }
+
+  &__dropdown-header-close-icon {
+    cursor: pointer;
+  }
+
+  &__dropdown-price-range-main {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+  }
+
+  &__dropdown-price-range-wraper {
+    display: flex;
+    align-items: flex-end;
+    color: mixin.$gray50;
+  }
+
+  &__dropdown-price-range-dash {
+    width: 36px;
+    background-color: mixin.$gray10;
+  }
+
+  &__dropdown-price-range-input {
+    width: 100%;
+    padding-left: 10px;
+    background-color: #ffffff00;
+    outline: none;
+    border: none;
+    border-bottom: mixin.$line-width solid mixin.$gray50;
+
+    &::placeholder {
+      opacity: 0.5;
+    }
+
+    &:focus {
+      color: mixin.$gray10;
+      border-bottom: mixin.$line-width solid mixin.$gray10;
+    }
+  }
+
+  &__dropdown-price-range-buttons {
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
+  }
+
+  &__dropdown-price-range-button {
+    width: 50%;
+  }
+  /*end-price-range*/
+
+  /*start-city*/
+  &__dropdown-city {
+    padding: 20px;
+    max-width: 633px;
+
+    z-index: 10000;
+
+    display: flex;
+    justify-content: flex-start;
+    flex-direction: column;
+    gap: 10px;
+
+    background-color: mixin.$gray100;
+    border-radius: 30px;
+    box-shadow: -1px 4px 15px 0 rgba(0, 0, 0, 0.25);
+
+    @include mixin.on-tablet {
+      padding: 40px;
+      position: absolute;
+      bottom: -5px;
+      left: 0;
+      right: 0;
+      transform: translate(0, 100%);
+    }
+
+    @include mixin.on-desktop {
+      left: auto;
+      right: 28%;
+      transform: translate(0, 100%);
+    }
+  }
+
+  &__dropdown-city-list {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+    flex: 1;
+  }
+
+  &__dropdown-city-item {
+    height: 40px;
+    padding-inline: 10px;
+    border-radius: 20px;
+
+    display: flex;
+    align-items: center;
+
+    &:hover {
+      background-color: mixin.$gray70;
+      cursor: pointer;
+    }
+  }
+
+  &__dropdown-city-search {
+    width: 100%;
+
+    @include mixin.on-tablet {
+      display: none;
+    }
+  }
+  /*end-city*/
+
+  /*start info*/
+  &__info {
+    display: flex;
+    flex-direction: column;
+    gap: 62px;
+  }
+
+  &__info-clear-everything {
+    margin-left: auto;
+  }
+  /*end info*/
+
+  &__cards {
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 20px;
+  }
+}

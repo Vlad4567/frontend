@@ -1,29 +1,52 @@
+import { useRef, useState } from 'react';
+import { useOnClickOutside } from 'usehooks-ts';
 import { Link } from 'react-router-dom';
-import './Footer.scss';
 import { RectangleButton } from '../RectangleButton/RectangleButton';
 import { websiteName } from '../../helpers/variables';
 import { ScrollUpButton } from '../ScrollUpButton/ScrollUpButton';
+import { ModalContactUs } from '../ModalContactUs/ModalContactUs';
+import { CreateModal } from '../CreateModal/CreateModal';
+import './Footer.scss';
+
+type Modal = 'contactUs';
 
 export const Footer: React.FC = () => {
+  const [modal, setModal] = useState<Modal | ''>('');
+  const modalRef = useRef<HTMLFormElement>(null);
+
+  const handleClickOutside = () => {
+    setModal('');
+  };
+
+  useOnClickOutside<HTMLFormElement>([modalRef], handleClickOutside);
+
   return (
     <footer className="footer">
       <div className="footer__block">
         <div className="footer__contact-us">
           <p className="footer__contact-us-paragraph">
-            Feel free to reach our if you want to collaborate with us or
-            simply have a chat
+            Feel free to reach our if you want to collaborate with us or simply
+            have a chat
           </p>
-          <Link
-            className="footer__contact-us-button-link"
-            to="contacts"
-          >
+          <>
             <RectangleButton
               className="footer__contact-us-button"
               type="dark"
+              onClick={() => setModal('contactUs')}
             >
               Contact us
             </RectangleButton>
-          </Link>
+
+            {modal && (
+              <CreateModal>
+                <ModalContactUs
+                  className="footer__contact-us-modal"
+                  onClose={() => setModal('')}
+                  ref={modalRef}
+                />
+              </CreateModal>
+            )}
+          </>
         </div>
 
         <article className="footer__contacts">
@@ -104,8 +127,8 @@ export const Footer: React.FC = () => {
       <div className="footer__info">
         <div className="footer__info-left-block">
           <small className="footer__info-text">
-            A web service where you can find your beauty
-            master and sign up for the desired procedure
+            A web service where you can find your beauty master and sign up for
+            the desired procedure
           </small>
 
           <Link className="footer__info-text" to="privacy">
@@ -115,8 +138,8 @@ export const Footer: React.FC = () => {
           </Link>
 
           <small className="footer__info-text">
-            {/* eslint-disable-next-line react/jsx-one-expression-per-line */}
-            © 2024 <span className="footer__info-text-span">{websiteName}</span>
+            {/* eslint-disable-next-line react/jsx-one-expression-per-line */}©
+            2024 <span className="footer__info-text-span">{websiteName}</span>
           </small>
         </div>
 

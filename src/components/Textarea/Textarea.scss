@@ -1,0 +1,56 @@
+@use '../../styles/mixin.scss' as mixin;
+
+.textarea {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+
+  &__title {
+    padding-left: 5px;
+    font-weight: 700;
+    color: mixin.$gray30;
+    transition: opacity mixin.$effect-duration;
+    opacity: 0;
+
+    &--show {
+      opacity: 1;
+    }
+  }
+
+  &__text {
+    padding: 10px;
+    border: mixin.$line-width solid mixin.$gray30;
+    border-radius: 20px;
+    overflow: hidden;
+    resize: none;
+    background: none;
+
+    &:focus {
+      border: mixin.$line-width solid mixin.$gray10;
+    }
+
+    &:disabled {
+      color: mixin.$gray30;
+      background-color: mixin.$gray70;
+      border: none;
+    }
+  }
+
+  &__error {
+    display: flex;
+    gap: 5px;
+  }
+
+  &__error-icon {
+    height: 15px;
+    min-width: 15px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+
+    color: mixin.$gray100;
+    background-color: mixin.$primary100;
+    border-radius: 50%;
+  }
+}

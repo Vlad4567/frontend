@@ -1,0 +1,52 @@
+@use '../../styles/mixin.scss' as mixin;
+
+.switch-buttons {
+  height: fit-content;
+
+  display: flex;
+  flex-wrap: wrap;
+  border-radius: 100px;
+  border: mixin.$line-width solid mixin.$gray10;
+  overflow: hidden;
+
+  &__button {
+    min-height: 50px;
+    height: auto;
+    padding-inline: 10px;
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex: 1;
+
+    color: mixin.$gray10;
+    background: none;
+    border: mixin.$line-width solid mixin.$gray10;
+
+    cursor: pointer;
+
+    @include mixin.on-tablet {
+      padding-inline: 20px;
+    }
+  }
+
+  &__button {
+    font-weight: 500;
+    line-height: 24px;
+  }
+
+  &__button--active {
+    background-color: mixin.$gray10;
+    color: mixin.$gray100;
+  }
+
+  &__button:hover {
+    background-color: mixin.$pink;
+    transition: mixin.$effect-duration;
+  }
+
+  &__button:active{
+    background-color: mixin.$secondary-pink;
+  }
+
+}

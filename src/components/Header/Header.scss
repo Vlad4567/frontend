@@ -8,6 +8,8 @@
   align-items: center;
   flex-direction: column;
 
+  z-index: 9999;
+
   @include mixin.on-tablet {
     height: mixin.$on-tablet-header-height;
   }
@@ -68,6 +70,17 @@
 
     @include mixin.on-tablet {
       font-size: 24px;
+    }
+  }
+
+  &__account {
+    background-color: mixin.$gray100;
+    border-color: #ffffff00;
+
+    display: none;
+
+    @include mixin.on-tablet {
+      display: block;
     }
   }
 

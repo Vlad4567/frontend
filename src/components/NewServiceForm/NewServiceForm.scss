@@ -1,0 +1,140 @@
+@use '../../styles/mixin.scss' as mixin;
+
+.new-service-form {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+
+  @include mixin.on-tablet {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 40px;
+  }
+
+  &__field {
+    display: none;
+
+    margin: 0;
+    height: 30px;
+    min-width: 110px;
+
+    @include mixin.on-tablet {
+      display: flex;
+    }
+  }
+
+  &__field-paragraph {
+    @include mixin.on-tablet {
+      display: none;
+    }
+  }
+
+  &__field-group {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+  }
+
+  &__buttons {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 5px;
+  }
+
+  &__buttons-edit {
+    width: fit-content;
+    border: none;
+    background-color: mixin.$secondary-pink;
+
+    @include mixin.on-tablet {
+      display: none;
+    }
+  }
+
+  &__icon {
+    display: none;
+
+    height: 30px;
+    width: 30px;
+    cursor: pointer;
+
+    @include mixin.on-tablet {
+      display: block;
+    }
+  }
+
+  &__picture-container {
+    display: none;
+
+    height: 30px;
+    width: 30px;
+    border-radius: 5px;
+    justify-content: center;
+    align-items: center;
+    position: relative;
+    transition: mixin.$effect-duration linear;
+
+    &:hover::after {
+      content: url('../../img/icons/icon-dropdown-close.svg');
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      position: absolute;
+      top: 60%;
+      bottom: 40%;
+      z-index: 2;
+      filter: brightness(0) saturate(100%) invert(100%) sepia(0%)
+        saturate(0%) hue-rotate(93deg) brightness(103%) contrast(103%);
+      cursor: pointer;
+    }
+
+    &:hover::before {
+      content: '';
+      border-radius: 5px;
+      position: absolute;
+      inset: 0;
+      background-color: rgba(0, 0, 0, 0.4);
+      z-index: 1;
+    }
+
+    @include mixin.on-tablet {
+      display: flex;
+    }
+  }
+
+  &__picture {
+    height: 100%;
+    width: 100%;
+    border-radius: 5px;
+    object-fit: cover;
+    z-index: 0;
+  }
+
+  &__delete {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    &:hover {
+      background-color: mixin.$pink;
+    }
+  }
+
+  &__delete-icon {
+    height: 20px;
+    width: 20px;
+    cursor: pointer;
+  }
+
+  &__add {
+    width: 40px;
+    font-size: 26px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+}

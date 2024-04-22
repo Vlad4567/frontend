@@ -1,0 +1,74 @@
+@use '../../styles/mixin.scss' as mixin;
+
+.personal-details-page {
+  &__main {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+  }
+
+  &__main-data {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  &__main-password {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  &__main-password-header {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+  }
+
+  &__main-password-reset {
+    margin-left: auto;
+  }
+
+  &__footer {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+
+    @include mixin.on-tablet {
+      flex-direction: row;
+      justify-content: space-between;
+      align-items: center;
+      gap: 0;
+    }
+  }
+
+  &__footer-become-master-label {
+    width: fit-content;
+  }
+
+  &__footer-become-master {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  &__footer-btns {
+    margin-left: auto;
+    max-width: 335px;
+    flex: 1;
+    display: flex;
+    gap: 10px;
+  }
+
+  &__footer-btn {
+    flex: 1;
+
+    @include mixin.on-tablet {
+      width: 130px;
+    }
+
+    &:disabled {
+      pointer-events: none;
+    }
+  }
+}
