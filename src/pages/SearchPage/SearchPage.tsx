@@ -2,62 +2,55 @@
 /* eslint-disable jsx-a11y/click-events-have-key-events */
 /* eslint-disable jsx-a11y/label-has-associated-control */
 import React, { useEffect, useRef, useState } from 'react';
-import { useDebounce, useMediaQuery, useOnClickOutside } from 'usehooks-ts';
+import { useMediaQuery, useOnClickOutside } from 'usehooks-ts';
 import { useSearchParams } from 'react-router-dom';
 import { Button } from '../../components/Button/Button';
 import { CreateModal } from '../../components/CreateModal/CreateModal';
 import { DropDownButton } from '../../components/DropDownButton/DropDownButton';
-// eslint-disable-next-line max-len
 import { DropDownSortButton } from '../../components/DropDownSortButton/DropDownSortButton';
-// eslint-disable-next-line max-len
 import { FilterSearchInput } from '../../components/FilterSearchInput/FilterSearchInput';
 import { RadioInput } from '../../components/RadioInput/RadioInput';
 import closeIcon from '../../img/icons/icon-dropdown-close.svg';
 import { Category, SubCategory } from '../../types/category';
 import variables from '../../styles/variables.module.scss';
-import { debounceDelay } from '../../helpers/variables';
 import {
-  getCities,
   getFilteredMasterCards,
   getFilteredServiceCards,
 } from '../../api/searchPage';
 import { ActiveDropDown, City } from '../../types/searchPage';
 import { getSearchWith } from '../../helpers/functions';
-import * as typesMaster from '../../types/master';
-import { Page, TypeCard, SearchWithParams } from '../../types/main';
+import { SearchWithParams } from '../../types/main';
 import { MasterCard } from '../../components/MasterCard/MasterCard';
 import { ServiceCard } from '../../components/ServiceCard/ServiceCard';
 import { UnderlinedSmall } from '../../components/UnderlinedSmall/UnderlinedSmall';
 import { ModalCategories } from '../../components/ModalCategories/ModalCategories';
+import { useInfiniteQuery } from '@tanstack/react-query';
+import { useCities } from '../../hooks/useCities';
 import './SearchPage.scss';
-import * as notificationSlice from '../../features/notificationSlice';
-import { useAppDispatch } from '../../app/hooks';
+
+type TypeCard = 'master' | 'service';
 
 export const SearchPage: React.FC = () => {
   const [searchParams, setSearchParams] = useSearchParams();
-  const dispatch = useAppDispatch();
   const directionSort = searchParams.get('direction') || '';
   const propertySort = searchParams.get('property') || '';
+
+  searchParams.sort();
 
   const [activeDropDown, setActiveDropDown] = useState<ActiveDropDown | null>(
     null,
   );
-  const [cityValue, setCityValue] = useState('');
-  const [cityList, setCityList] = useState<City[]>([]);
+  const {
+    cities: { data: cityList },
+    cityValue,
+    setCityValue,
+  } = useCities();
   const [activeCategory, setActiveCategory] = useState<Category | null>(null);
   const [searchBy, setSearchBy] = useState<TypeCard>('service');
-  const [masterCards, setMasterCards] =
-    useState<Page<typesMaster.MasterCard> | null>(null);
-  const [serviceCards, setServiceCards] =
-    useState<Page<typesMaster.ServiceCard> | null>(null);
-  const [currentPage, setCurrentPage] = useState(1);
-  const [observer, setObserver] = useState<IntersectionObserver | null>(null);
 
   const isShownModalCityInput = useMediaQuery(
     `(max-width: ${variables['tablet-min-width']})`,
   );
-  const debouncedCity = useDebounce<string>(cityValue, debounceDelay);
-  const debouncedSearchParams = useDebounce(searchParams, debounceDelay);
 
   const cityInputRef = useRef<HTMLInputElement>(null);
   const cityButtonRef = useRef<HTMLButtonElement>(null);
@@ -73,7 +66,7 @@ export const SearchPage: React.FC = () => {
     setSearchParams(search);
   };
 
-  const handleClickOutside = () => {
+  const closeDropdowns = () => {
     setActiveDropDown(null);
   };
 
@@ -85,7 +78,7 @@ export const SearchPage: React.FC = () => {
       priceButtonRef,
       sortButtonRef,
     ],
-    handleClickOutside,
+    closeDropdowns,
   );
 
   const handleToggleDropDown = (dropDown: ActiveDropDown) => {
@@ -151,9 +144,6 @@ export const SearchPage: React.FC = () => {
       maxPrice: null,
     });
     setSearchBy(typeUser);
-    setMasterCards(null);
-    setServiceCards(null);
-    setCurrentPage(1);
   };
 
   const handleChooseSubCategory = (
@@ -172,123 +162,63 @@ export const SearchPage: React.FC = () => {
     setSearchWith({ subcategories: newSubcategories });
   };
 
-  const clearSubCategories = () => {
-    setSearchWith({ subcategories: null });
-  };
-
-  const clearSortBy = () => {
-    setSearchWith({ direction: null, property: null });
-  };
-
   const handleClearEverything = () => {
     setSearchParams(new URLSearchParams());
 
     setCityValue('');
-    setActiveDropDown(null);
+    closeDropdowns();
     setActiveCategory(null);
   };
 
-  const loadCardsByPage = (page: number) => {
-    switch (searchBy) {
-      case 'master':
-        getFilteredMasterCards(page - 1, 16, debouncedSearchParams.toString())
-          .then(res => {
-            if (page === 1) {
-              setMasterCards(res);
-            } else {
-              setMasterCards(c =>
-                c?.content
-                  ? {
-                      ...res,
-                      content: [...c.content, ...res.content],
-                    }
-                  : res,
-              );
-            }
-
-            if (res.last) {
-              observer?.disconnect();
-            }
-          })
-          .catch(() =>
-            dispatch(
-              notificationSlice.addNotification({
-                id: +new Date(),
-                type: 'error',
-              }),
-            ),
-          );
-        break;
-
-      case 'service':
-        getFilteredServiceCards(page - 1, 16, debouncedSearchParams.toString())
-          .then(res => {
-            if (page === 1) {
-              setServiceCards(res);
-            } else {
-              setServiceCards(c =>
-                c?.content
-                  ? {
-                      ...res,
-                      content: [...c.content, ...res.content],
-                    }
-                  : res,
-              );
-            }
-
-            if (res.last) {
-              observer?.disconnect();
-            }
-          })
-          .catch(() =>
-            dispatch(
-              notificationSlice.addNotification({
-                id: +new Date(),
-                type: 'error',
-              }),
-            ),
-          );
-        break;
-
-      default:
-        break;
-    }
-  };
-
-  useEffect(() => {
-    setObserver(() => {
-      const createdObserver = new IntersectionObserver(entries => {
-        if (entries[0].isIntersecting) {
-          setCurrentPage(prev => prev + 1);
+  const { data: masterCards, fetchNextPage: fetchFilteredMasterCardsNextPage } =
+    useInfiniteQuery({
+      queryKey: [`filteredMasterCards`, 16, searchParams.toString(), searchBy],
+      queryFn: ({ pageParam = 0 }) =>
+        searchBy === 'master'
+          ? getFilteredMasterCards(pageParam, 16, searchParams.toString())
+          : undefined,
+      getNextPageParam: (lastPage, pages) => {
+        if (lastPage?.last) {
+          return undefined;
         }
-      });
 
-      createdObserver.observe(observeRef.current as HTMLDivElement);
-
-      return createdObserver;
+        return pages.length;
+      },
+      initialPageParam: 0,
     });
 
-    return () => observer?.disconnect();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [searchBy, searchParams]);
+  const {
+    data: serviceCards,
+    fetchNextPage: fetchFilteredServiceCardsNextPage,
+  } = useInfiniteQuery({
+    queryKey: ['filteredServiceCards', 16, searchParams.toString(), searchBy],
+    queryFn: ({ pageParam = 0 }) =>
+      searchBy === 'service'
+        ? getFilteredServiceCards(pageParam, 16, searchParams.toString())
+        : undefined,
+    getNextPageParam: (lastPage, pages) => {
+      if (lastPage?.last) {
+        return undefined;
+      }
+
+      return pages.length;
+    },
+    initialPageParam: 0,
+  });
 
   useEffect(() => {
-    if (debouncedCity) {
-      getCities(0, 4, debouncedCity)
-        .then(res => setCityList(res.content))
-        .catch(() =>
-          dispatch(
-            notificationSlice.addNotification({
-              id: +new Date(),
-              type: 'error',
-            }),
-          ),
-        );
-    } else {
-      setCityList([]);
-    }
+    const createdObserver = new IntersectionObserver(entries => {
+      if (entries[0].isIntersecting) {
+        fetchFilteredMasterCardsNextPage();
+        fetchFilteredServiceCardsNextPage();
+      }
+    });
+
+    createdObserver.observe(observeRef.current as HTMLDivElement);
+
+    return () => createdObserver.disconnect();
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [debouncedCity]);
+  }, []);
 
   useEffect(() => {
     if (activeDropDown === 'City' && !isShownModalCityInput) {
@@ -308,17 +238,6 @@ export const SearchPage: React.FC = () => {
 
     setSearchParams(params);
   }, [searchParams, setSearchParams]);
-
-  useEffect(() => {
-    loadCardsByPage(currentPage);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [currentPage]);
-
-  useEffect(() => {
-    setCurrentPage(1);
-    loadCardsByPage(1);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [debouncedSearchParams]);
 
   return (
     <main className="search-page">
@@ -400,7 +319,7 @@ export const SearchPage: React.FC = () => {
                       src={closeIcon}
                       alt="close"
                       className="search-page__dropdown-header-close-icon"
-                      onClick={handleClickOutside}
+                      onClick={closeDropdowns}
                     />
                   </div>
 
@@ -459,7 +378,7 @@ export const SearchPage: React.FC = () => {
                       src={closeIcon}
                       alt="close"
                       className="search-page__dropdown-header-close-icon"
-                      onClick={handleClickOutside}
+                      onClick={closeDropdowns}
                     />
                   </div>
                   <div className="search-page__dropdown-price-range-main">
@@ -540,7 +459,7 @@ export const SearchPage: React.FC = () => {
                   ref={dropDownRef}
                   onClickCategory={setActiveCategory}
                   onApply={() => setActiveDropDown(null)}
-                  onClean={clearSubCategories}
+                  onClean={() => setSearchWith({ subcategories: null })}
                   onClickSubcategory={handleChooseSubCategory}
                   activeSubcategories={searchParams
                     .getAll('subcategories')
@@ -554,7 +473,7 @@ export const SearchPage: React.FC = () => {
                       alt="close"
                       className="search-page__dropdown-categories-icon"
                       src={closeIcon}
-                      onClick={handleClickOutside}
+                      onClick={closeDropdowns}
                     />
                   </div>
                 </ModalCategories>
@@ -582,7 +501,7 @@ export const SearchPage: React.FC = () => {
                       src={closeIcon}
                       alt="close"
                       className="search-page__dropdown-sort-header-icon"
-                      onClick={handleClickOutside}
+                      onClick={closeDropdowns}
                     />
                   </div>
                   <div className="search-page__dropdown-sort-categories">
@@ -696,7 +615,9 @@ export const SearchPage: React.FC = () => {
                       size="small"
                       placeholder="Clean"
                       className="search-page__dropdown-button"
-                      onClick={clearSortBy}
+                      onClick={() =>
+                        setSearchWith({ direction: null, property: null })
+                      }
                     />
                     <Button
                       size="small"
@@ -722,8 +643,8 @@ export const SearchPage: React.FC = () => {
           Clear everything
         </UnderlinedSmall>
 
-        {(searchBy === 'master' && !!masterCards?.content.length) ||
-        (searchBy === 'service' && !!serviceCards?.content.length) ? (
+        {(searchBy === 'master' && !!masterCards?.pages[0]?.content.length) ||
+        (searchBy === 'service' && !!serviceCards?.pages[0]?.content.length) ? (
           <p className="search-page__info-recommendations">
             Recommendations for you
           </p>
@@ -733,18 +654,22 @@ export const SearchPage: React.FC = () => {
       </div>
 
       {searchBy === 'master'
-        ? !!masterCards?.content.length && (
+        ? !!masterCards?.pages[0]?.content.length && (
             <div className="search-page__cards">
-              {masterCards?.content.map(card => {
-                return <MasterCard master={card} key={card.id} />;
-              })}
+              {masterCards?.pages.flatMap(page =>
+                page?.content.map(card => (
+                  <MasterCard master={card} key={card.id} />
+                )),
+              )}
             </div>
           )
-        : !!serviceCards?.content.length && (
+        : !!serviceCards?.pages[0]?.content.length && (
             <div className="search-page__cards">
-              {serviceCards?.content.map(card => {
-                return <ServiceCard service={card} key={card.id} />;
-              })}
+              {serviceCards?.pages.flatMap(page =>
+                page?.content.map(card => (
+                  <ServiceCard service={card} key={card.id} />
+                )),
+              )}
             </div>
           )}
 

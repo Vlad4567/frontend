@@ -1,24 +1,21 @@
 /* eslint-disable jsx-a11y/label-has-associated-control */
 import { useNavigate } from 'react-router-dom';
 import { useEffect, useRef, useState } from 'react';
-import { useDebounce, useOnClickOutside } from 'usehooks-ts';
+import { useOnClickOutside } from 'usehooks-ts';
 import { AxiosError } from 'axios';
 import { changeObjectStateKey } from '../../helpers/functions';
 import { Checkbox } from '../../components/Checkbox/Checkbox';
 import { DropDownButton } from '../../components/DropDownButton/DropDownButton';
 import { LoginInput } from '../../components/LoginInput/LoginInput';
-import './PersonalDetailsPage.scss';
 import { UnderlinedSmall } from '../../components/UnderlinedSmall/UnderlinedSmall';
-import { useAppDispatch, useAppSelector } from '../../app/hooks';
 import { PasswordData, TypeModal, UpdateUserData } from '../../types/account';
-import { debounceDelay } from '../../helpers/variables';
-import { checkUserEmail, checkUsername, forgotPassword } from '../../api/login';
 import { ErrorData } from '../../types/main';
-import * as notificationSlice from '../../features/notificationSlice';
-import { putPassword, putUser, changeEmail } from '../../api/account';
-import * as userSlice from '../../features/userSlice';
 import { CreateModal } from '../../components/CreateModal/CreateModal';
 import { ModalAlertMessage } from '../../components/ModalAlertMessage/ModalAlertMessage';
+import { useNotification } from '../../hooks/useNotification';
+import { useUser } from '../../hooks/useUser';
+import { useAuth } from '../../hooks/useAuth';
+import './PersonalDetailsPage.scss';
 
 interface InitialDataErrors {
   email: string;
@@ -40,9 +37,15 @@ const passwordData: PasswordData = {
 };
 
 export const PersonalDetailsPage: React.FC = () => {
-  const dispatch = useAppDispatch();
-  const { user } = useAppSelector(state => state.userSlice);
   const navigate = useNavigate();
+  const { addNotification } = useNotification();
+  const {
+    queryUser: { data: user },
+    updateUser,
+    updateEmail,
+    updatePassword,
+  } = useUser();
+  const { checkUserEmail, checkUsername, forgotPassword } = useAuth();
   const [modal, setModal] = useState<TypeModal | ''>('');
   const modalRef = useRef(null);
   const [password, setPassword] = useState('');
@@ -60,8 +63,15 @@ export const PersonalDetailsPage: React.FC = () => {
   );
   const [errors, setErrors] = useState<InitialDataErrors>(initialDataErrors);
 
-  const debouncedUsername = useDebounce(userData.username, debounceDelay);
-  const debouncedEmail = useDebounce(userData.email, debounceDelay);
+  useEffect(
+    () =>
+      setUserData({
+        username: user.username,
+        email: user.email,
+        ...passwordData,
+      }),
+    [user.username, user.email],
+  );
 
   const isApplyDisabled =
     JSON.stringify(userData) === JSON.stringify(initialUserData) ||
@@ -75,19 +85,14 @@ export const PersonalDetailsPage: React.FC = () => {
   useOnClickOutside<HTMLFormElement>([modalRef], handleClickOutside);
 
   const handleChangeEmail = () => {
-    changeEmail({
-      newEmail: userData.email,
-      password,
-    })
+    updateEmail
+      .mutateAsync({
+        newEmail: userData.email,
+        password,
+      })
       .then(() => {
         setModal('');
         setPassword('');
-        dispatch(
-          notificationSlice.addNotification({
-            id: +new Date(),
-            type: 'confirmationEmail',
-          }),
-        );
       })
       .catch((err: AxiosError<ErrorData<string>>) => {
         setErrorPassword(err.response?.data.error || 'Error updating email');
@@ -101,22 +106,9 @@ export const PersonalDetailsPage: React.FC = () => {
 
   const handleResetPassword = () => {
     if (user.email) {
-      forgotPassword(user.email)
-        .then(() =>
-          dispatch(
-            notificationSlice.addNotification({
-              id: +new Date(),
-              type: 'resetPassword',
-            }),
-          ),
-        )
+      forgotPassword
+        .mutateAsync(user.email)
         .catch((err: AxiosError<ErrorData<string>>) => {
-          dispatch(
-            notificationSlice.addNotification({
-              id: +new Date(),
-              type: 'error',
-            }),
-          );
           if (err.response?.data) {
             const resError =
               err.response.data.error ||
@@ -136,10 +128,11 @@ export const PersonalDetailsPage: React.FC = () => {
 
     if (JSON.stringify(errors) === JSON.stringify(initialDataErrors)) {
       if (userData.currentPassword.length && userData.newPassword.length) {
-        putPassword({
-          currentPassword: userData.currentPassword,
-          newPassword: userData.newPassword,
-        })
+        updatePassword
+          .mutateAsync({
+            currentPassword: userData.currentPassword,
+            newPassword: userData.newPassword,
+          })
           .then(() => {
             setUserData(c => ({
               ...c,
@@ -148,13 +141,6 @@ export const PersonalDetailsPage: React.FC = () => {
             }));
           })
           .catch((err: AxiosError<ErrorData<string>>) => {
-            dispatch(
-              notificationSlice.addNotification({
-                id: +new Date(),
-                type: 'error',
-              }),
-            );
-
             if (err.response?.data.error) {
               const res = err.response.data.error;
 
@@ -183,29 +169,17 @@ export const PersonalDetailsPage: React.FC = () => {
         userData.email !== user.email ||
         userData.username !== user.username
       ) {
-        putUser({
-          email: userData.email,
-          username: userData.username,
-        })
+        updateUser
+          .mutateAsync({
+            email: userData.email,
+            username: userData.username,
+          })
           .then(res => {
             if (res.newEmail) {
               setModal('ResetEmail');
             }
-
-            dispatch(
-              userSlice.updateUser({
-                username: userData.username,
-              }),
-            );
           })
           .catch((err: AxiosError<ErrorData<string>>) => {
-            dispatch(
-              notificationSlice.addNotification({
-                id: +new Date(),
-                type: 'error',
-              }),
-            );
-
             if (err.response?.data.error) {
               const res = err.response.data.error;
 
@@ -229,30 +203,19 @@ export const PersonalDetailsPage: React.FC = () => {
           });
       }
     } else {
-      dispatch(
-        notificationSlice.addNotification({
-          id: +new Date(),
-          type: 'error',
-        }),
-      );
+      addNotification('error');
     }
   };
 
   useEffect(() => {
-    if (debouncedUsername !== user.username) {
-      checkUsername(debouncedUsername)
-        .then(
-          res =>
-            typeof res === 'boolean' &&
-            (res
-              ? setErrors(c => ({
-                  ...c,
-                  username: 'This username already exists',
-                }))
-              : setErrors(c => ({
-                  ...c,
-                  username: '',
-                }))),
+    if (userData.username !== user.username && userData.username) {
+      checkUsername
+        .mutateAsync(userData.username)
+        .then(res =>
+          setErrors(c => ({
+            ...c,
+            username: res ? 'This username already exists' : '',
+          })),
         )
         .catch(
           (err: AxiosError<ErrorData<string>>) =>
@@ -270,23 +233,17 @@ export const PersonalDetailsPage: React.FC = () => {
       }));
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [debouncedUsername]);
+  }, [userData.username]);
 
   useEffect(() => {
-    if (debouncedEmail !== user.email) {
-      checkUserEmail(debouncedEmail)
-        .then(
-          res =>
-            typeof res === 'boolean' &&
-            (res
-              ? setErrors(c => ({
-                  ...c,
-                  email: 'This username already exists',
-                }))
-              : setErrors(c => ({
-                  ...c,
-                  email: '',
-                }))),
+    if (userData.email !== user.email && userData.email) {
+      checkUserEmail
+        .mutateAsync(userData.email)
+        .then(res =>
+          setErrors(c => ({
+            ...c,
+            email: res ? 'This email already exists' : '',
+          })),
         )
         .catch(
           (err: AxiosError<ErrorData<string>>) =>
@@ -300,7 +257,7 @@ export const PersonalDetailsPage: React.FC = () => {
       }));
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [debouncedEmail]);
+  }, [userData.email]);
 
   const handleInputOnChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;

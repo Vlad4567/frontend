@@ -2,46 +2,46 @@
 /* eslint-disable jsx-a11y/click-events-have-key-events */
 import React, { useState } from 'react';
 
-import { Link } from 'react-router-dom';
+import { Link, useParams } from 'react-router-dom';
 import { AxiosError } from 'axios';
 import { Textarea } from '../Textarea/Textarea';
 import { Button } from '../Button/Button';
 import closeIcon from '../../img/icons/icon-dropdown-close.svg';
 import { RatingStars } from '../RatingStars/RatingStars';
-import './ModalReview.scss';
-import { addNewReview } from '../../api/master';
-import * as notificationSlice from '../../features/notificationSlice';
-import { useAppDispatch, useAppSelector } from '../../app/hooks';
-import { MasterReviewsCard } from '../../types/reviews';
 import { ErrorData } from '../../types/main';
+import { useReviewsMaster } from '../../hooks/useReviewsMaster';
+import './ModalReview.scss';
 
-interface Props {
-  className?: string;
-  onClose: () => void;
-  addCard: (card: MasterReviewsCard) => void;
+interface Review {
+  grade: number;
+  comment: string;
 }
 
-const initialForm = {
+const initialReview = {
   grade: 0,
   comment: '',
 };
 
+interface Props {
+  className?: string;
+  onClose: () => void;
+  addCard: (card: Review) => void;
+}
+
 export const ModalReview = React.forwardRef<HTMLFormElement, Props>(
   ({ className = '', onClose = () => {}, addCard = () => {} }, ref) => {
-    const publicMaster = useAppSelector(state => state.publicMasterSlice);
-    const { user } = useAppSelector(state => state.userSlice);
-    const dispatch = useAppDispatch();
-    const [form, setForm] = useState(initialForm);
+    const { id } = useParams();
+    const { addNewReview } = useReviewsMaster(+(id as string));
+    const [review, setReview] = useState(initialReview);
     const token = localStorage.getItem('token');
     const refreshToken = localStorage.getItem('refreshToken');
     const [formError, setFormError] = useState('');
-    const { grade, comment } = form;
-    const { master } = publicMaster;
+    const { grade, comment } = review;
 
     const handleChangeField = (
       e: React.ChangeEvent<HTMLTextAreaElement | HTMLInputElement>,
     ) => {
-      setForm(prew => ({
+      setReview(prew => ({
         ...prew,
         [e.target.name]: e.target.value,
       }));
@@ -50,21 +50,12 @@ export const ModalReview = React.forwardRef<HTMLFormElement, Props>(
     const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
       e.preventDefault();
 
-      if (master.id) {
-        addNewReview(master.id, form)
+      if (id) {
+        addNewReview
+          .mutateAsync(review)
           .then(() => {
-            setForm(initialForm);
-            addCard({
-              masterCardId: +Date.now(),
-              dateTime: new Date().toString(),
-              grade,
-              comment,
-              id: +Date.now(),
-              user: {
-                ...user,
-                id: +Date.now(),
-              },
-            });
+            setReview(initialReview);
+            addCard(review);
 
             onClose();
           })
@@ -72,13 +63,6 @@ export const ModalReview = React.forwardRef<HTMLFormElement, Props>(
             if (err.response?.data.errors?.comment) {
               setFormError(err.response.data.errors.comment);
             }
-
-            dispatch(
-              notificationSlice.addNotification({
-                id: +new Date(),
-                type: 'error',
-              }),
-            );
           });
       }
     };
@@ -123,7 +107,7 @@ export const ModalReview = React.forwardRef<HTMLFormElement, Props>(
             type={!token || !refreshToken ? 'ready' : 'select'}
             state={grade}
             setState={value =>
-              setForm(prew => ({
+              setReview(prew => ({
                 ...prew,
                 grade: +value,
               }))

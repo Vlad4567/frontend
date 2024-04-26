@@ -1,9 +1,9 @@
 import { Stars } from '../Stars/Stars';
-import './SpaceToEnjoySection.scss';
 import firstImg from '../../img/space-to-enjoy/one.png';
 import secondImg from '../../img/space-to-enjoy/two.png';
 import thirdImg from '../../img/space-to-enjoy/three.png';
 import { websiteName } from '../../helpers/variables';
+import './SpaceToEnjoySection.scss';
 
 export const SpaceToEnjoySection: React.FC = () => {
   return (

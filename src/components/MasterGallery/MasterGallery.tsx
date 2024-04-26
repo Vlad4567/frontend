@@ -10,24 +10,16 @@ import { DropDownButton } from '../DropDownButton/DropDownButton';
 import { SwitchButtons } from '../SwitchButtons/SwitchButtons';
 import deleteBasket from '../../img/icons/delete-basket.svg';
 import addImg from '../../img/icons/tabler-photo-plus.svg';
-import {
-  addGalleryPhoto,
-  deleteGalleryPhoto,
-  getGalleryPhotos,
-  updateMainPhoto,
-} from '../../api/gallery';
 import { GalleryPhoto } from '../../types/gallery';
-import { downloadPhoto } from '../../api/account';
-import * as notificationSlice from '../../features/notificationSlice';
 import { ModalAlertMessage } from '../ModalAlertMessage/ModalAlertMessage';
 import { CreateModal } from '../CreateModal/CreateModal';
-import { useAppDispatch, useAppSelector } from '../../app/hooks';
+import { useCreateMaster } from '../../hooks/useCreateMaster';
+import { useGalleryPhotos } from '../../hooks/useGalleryPhotos';
 import './MasterGallery.scss';
-import { modifyPhotoName } from '../../helpers/functions';
+import { useMaster } from '../../hooks/useMaster';
+import { useParams } from 'react-router-dom';
 
 type TypeComponent = 'service' | 'portfolio' | 'edit-profile';
-
-type TypeModal = 'deletePhoto';
 
 interface Props {
   type?: TypeComponent;
@@ -48,29 +40,38 @@ export const MasterGallery = forwardRef<HTMLFormElement, Props>(
     },
     ref,
   ) => {
-    const createMaster = useAppSelector(state => state.createMasterSlice);
-    const dispatch = useAppDispatch();
-    const [photos, setPhotos] = useState<GalleryPhoto[]>([]);
-    const [activeButton, setActiveButton] = useState<SubCategory>(
-      subcategories?.[0] ||
-        createMaster.master.subcategories?.[0] || {
-          id: -1,
-          name: '',
-        },
+    const { id } = useParams();
+
+    const subcategoriesList =
+      subcategories ||
+      (type === 'portfolio'
+        ? // eslint-disable-next-line react-hooks/rules-of-hooks
+          useMaster(+(id || '0')).master.data?.subcategories
+        : // eslint-disable-next-line react-hooks/rules-of-hooks
+          useCreateMaster().createMasterData.data.master.subcategories) ||
+      [];
+
+    const {
+      galleryPhotos,
+      selectedSubcategory,
+      setSelectedSubcategory,
+      updateMainPhoto,
+      mainPhoto,
+      setMainPhoto,
+      isSelectPhoto,
+      setIsSelectPhoto,
+      deleteGalleryPhoto,
+      addGalleryPhoto,
+    } = useGalleryPhotos(
+      subcategoriesList[0],
+      typeof id === 'undefined' ? undefined : +id,
     );
-    const [activePhoto, setActivePhoto] = useState<GalleryPhoto | null>(null);
-    const [isSelectPhoto, setIsSelectPhoto] = useState(false);
-    const [modal, setModal] = useState<TypeModal | ''>('');
-    const [galleryPage, setGalleryPage] = useState(0);
-    const [totalGalleryPage, setTotalGalleryPage] = useState(1);
+    const [deleteModal, setDeleteModal] = useState<number | null>(null);
     const modalRef = useRef<HTMLDivElement>(null);
     const observerRef = useRef<HTMLDivElement>(null);
 
-    const subcategoriesList =
-      subcategories || createMaster.master.subcategories || [];
-
     useOnClickOutside<HTMLDivElement | HTMLButtonElement>(modalRef, () =>
-      setModal(''),
+      setDeleteModal(null),
     );
 
     const handleAddPhotos = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -78,94 +79,41 @@ export const MasterGallery = forwardRef<HTMLFormElement, Props>(
 
       if (files) {
         for (let i = 0; i < files.length; i += 1) {
-          const file = files[i];
-          const formData = new FormData();
-
-          formData.append('file', file);
-
-          addGalleryPhoto(activeButton.id, formData).then(res => {
-            downloadPhoto(modifyPhotoName(res.photoUrl, 'Gallery')).then(
-              photo => {
-                setPhotos(c => [
-                  ...c,
-                  {
-                    ...res,
-                    photoUrl: URL.createObjectURL(
-                      new Blob([photo], { type: 'image/jpeg' }),
-                    ),
-                  },
-                ]);
-              },
-            );
-          });
+          addGalleryPhoto.mutate(files[i]);
         }
       }
     };
 
-    const handleDeletePhoto = (picture: GalleryPhoto) => {
-      deleteGalleryPhoto(picture.id)
-        .then(() => {
-          setModal('');
-          setPhotos(prevPhotos =>
-            prevPhotos.filter(photo => photo.id !== picture.id),
-          );
-        })
-        .catch(() =>
-          dispatch(
-            notificationSlice.addNotification({
-              id: +new Date(),
-              type: 'error',
-            }),
-          ),
-        );
+    const handleDeletePhoto = (pictureId: GalleryPhoto['id']) => {
+      deleteGalleryPhoto
+        .mutateAsync(pictureId)
+        .then(() => setDeleteModal(null));
     };
 
     const handleSaveChanges = () => {
-      if (activePhoto) {
-        onClickSave(activePhoto);
+      if (mainPhoto) {
+        onClickSave(mainPhoto);
       }
     };
 
     const handleChoosePhoto = (photo: GalleryPhoto) => {
       if (isSelectPhoto && type === 'edit-profile') {
-        updateMainPhoto(photo.id)
-          .then(() => {
-            setActivePhoto(photo);
-            setIsSelectPhoto(false);
-          })
-          .catch(() =>
-            dispatch(
-              notificationSlice.addNotification({
-                id: +new Date(),
-                type: 'error',
-              }),
-            ),
-          );
+        updateMainPhoto.mutate(photo);
       }
 
       if (type === 'service') {
-        setActivePhoto(photo);
+        setMainPhoto(photo);
         setIsSelectPhoto(true);
       }
-    };
-
-    const handleChooseSubcategory = (value: SubCategory) => {
-      setActiveButton(value);
-      setPhotos([]);
-      setGalleryPage(0);
     };
 
     useEffect(() => {
       let observer: IntersectionObserver;
 
-      if (activeButton.id >= 0) {
+      if (selectedSubcategory) {
         observer = new IntersectionObserver(entries => {
           if (entries[0].isIntersecting) {
-            if (galleryPage < totalGalleryPage) {
-              setGalleryPage(prev => prev + 1);
-            } else {
-              observer.disconnect();
-            }
+            galleryPhotos.fetchNextPage();
           }
         });
 
@@ -174,37 +122,14 @@ export const MasterGallery = forwardRef<HTMLFormElement, Props>(
 
       return () => observer && observer.disconnect();
       // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [galleryPage]);
+    }, [selectedSubcategory]);
 
     useEffect(() => {
-      if (activeButton.id >= 0) {
-        getGalleryPhotos(galleryPage, 5, activeButton.id)
-          .then(res => {
-            setTotalGalleryPage(res.totalPages);
-            setPhotos(c => [...c, ...res.content]);
-            res.content.forEach(item => {
-              if (item.isMain) {
-                setActivePhoto(item);
-              }
-            });
-          })
-          .catch(() =>
-            dispatch(
-              notificationSlice.addNotification({
-                id: +new Date(),
-                type: 'error',
-              }),
-            ),
-          );
+      if (subcategoriesList.length) {
+        setSelectedSubcategory(subcategoriesList[0]);
       }
       // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [galleryPage, activeButton.id]);
-
-    useEffect(() => {
-      if (subcategories?.length) {
-        setActiveButton(subcategories[0]);
-      }
-    }, [subcategories]);
+    }, [subcategoriesList]);
 
     return (
       <form className={`master-gallery ${className}`} ref={ref}>
@@ -241,7 +166,7 @@ export const MasterGallery = forwardRef<HTMLFormElement, Props>(
               </small>
             </div>
 
-            {type === 'edit-profile' && (
+            {type === 'edit-profile' && selectedSubcategory && (
               <div className="master-gallery__gallery">
                 <DropDownButton
                   size="large"
@@ -263,15 +188,17 @@ export const MasterGallery = forwardRef<HTMLFormElement, Props>(
                   Add photos
                 </DropDownButton>
 
-                <DropDownButton
-                  size="large"
-                  className={classNames('master-gallery__gallery-button', {
-                    'master-gallery__gallery-button-active': isSelectPhoto,
-                  })}
-                  onClick={() => setIsSelectPhoto(c => !c)}
-                >
-                  Select the main photo
-                </DropDownButton>
+                {!!galleryPhotos.data?.pages[0].content.length && (
+                  <DropDownButton
+                    size="large"
+                    className={classNames('master-gallery__gallery-button', {
+                      'master-gallery__gallery-button-active': isSelectPhoto,
+                    })}
+                    onClick={() => setIsSelectPhoto(c => !c)}
+                  >
+                    Select the main photo
+                  </DropDownButton>
+                )}
               </div>
             )}
           </div>
@@ -283,54 +210,56 @@ export const MasterGallery = forwardRef<HTMLFormElement, Props>(
             className={classNames('master-gallery__switch-buttons', {
               'master-gallery__switch-buttons--disabled': type === 'service',
             })}
-            activeButton={activeButton}
-            onClickButton={(_, button) => handleChooseSubcategory(button)}
+            activeButton={selectedSubcategory}
+            onClickButton={(_, button) => setSelectedSubcategory(button)}
           />
           <div className="master-gallery__list">
-            {photos.map(photo => {
-              return (
-                <div className="master-gallery__list-item" key={photo.id}>
-                  <img
-                    src={photo.photoUrl}
-                    alt="Servises"
-                    className={classNames('master-gallery__list-photo', {
-                      'master-gallery__list-photo--active':
-                        photo.id === activePhoto?.id &&
-                        (isSelectPhoto || type === 'service'),
-                      'master-gallery__list-photo--hover':
-                        isSelectPhoto || type === 'service',
-                    })}
-                    onClick={() => handleChoosePhoto(photo)}
-                  />
+            {galleryPhotos.data?.pages.flatMap(page =>
+              page.content.map(photo => {
+                return (
+                  <div className="master-gallery__list-item" key={photo.id}>
+                    <img
+                      src={photo.photoUrl}
+                      alt="Servises"
+                      className={classNames('master-gallery__list-photo', {
+                        'master-gallery__list-photo--active':
+                          photo.id === mainPhoto?.id &&
+                          (isSelectPhoto || type === 'service'),
+                        'master-gallery__list-photo--hover':
+                          isSelectPhoto || type === 'service',
+                      })}
+                      onClick={() => handleChoosePhoto(photo)}
+                    />
 
-                  {modal === 'deletePhoto' && (
-                    <CreateModal>
-                      <ModalAlertMessage
-                        title="Do you want to delete this photo?"
-                        dangerPlaceholder="Delete photo"
-                        onClickDanger={() => handleDeletePhoto(photo)}
-                        onClose={() => setModal('')}
-                        ref={modalRef}
-                      />
-                    </CreateModal>
-                  )}
+                    {deleteModal === photo.id && (
+                      <CreateModal>
+                        <ModalAlertMessage
+                          title="Do you want to delete this photo?"
+                          dangerPlaceholder="Delete photo"
+                          onClickDanger={() => handleDeletePhoto(photo.id)}
+                          onClose={() => setDeleteModal(null)}
+                          ref={modalRef}
+                        />
+                      </CreateModal>
+                    )}
 
-                  {type === 'edit-profile' && (
-                    // eslint-disable-next-line jsx-a11y/no-static-element-interactions
-                    <span
-                      className="master-gallery__list-delete"
-                      onClick={() => setModal('deletePhoto')}
-                    >
-                      <img
-                        src={deleteBasket}
-                        alt="Delete Basket"
-                        className="master-gallery__icon-basket"
-                      />
-                    </span>
-                  )}
-                </div>
-              );
-            })}
+                    {type === 'edit-profile' && (
+                      // eslint-disable-next-line jsx-a11y/no-static-element-interactions
+                      <span
+                        className="master-gallery__list-delete"
+                        onClick={() => setDeleteModal(photo.id)}
+                      >
+                        <img
+                          src={deleteBasket}
+                          alt="Delete Basket"
+                          className="master-gallery__icon-basket"
+                        />
+                      </span>
+                    )}
+                  </div>
+                );
+              }),
+            )}
           </div>
 
           <div ref={observerRef} />
@@ -347,7 +276,7 @@ export const MasterGallery = forwardRef<HTMLFormElement, Props>(
             <Button
               size="large"
               className="master-gallery__footer-button"
-              disabled={!activePhoto}
+              disabled={!mainPhoto}
               onClick={handleSaveChanges}
             >
               Save changes

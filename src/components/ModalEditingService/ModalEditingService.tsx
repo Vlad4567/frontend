@@ -1,7 +1,6 @@
 /* eslint-disable jsx-a11y/no-noninteractive-element-interactions */
 /* eslint-disable jsx-a11y/click-events-have-key-events */
 import { forwardRef, useState } from 'react';
-
 import { LoginInput } from '../LoginInput/LoginInput';
 import { Button } from '../Button/Button';
 import { DropDownButton } from '../DropDownButton/DropDownButton';
@@ -12,10 +11,9 @@ import deleteBasket from '../../img/icons/delete-basket.svg';
 import closeIcon from '../../img/icons/icon-dropdown-close.svg';
 import photoPlus from '../../img/icons/tabler-photo-plus.svg';
 import { Service } from '../../types/services';
-import './ModalEditingService.scss';
 import { GalleryPhoto } from '../../types/gallery';
-import * as notificationSlice from '../../features/notificationSlice';
-import { useAppDispatch } from '../../app/hooks';
+import { useNotification } from '../../hooks/useNotification';
+import './ModalEditingService.scss';
 
 type Modal = 'Gallery';
 
@@ -51,7 +49,7 @@ export const ModalEditingService = forwardRef<HTMLFormElement, Props>(
     },
     ref,
   ) => {
-    const dispatch = useAppDispatch();
+    const { addNotification } = useNotification();
     const [modal, setModal] = useState<Modal | ''>('');
     const [form, setForm] = useState<Service>(value || newService);
 
@@ -67,14 +65,7 @@ export const ModalEditingService = forwardRef<HTMLFormElement, Props>(
       } else {
         onAddService(form)
           .then(() => setForm(newService))
-          .catch(() =>
-            dispatch(
-              notificationSlice.addNotification({
-                id: +new Date(),
-                type: 'error',
-              }),
-            ),
-          );
+          .catch(() => addNotification('error'));
       }
     };
 

@@ -1,7 +1,7 @@
 import React from 'react';
-import './ArrowButton.scss';
 import leftArrow from '../../img/icons/left-arrow-button.svg';
 import rightArrow from '../../img/icons/right-arrow-button.svg';
+import './ArrowButton.scss';
 
 /* eslint-disable react/button-has-type */
 interface Props extends React.ButtonHTMLAttributes<HTMLButtonElement> {

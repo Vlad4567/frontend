@@ -29,8 +29,8 @@ export const getServicesBySubcategory = async (
   return servicesWithPhotos;
 };
 
-interface AddNewService extends Required<Omit<Service, 'id' | 'photo'>> {
-  photoId: number;
+export interface AddNewService extends Required<Omit<Service, 'id' | 'photo'>> {
+  photoId: number | null;
 }
 
 export const addNewService = (service: AddNewService) => {
@@ -41,7 +41,7 @@ export const deleteService = (serviceId: number) => {
   return client.delete(`/serviceCard/${serviceId}`);
 };
 
-interface PutService extends Omit<Service, 'photo'> {
+export interface PutService extends Omit<Service, 'photo'> {
   photoId: number | null;
 }
 

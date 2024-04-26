@@ -1,9 +1,7 @@
 import { Navigate, Route, Routes } from 'react-router-dom';
-import { Provider } from 'react-redux';
 import { NotFoundPage } from './pages/NotFoundPage/NotFoundPage';
 import { App } from './App';
 import { HomePage } from './pages/HomePage/HomePage';
-import { store } from './app/store';
 import { LoginPage } from './pages/LoginPage/LoginPage';
 import { AccountPage } from './pages/AccountPage/AccountPage';
 import { PersonalDetailsPage } from './pages/PersonalDetailsPage/PersonalDetailsPage';
@@ -22,10 +20,13 @@ import { AppRouter } from './AppRouter';
 import { MasterPage } from './pages/MasterPage/MasterPage';
 import { MasterGalleryPage } from './pages/MasterGalleryPage/MasterGalleryPage';
 import { LoginFormTelegram } from './components/LoginFormTelegram/LoginFormTelegram';
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+
+const queryClient = new QueryClient();
 
 export const Router = () => {
   return (
-    <Provider store={store}>
+    <QueryClientProvider client={queryClient}>
       <AppRouter history={browserHistory}>
         <Routes>
           <Route path="/" element={<App />}>
@@ -40,7 +41,11 @@ export const Router = () => {
               <Route
                 path="telegram"
                 element={
-                  <LoginFormTelegram className="login-form-telegram--center" />
+                  <LoginFormTelegram
+                    className="
+                    login-form-telegram--center
+                    "
+                  />
                 }
               />
             </Route>
@@ -66,6 +71,6 @@ export const Router = () => {
           </Route>
         </Routes>
       </AppRouter>
-    </Provider>
+    </QueryClientProvider>
   );
 };

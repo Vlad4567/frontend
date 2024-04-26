@@ -5,25 +5,25 @@ import { Textarea } from '../Textarea/Textarea';
 import { DropDownButton } from '../DropDownButton/DropDownButton';
 import { LoginInput } from '../LoginInput/LoginInput';
 import { Button } from '../Button/Button';
-import { useAppDispatch, useAppSelector } from '../../app/hooks';
-import * as createMasterSlice from '../../features/createMasterSlice';
 import { ModalCategories } from '../ModalCategories/ModalCategories';
 import { CreateModal } from '../CreateModal/CreateModal';
-import './EditAreaOfWork.scss';
-import {
-  addMasterSubcategory,
-  deleteMasterSubcategory,
-  putEditMaster,
-} from '../../api/master';
-import * as notificationSlice from '../../features/notificationSlice';
 import { SubCategory } from '../../types/category';
+import { useUser } from '../../hooks/useUser';
+import { useCreateMaster } from '../../hooks/useCreateMaster';
+import './EditAreaOfWork.scss';
 
 type ActiveModal = '' | 'subcategories' | 'cleanMaster';
 
 export const EditAreaOfWork: React.FC = () => {
-  const { user } = useAppSelector(state => state.userSlice);
-  const createMaster = useAppSelector(state => state.createMasterSlice);
-  const dispatch = useAppDispatch();
+  const {
+    queryUser: { data: user },
+  } = useUser();
+  const {
+    createMasterData: { data: createMaster, refetch: createMasterRefetch },
+    editMaster,
+    saveChanges,
+    toggleSubcategory,
+  } = useCreateMaster();
   const navigate = useNavigate();
   const [activeModal, setActiveModal] = useState<ActiveModal>('');
   const modalCategoriesRef = useRef<HTMLDivElement>(null);
@@ -34,10 +34,9 @@ export const EditAreaOfWork: React.FC = () => {
 
   const handleCancel = () => {
     if (createMaster.editMode) {
-      dispatch(createMasterSlice.deleteMaster());
-      dispatch(createMasterSlice.updateEditMaster());
+      createMasterRefetch();
     } else {
-      navigate('..');
+      navigate('/account');
     }
   };
 
@@ -46,73 +45,18 @@ export const EditAreaOfWork: React.FC = () => {
       | React.ChangeEvent<HTMLInputElement>
       | React.ChangeEvent<HTMLTextAreaElement>,
   ) => {
-    dispatch(
-      createMasterSlice.editMaster({
-        [e.target.name]: e.target.value || null,
-      }),
-    );
+    editMaster({
+      [e.target.name]: e.target.value || null,
+    });
   };
 
   const handleClickSubcategory = (item: SubCategory) => {
-    if (user.master) {
-      if (createMaster.master.subcategories?.find(sub => sub.id === item.id)) {
-        deleteMasterSubcategory(item.id)
-          .then(() => {
-            dispatch(createMasterSlice.toggleSubcategory(item));
-          })
-          .catch(() =>
-            dispatch(
-              notificationSlice.addNotification({
-                id: +new Date(),
-                type: 'error',
-              }),
-            ),
-          );
-      } else {
-        addMasterSubcategory(item.id)
-          .then(() => {
-            dispatch(createMasterSlice.toggleSubcategory(item));
-          })
-          .catch(() =>
-            dispatch(
-              notificationSlice.addNotification({
-                id: +new Date(),
-                type: 'error',
-              }),
-            ),
-          );
-      }
-    } else {
-      dispatch(createMasterSlice.toggleSubcategory(item));
-    }
+    toggleSubcategory.mutate(item);
   };
 
   const handleSubmit = () => {
     if (createMaster.editMode) {
-      putEditMaster({
-        ...createMaster.master,
-        address: {
-          ...createMaster.master.address,
-          cityId: createMaster.master.address.city?.id || null,
-        },
-        subcategories:
-          createMaster.master.subcategories?.map(item => item.id) || null,
-      })
-        .then(() => {
-          dispatch(
-            createMasterSlice.editOptions({
-              editMode: false,
-            }),
-          );
-        })
-        .catch(() =>
-          dispatch(
-            notificationSlice.addNotification({
-              id: +new Date(),
-              type: 'error',
-            }),
-          ),
-        );
+      saveChanges.mutate();
     } else {
       navigate('../contacts');
     }
@@ -203,11 +147,7 @@ export const EditAreaOfWork: React.FC = () => {
                 <CreateModal>
                   <ModalCategories
                     subCategoriesStyle="row"
-                    onClean={() =>
-                      dispatch(
-                        createMasterSlice.editMaster({ subcategories: null }),
-                      )
-                    }
+                    onClean={() => editMaster({ subcategories: null })}
                     onApply={handleOnClickOutside}
                     onClickSubcategory={handleClickSubcategory}
                     activeSubcategories={

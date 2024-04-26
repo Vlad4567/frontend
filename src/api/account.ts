@@ -41,8 +41,12 @@ export const deleteRefreshToken = () => {
   return client.delete('/auth/refreshToken');
 };
 
-export const sendProfilePhoto = (file: FormData) => {
-  return client.post<string>('/profilePhoto', file, {
+export const updateProfilePhoto = (file: File) => {
+  const formData = new FormData();
+
+  formData.append('file', file);
+
+  return client.post<string>('/profilePhoto', formData, {
     headers: {
       'Content-Type': 'multipart/form-data',
     },
@@ -59,4 +63,8 @@ export const disconnectTelegram = () => {
 
 export const changeEmail = (data: ChangeEmail) => {
   return client.put('/user/verificationNewMail', data);
+};
+
+export const deleteMaster = () => {
+  return client.delete('/master');
 };

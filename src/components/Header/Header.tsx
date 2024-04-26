@@ -3,8 +3,9 @@ import { Link } from 'react-router-dom';
 import { websiteName } from '../../helpers/variables';
 import { Stars } from '../Stars/Stars';
 import { RectangleButton } from '../RectangleButton/RectangleButton';
-import { AccountIcon } from '../AccountIcon/AccountIcon';
 import { DropDownButton } from '../DropDownButton/DropDownButton';
+import lightAccountIcon from '../../img/icons/account-icon-light.svg';
+import darkAccountIcon from '../../img/icons/account-icon-dark.svg';
 import './Header.scss';
 
 interface Props {
@@ -49,7 +50,10 @@ export const Header: React.FC<Props> = ({ type, className = '' }) => {
                   </RectangleButton>
                 )}
                 <button type="button" className="header__account-icon">
-                  <AccountIcon type={type} />
+                  <img
+                    src={type === 'light' ? lightAccountIcon : darkAccountIcon}
+                    alt="Account icon"
+                  />
                 </button>
               </Link>
             </li>

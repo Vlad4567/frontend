@@ -1,10 +1,10 @@
 /* eslint-disable jsx-a11y/no-noninteractive-element-interactions */
 /* eslint-disable jsx-a11y/click-events-have-key-events */
 import React, { forwardRef } from 'react';
-import './ModalAlertMessage.scss';
 import closeIcon from '../../img/icons/icon-dropdown-close.svg';
 import { DropDownButton } from '../DropDownButton/DropDownButton';
 import { Button } from '../Button/Button';
+import './ModalAlertMessage.scss';
 
 interface Props extends React.HTMLAttributes<HTMLDivElement> {
   className?: string;

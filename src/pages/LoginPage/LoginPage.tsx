@@ -4,10 +4,9 @@
 import React from 'react';
 import { useIsomorphicLayoutEffect } from 'usehooks-ts';
 import { Outlet, useLocation, useNavigate } from 'react-router-dom';
-import * as appSlice from '../../features/appSlice';
-import { useAppDispatch } from '../../app/hooks';
 import { ArrowButton } from '../../components/ArrowButton/ArrowButton';
 import { LoginHeaderForm } from '../../components/LoginHeaderForm/LoginHeaderForm';
+import { useApp } from '../../hooks/useApp';
 import './LoginPage.scss';
 
 const renderLoginHeaderForm = (
@@ -52,7 +51,7 @@ const renderLoginHeaderForm = (
 };
 
 export const LoginPage: React.FC = () => {
-  const dispatch = useAppDispatch();
+  const { updateApp } = useApp();
   const navigate = useNavigate();
   const pathArray = useLocation().pathname.split('/');
   const currentPathName = pathArray[pathArray.length - 1];
@@ -60,12 +59,12 @@ export const LoginPage: React.FC = () => {
   const refreshToken = localStorage.getItem('refreshToken');
 
   useIsomorphicLayoutEffect(() => {
-    dispatch(appSlice.setShownFooter(false));
+    updateApp({ footerShown: false });
 
     return () => {
-      dispatch(appSlice.setShownFooter(true));
+      updateApp({ footerShown: true });
     };
-  }, [dispatch]);
+  }, []);
 
   useIsomorphicLayoutEffect(() => {
     if (token || refreshToken) {

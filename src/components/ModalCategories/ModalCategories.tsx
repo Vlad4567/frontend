@@ -1,13 +1,12 @@
 /* eslint-disable jsx-a11y/no-noninteractive-element-interactions */
 /* eslint-disable jsx-a11y/click-events-have-key-events */
-import React, { forwardRef, useEffect, useState } from 'react';
+import React, { forwardRef, useEffect } from 'react';
 import classNames from 'classnames';
-import { useIsomorphicLayoutEffect } from 'usehooks-ts';
-import { getCategories } from '../../api/categories';
 import { DropDownButton } from '../DropDownButton/DropDownButton';
 import { Checkbox } from '../Checkbox/Checkbox';
 import { Button } from '../Button/Button';
 import { Category, SubCategory } from '../../types/category';
+import { useCategories } from '../../hooks/useCategories';
 import './ModalCategories.scss';
 
 interface Props extends React.HTMLAttributes<HTMLDivElement> {
@@ -38,26 +37,16 @@ export const ModalCategories = forwardRef<HTMLDivElement, Props>(
     },
     ref,
   ) => {
-    const [categories, setCategories] = useState<Category[]>([]);
-    const [activeCategoryDefault, setActiveCategoryDefault] =
-      useState<Category | null>(activeCategory);
-
-    useIsomorphicLayoutEffect(() => {
-      getCategories().then(res => {
-        setCategories(res);
-      });
-    }, []);
+    const { categories, selectedCategory, setSelectedCategory } = useCategories(
+      activeCategory || undefined,
+    );
 
     useEffect(() => {
-      setActiveCategoryDefault(activeCategory);
-    }, [activeCategory]);
-
-    useEffect(() => {
-      onClickCategory(activeCategoryDefault);
-    }, [activeCategoryDefault, onClickCategory]);
+      onClickCategory(selectedCategory);
+    }, [selectedCategory, onClickCategory]);
 
     const handleClickCategory = (category: Category | null) => {
-      setActiveCategoryDefault(c => (c?.id === category?.id ? null : category));
+      setSelectedCategory(c => (c?.id === category?.id ? null : category));
     };
 
     return (
@@ -66,7 +55,7 @@ export const ModalCategories = forwardRef<HTMLDivElement, Props>(
 
         <div className="modal-categories__dropdown-categories-main">
           <div className="modal-categories__dropdown-categories-buttons">
-            {categories.map(category => {
+            {categories.data.map(category => {
               const { id, name } = category;
 
               return (
@@ -76,14 +65,14 @@ export const ModalCategories = forwardRef<HTMLDivElement, Props>(
                   icon
                   key={id}
                   placeholder={name}
-                  active={activeCategoryDefault?.id === category.id}
+                  active={selectedCategory?.id === category.id}
                   onClick={() => handleClickCategory(category)}
                 />
               );
             })}
           </div>
 
-          {activeCategoryDefault && !!activeCategoryDefault.subcategories && (
+          {selectedCategory && !!selectedCategory.subcategories && (
             <ul
               className={classNames(
                 'modal-categories__dropdown-subcategories',
@@ -93,7 +82,7 @@ export const ModalCategories = forwardRef<HTMLDivElement, Props>(
                 },
               )}
             >
-              {activeCategoryDefault.subcategories.map(subcategory => {
+              {selectedCategory.subcategories.map(subcategory => {
                 const isSubcategoryChecked = activeSubcategories.some(
                   id => +id === subcategory.id,
                 );

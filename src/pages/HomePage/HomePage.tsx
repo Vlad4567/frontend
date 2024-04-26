@@ -1,21 +1,21 @@
-import { useIsomorphicLayoutEffect } from 'usehooks-ts';
-import { useAppDispatch } from '../../app/hooks';
-import * as appSlice from '../../features/appSlice';
 import { SpaceToEnjoySection } from '../../components/SpaceToEnjoySection/SpaceToEnjoySection';
 import { WhatIsSection } from '../../components/WhatIsSection/WhatIsSection';
-import './HomePage.scss';
 import { FeelBeautySection } from '../../components/FeelBeautySection/FeelBeautySection';
 import { HomeHeaderSection } from '../../components/HomeHeaderSection/HomeHeaderSection';
+import { useApp } from '../../hooks/useApp';
+import { useEffect } from 'react';
+import './HomePage.scss';
 
 export const HomePage = () => {
-  const dispatch = useAppDispatch();
+  const { updateApp } = useApp();
 
-  useIsomorphicLayoutEffect(() => {
-    dispatch(appSlice.setHeaderType('light'));
+  useEffect(() => {
+    updateApp({ headerType: 'light' });
 
     return () => {
-      dispatch(appSlice.setHeaderType('dark'));
+      updateApp({ headerType: 'dark' });
     };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   return (

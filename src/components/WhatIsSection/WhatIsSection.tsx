@@ -1,9 +1,9 @@
 import { websiteName } from '../../helpers/variables';
 import { Stars } from '../Stars/Stars';
-import './WhatIsSection.scss';
 import starFigure from '../../img/figures/star.svg';
 import doubleSubtract from '../../img/figures/double-subtract.svg';
 import subtract from '../../img/figures/subtract.svg';
+import './WhatIsSection.scss';
 
 export const WhatIsSection: React.FC = () => {
   return (

@@ -7,22 +7,14 @@ import { Transition } from 'history';
 import { convertSpaceToHyphen } from '../../helpers/functions';
 import { DropDownButton } from '../../components/DropDownButton/DropDownButton';
 import styleVariables from '../../styles/variables.module.scss';
-import { useAppDispatch, useAppSelector } from '../../app/hooks';
-import {
-  deleteMaster,
-  hideMaster,
-  putEditMaster,
-  unhideMaster,
-} from '../../api/master';
-import * as notificationSlice from '../../features/notificationSlice';
-import * as createMasterSlice from '../../features/createMasterSlice';
 import iconBasket from '../../img/icons/icon-basket.svg';
 import { Button } from '../../components/Button/Button';
 import { CreateModal } from '../../components/CreateModal/CreateModal';
 import { ModalAlertMessage } from '../../components/ModalAlertMessage/ModalAlertMessage';
-import * as userSlice from '../../features/userSlice';
-import './EditPublicProfilePage.scss';
 import { browserHistory } from '../../utils/history';
+import { useUser } from '../../hooks/useUser';
+import { useCreateMaster } from '../../hooks/useCreateMaster';
+import './EditPublicProfilePage.scss';
 
 const navButtons = [
   'Area of work',
@@ -35,9 +27,16 @@ const navButtons = [
 type ActiveModal = '' | 'deleteMaster' | 'hideMaster' | 'blockedURL';
 
 export const EditPublicProfilePage: React.FC = () => {
-  const { user } = useAppSelector(state => state.userSlice);
-  const createMaster = useAppSelector(state => state.createMasterSlice);
-  const dispatch = useAppDispatch();
+  const {
+    queryUser: { data: user },
+  } = useUser();
+  const {
+    createMasterData: { data: createMaster },
+    deleteMaster,
+    editOptions,
+    toggleHideProfileMutate,
+    saveChanges,
+  } = useCreateMaster();
   const navigate = useNavigate();
   const isDesktop = useMediaQuery(
     `(min-width: ${styleVariables['desktop-min-width']})`,
@@ -73,6 +72,7 @@ export const EditPublicProfilePage: React.FC = () => {
       setActiveModal('blockedURL');
       yield;
       saveUnBlock();
+      window.onbeforeunload = null;
       saveTx.retry();
     };
   };
@@ -94,6 +94,15 @@ export const EditPublicProfilePage: React.FC = () => {
     let unblock: () => void | undefined;
 
     if (createMaster.editMode) {
+      window.onbeforeunload = e => {
+        if (e) {
+          // eslint-disable-next-line no-param-reassign
+          e.returnValue = 'Sure?';
+        }
+
+        return 'Sure?';
+      };
+
       unblock = browserHistory.block(tx => {
         setBrowserBlock(createBrowserBlock(tx, unblock));
       });
@@ -103,31 +112,29 @@ export const EditPublicProfilePage: React.FC = () => {
       if (unblock) {
         unblock();
       }
+
+      window.onbeforeunload = null;
     };
   }, [createMaster.editMode]);
 
   useEffect(() => {
-    if (user.master) {
-      dispatch(createMasterSlice.updateEditMaster());
-    }
-
     if (pathAfterEditPublicProfile === '') {
       navigate('./area-of-work');
     }
 
-    window.onbeforeunload = e => {
-      if (e) {
-        // eslint-disable-next-line no-param-reassign
-        e.returnValue = 'Sure?';
-      }
+    if (!createMaster.editMode) {
+      window.onbeforeunload = e => {
+        if (e) {
+          // eslint-disable-next-line no-param-reassign
+          e.returnValue = 'Sure?';
+        }
 
-      return 'Sure?';
-    };
+        return 'Sure?';
+      };
+    }
 
     return () => {
       window.onbeforeunload = null;
-
-      dispatch(createMasterSlice.deleteMaster());
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
@@ -143,104 +150,32 @@ export const EditPublicProfilePage: React.FC = () => {
   };
 
   const handleHideProfile = () => {
-    setActiveModal('');
-    if (createMaster.hidden) {
-      unhideMaster()
-        .then(() =>
-          dispatch(
-            createMasterSlice.editOptions({
-              hidden: !createMaster.hidden,
-            }),
-          ),
-        )
-        .catch(() =>
-          dispatch(
-            notificationSlice.addNotification({
-              id: +new Date(),
-              type: 'error',
-            }),
-          ),
-        );
-    } else {
-      hideMaster()
-        .then(() =>
-          dispatch(
-            createMasterSlice.editOptions({
-              hidden: !createMaster.hidden,
-            }),
-          ),
-        )
-        .catch(() =>
-          dispatch(
-            notificationSlice.addNotification({
-              id: +new Date(),
-              type: 'error',
-            }),
-          ),
-        );
-    }
+    toggleHideProfileMutate.mutateAsync().then(() => setActiveModal(''));
   };
 
   const handleDeleteMaster = () => {
-    deleteMaster()
-      .then(() => {
-        dispatch(createMasterSlice.deleteMaster());
-        dispatch(userSlice.deleteMaster());
-        navigate('..');
-      })
-      .catch(() =>
-        dispatch(
-          notificationSlice.addNotification({
-            id: +new Date(),
-            type: 'error',
-          }),
-        ),
-      );
+    deleteMaster().then(() => {
+      navigate('..');
+    });
   };
 
   const toggleEdit = () => {
-    dispatch(
-      createMasterSlice.editOptions({
-        editMode: !createMaster.editMode,
-      }),
-    );
+    editOptions({
+      editMode: !createMaster.editMode,
+    });
   };
 
   const handleSaveChanges = () => {
-    putEditMaster({
-      ...createMaster.master,
-      address: {
-        ...createMaster.master.address,
-        cityId: createMaster.master.address.city?.id || null,
-      },
-      subcategories:
-        createMaster.master.subcategories?.map(item => item.id) || null,
-    })
-      .then(() => {
-        dispatch(
-          createMasterSlice.editOptions({
-            editMode: false,
-          }),
-        );
-        setIsBlockedURL(false);
-        setActiveModal('');
-      })
-      .catch(() => {
-        dispatch(
-          notificationSlice.addNotification({
-            id: +new Date(),
-            type: 'error',
-          }),
-        );
-      });
+    saveChanges.mutateAsync().then(() => {
+      setIsBlockedURL(false);
+      setActiveModal('');
+    });
   };
 
   const handleDeleteChanges = () => {
-    dispatch(
-      createMasterSlice.editOptions({
-        editMode: false,
-      }),
-    );
+    editOptions({
+      editMode: false,
+    });
     setIsBlockedURL(false);
     setActiveModal('');
   };

@@ -14,11 +14,10 @@ import { Service } from '../../types/services';
 import { SubCategory } from '../../types/category';
 import { debounceDelay } from '../../helpers/variables';
 import { GalleryPhoto } from '../../types/gallery';
-import * as notificationSlice from '../../features/notificationSlice';
 import { DropDownButton } from '../DropDownButton/DropDownButton';
 import { ModalEditingService } from '../ModalEditingService/ModalEditingService';
+import { useNotification } from '../../hooks/useNotification';
 import './NewServiceForm.scss';
-import { useAppDispatch } from '../../app/hooks';
 
 interface Props {
   className?: string;
@@ -48,7 +47,7 @@ export const NewServiceForm: React.FC<Props> = ({
   onAddService = () => Promise.reject(),
   onChange = () => {},
 }) => {
-  const dispatch = useAppDispatch();
+  const { addNotification } = useNotification();
   const [modal, setModal] = useState<Modal | ''>('');
   const modalRef = useRef<HTMLFormElement>(null);
   const [form, setForm] = useState<Service>(value || newService);
@@ -85,14 +84,7 @@ export const NewServiceForm: React.FC<Props> = ({
   const handleAddService = () => {
     onAddService(form)
       .then(() => setForm(newService))
-      .catch(() =>
-        dispatch(
-          notificationSlice.addNotification({
-            id: +new Date(),
-            type: 'error',
-          }),
-        ),
-      );
+      .catch(() => addNotification('error'));
   };
 
   return (
@@ -202,10 +194,10 @@ export const NewServiceForm: React.FC<Props> = ({
               className="new-service-form__add"
               size="small"
               disabled={
+                form.name === null ||
                 form.name === '' ||
-                form.price === null ||
-                form.duration === null ||
-                form.photo === null
+                !((form.price || -1) > 0) ||
+                !((form.duration || -1) > 0)
               }
               onClick={handleAddService}
             >

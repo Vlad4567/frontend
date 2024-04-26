@@ -1,17 +1,14 @@
 /* eslint-disable jsx-a11y/label-has-associated-control */
 import React, { useEffect, useState } from 'react';
-import { useDebounce } from 'usehooks-ts';
 import { AxiosError } from 'axios';
 import { useNavigate } from 'react-router-dom';
 import { Button } from '../Button/Button';
 import { LoginInput } from '../LoginInput/LoginInput';
 import { LoginHeaderForm } from '../LoginHeaderForm/LoginHeaderForm';
 import { changeObjectStateKey, objectKeys } from '../../helpers/functions';
-import { checkUserEmail, checkUsername, registrateUser } from '../../api/login';
 import { ErrorData } from '../../types/main';
+import { useAuth } from '../../hooks/useAuth';
 import './SignUpForm.scss';
-import * as notificationSlice from '../../features/notificationSlice';
-import { useAppDispatch } from '../../app/hooks';
 
 export interface InitialData {
   username: string;
@@ -41,26 +38,21 @@ export const initialErrors: InitialErrors = {
 
 export const SignUpForm: React.FC = () => {
   const navigate = useNavigate();
-  const dispatch = useAppDispatch();
+  const { registrateUser, checkUsername, checkUserEmail } = useAuth();
   const [showPassword, setShowPassword] = useState(false);
   const [formErrors, setFormErrors] = useState<InitialErrors>(initialErrors);
   const [formData, setFormData] = useState<InitialData>(initialData);
-  const debouncedUsername = useDebounce(formData.username, 500);
-  const debouncedEmail = useDebounce(formData.email, 500);
 
   useEffect(() => {
-    if (debouncedUsername) {
-      checkUsername(debouncedUsername)
-        .then(
-          res =>
-            typeof res === 'boolean' &&
-            (res
-              ? changeObjectStateKey(
-                  'This username already exists',
-                  'username',
-                  setFormErrors,
-                )
-              : changeObjectStateKey('', 'username', setFormErrors)),
+    if (formData.username) {
+      checkUsername
+        .mutateAsync(formData.username)
+        .then(res =>
+          changeObjectStateKey(
+            res ? 'This username already exists' : '',
+            'username',
+            setFormErrors,
+          ),
         )
         .catch(
           (err: AxiosError<ErrorData<string>>) =>
@@ -74,21 +66,19 @@ export const SignUpForm: React.FC = () => {
     } else {
       changeObjectStateKey('', 'username', setFormErrors);
     }
-  }, [debouncedUsername]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [formData.username]);
 
   useEffect(() => {
-    if (debouncedEmail) {
-      checkUserEmail(debouncedEmail)
-        .then(
-          res =>
-            typeof res === 'boolean' &&
-            (res
-              ? changeObjectStateKey(
-                  'This email already exists',
-                  'email',
-                  setFormErrors,
-                )
-              : changeObjectStateKey('', 'email', setFormErrors)),
+    if (formData.email) {
+      checkUserEmail
+        .mutateAsync(formData.email)
+        .then(res =>
+          changeObjectStateKey(
+            res ? 'This email already exists' : '',
+            'email',
+            setFormErrors,
+          ),
         )
         .catch(
           (err: AxiosError<ErrorData<string>>) =>
@@ -102,17 +92,13 @@ export const SignUpForm: React.FC = () => {
     } else {
       changeObjectStateKey('', 'email', setFormErrors);
     }
-  }, [debouncedEmail]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [formData.email]);
 
   const handleButtonRegistration = () => {
-    registrateUser(formData)
+    registrateUser
+      .mutateAsync(formData)
       .then(() => {
-        dispatch(
-          notificationSlice.addNotification({
-            id: +new Date(),
-            type: 'confirmationEmail',
-          }),
-        );
         navigate('/login');
       })
       .catch((err: AxiosError<ErrorData<string>>) =>

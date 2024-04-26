@@ -13,7 +13,7 @@ import { City } from '../types/searchPage';
 import { client } from '../utils/axiosClient';
 import { downloadPhoto } from './account';
 
-export const getRatingMasterCard = async (
+export const getRatingMasterCards = async (
   pageNumber: number,
   pageSize: number,
 ) => {
@@ -56,6 +56,15 @@ export const createMaster = (master: CreateMaster) => {
   return client.post('/new-master', master);
 };
 
+interface UpdateEditMaster extends EditMaster {
+  hidden: boolean;
+  id: number;
+}
+
+export const getCreateMaster = () => {
+  return client.get<UpdateEditMaster>('/master');
+};
+
 export const getMaster = (id: number) => {
   return client.get<PublicMaster>(`/master/${id}`);
 };
@@ -81,10 +90,6 @@ export const getRandomMasterPhotos = async (id: number) => {
 
 export const putEditMaster = (master: CreateMaster) => {
   return client.put('/master', master);
-};
-
-export const deleteMaster = () => {
-  return client.delete('/master');
 };
 
 export const hideMaster = () => {

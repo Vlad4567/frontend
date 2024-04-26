@@ -4,7 +4,6 @@
   "version": "0.1.0",
   "private": false,
   "dependencies": {
-    "@reduxjs/toolkit": "^2.0.1",
     "@tanstack/react-query": "^5.29.0",
     "axios": "^1.6.7",
     "classnames": "^2.5.1",

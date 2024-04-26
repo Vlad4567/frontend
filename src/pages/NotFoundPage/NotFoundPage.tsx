@@ -1,22 +1,22 @@
-import './NotFoundPage.scss';
 import { useNavigate } from 'react-router-dom';
 import { useLayoutEffect } from 'react';
 import errorImg from '../../img/error.svg';
 import { RoundButton } from '../../components/RoundButton/RoundButton';
-import { useAppDispatch } from '../../app/hooks';
-import * as appSlice from '../../features/appSlice';
+import { useApp } from '../../hooks/useApp';
+import './NotFoundPage.scss';
 
 export const NotFoundPage: React.FC = () => {
-  const dispatch = useAppDispatch();
+  const { updateApp } = useApp();
   const navigate = useNavigate();
 
   useLayoutEffect(() => {
-    dispatch(appSlice.setShownFooter(false));
+    updateApp({ footerShown: false });
 
     return () => {
-      dispatch(appSlice.setShownFooter(true));
+      updateApp({ footerShown: true });
     };
-  }, [dispatch]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   const goBack = () => {
     navigate(-1);

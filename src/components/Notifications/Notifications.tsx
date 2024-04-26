@@ -2,13 +2,11 @@ import { CSSTransition, TransitionGroup } from 'react-transition-group';
 import { NotificationMessage } from '../NotificationMessage/NotificationMessage';
 import styleVariables from '../../styles/variables.module.scss';
 import { extractFirstNumber } from '../../helpers/functions';
-import { useAppDispatch, useAppSelector } from '../../app/hooks';
-import * as notificationSlice from '../../features/notificationSlice';
+import { useNotification } from '../../hooks/useNotification';
 import './Notifications.scss';
 
 export const Notifications: React.FC = () => {
-  const { notifications } = useAppSelector(state => state.notificationSlice);
-  const dispatch = useAppDispatch();
+  const { notifications, removeNotification } = useNotification();
 
   return (
     <TransitionGroup className="notifications">
@@ -23,9 +21,7 @@ export const Notifications: React.FC = () => {
             title={notification.title}
             description={notification.description}
             icon={notification.icon}
-            onClose={() =>
-              dispatch(notificationSlice.removeNotification(notification.id))
-            }
+            onClose={() => removeNotification(notification.id)}
           />
         </CSSTransition>
       ))}

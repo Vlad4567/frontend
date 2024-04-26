@@ -2,10 +2,10 @@ import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import * as types from '../../types/master';
 import starRate from '../../img/icons/icon-star-rate.svg';
-import './MasterCard.scss';
 import { Button } from '../Button/Button';
 import { DropDownButton } from '../DropDownButton/DropDownButton';
 import defaultAvatar from '../../img/default-avatar.svg';
+import './MasterCard.scss';
 
 interface Props {
   className?: string;

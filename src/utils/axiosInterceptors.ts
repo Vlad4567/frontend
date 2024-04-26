@@ -3,7 +3,6 @@ import globalRouter from '../globalRouter';
 /* eslint-disable no-param-reassign */
 const instance = axios.create({
   baseURL: '/api',
-  timeout: 5000,
 });
 
 const redirectToLogin = () => {

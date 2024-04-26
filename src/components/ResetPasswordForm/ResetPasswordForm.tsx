@@ -4,12 +4,10 @@ import { AxiosError } from 'axios';
 import { Button } from '../Button/Button';
 import { LoginInput } from '../LoginInput/LoginInput';
 import { LoginHeaderForm } from '../LoginHeaderForm/LoginHeaderForm';
-import { forgotPassword } from '../../api/login';
 import { ErrorData } from '../../types/main';
 import { objectKeys } from '../../helpers/functions';
+import { useAuth } from '../../hooks/useAuth';
 import './ResetPasswordForm.scss';
-import * as notificationSlice from '../../features/notificationSlice';
-import { useAppDispatch } from '../../app/hooks';
 
 interface InitialErrors {
   email: string;
@@ -29,7 +27,7 @@ const initialData: InitialData = {
 
 export const ResetPasswordForm: React.FC = () => {
   const navigate = useNavigate();
-  const dispatch = useAppDispatch();
+  const { forgotPassword } = useAuth();
   const [formData, setFormData] = useState<InitialData>(initialData);
   const [formErrors, setFormErrors] = useState<InitialErrors>(initialErrors);
 
@@ -39,15 +37,8 @@ export const ResetPasswordForm: React.FC = () => {
     e.preventDefault();
 
     if (email) {
-      forgotPassword(email)
-        .then(() =>
-          dispatch(
-            notificationSlice.addNotification({
-              id: +new Date(),
-              type: 'resetPassword',
-            }),
-          ),
-        )
+      forgotPassword
+        .mutateAsync(email)
         .catch((err: AxiosError<ErrorData<string>>) =>
           setFormErrors(c => {
             if (err.response?.data.error) {

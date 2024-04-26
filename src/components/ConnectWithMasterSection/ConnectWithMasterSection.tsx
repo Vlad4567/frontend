@@ -5,8 +5,8 @@ import instagramIcon from '../../img/icons/icon-instagram.svg';
 import facebookIcon from '../../img/icons/icon-facebook.svg';
 import telegramIcon from '../../img/icons/icon-telegram.svg';
 import phoneIcon from '../../img/icons/icon-phone.svg';
-import './ConnectWithMasterSection.scss';
 import { fixUrl } from '../../helpers/functions';
+import './ConnectWithMasterSection.scss';
 
 interface Props {
   className?: string;

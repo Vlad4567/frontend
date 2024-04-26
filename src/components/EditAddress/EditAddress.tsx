@@ -1,110 +1,69 @@
 /* eslint-disable jsx-a11y/no-noninteractive-element-interactions */
 /* eslint-disable jsx-a11y/click-events-have-key-events */
-import React, { useEffect, useRef, useState } from 'react';
-import { useDebounce, useOnClickOutside } from 'usehooks-ts';
+import React, { useRef, useState } from 'react';
+import { useOnClickOutside } from 'usehooks-ts';
 import { useNavigate } from 'react-router-dom';
 import { Button } from '../Button/Button';
 import { DropDownButton } from '../DropDownButton/DropDownButton';
 import { LoginInput } from '../LoginInput/LoginInput';
 import { Textarea } from '../Textarea/Textarea';
-import { useAppDispatch, useAppSelector } from '../../app/hooks';
-import * as createMasterSlice from '../../features/createMasterSlice';
 import { City } from '../../types/searchPage';
+import { useUser } from '../../hooks/useUser';
+import { useCreateMaster } from '../../hooks/useCreateMaster';
+import { useCities } from '../../hooks/useCities';
 import './EditAddress.scss';
-import { getCities } from '../../api/searchPage';
-import * as notificationSlice from '../../features/notificationSlice';
-import { createMaster, putEditMaster } from '../../api/master';
-import * as userSlice from '../../features/userSlice';
 
 type ActiveModal = '' | 'city' | 'cleanMaster';
 
 export const EditAddress: React.FC = () => {
-  const { user } = useAppSelector(state => state.userSlice);
+  const {
+    queryUser: { data: user },
+  } = useUser();
   const navigate = useNavigate();
-  const dispatch = useAppDispatch();
-  const createMasterState = useAppSelector(state => state.createMasterSlice);
+  const {
+    createMasterData: {
+      data: createMasterState,
+      refetch: createMasterStateRefetch,
+    },
+    saveChanges,
+    createMaster,
+    editAddress,
+  } = useCreateMaster();
 
   const { address } = createMasterState.master;
 
+  const {
+    cities: { data: cityList },
+    cityValue,
+    setCityValue,
+  } = useCities(address.city?.name);
   const cityListRef = useRef<HTMLUListElement>(null);
-  const [cityValue, setCityValue] = useState(address.city?.name || '');
-  const [cityList, setCityList] = useState<City[]>([]);
   const [activeModal, setActiveModal] = useState<ActiveModal>('');
-  const debouncedCityValue = useDebounce(cityValue, 500);
 
   const handleSubmit = () => {
     if (createMasterState.editMode) {
-      putEditMaster({
-        ...createMasterState.master,
-        address: {
-          ...address,
-          cityId: address.city?.id || null,
-        },
-        subcategories:
-          createMasterState.master.subcategories?.map(item => item.id) || null,
-      })
-        .then(() => {
-          dispatch(
-            createMasterSlice.editOptions({
-              editMode: false,
-            }),
-          );
-        })
-        .catch(() =>
-          dispatch(
-            notificationSlice.addNotification({
-              id: +new Date(),
-              type: 'error',
-            }),
-          ),
-        );
+      saveChanges.mutate();
     } else {
-      createMaster({
-        ...createMasterState.master,
-        address: {
-          ...createMasterState.master.address,
-          cityId: address.city?.id || null,
-        },
-        subcategories:
-          createMasterState.master.subcategories?.map(item => item.id) || null,
-      })
-        .then(() => {
-          dispatch(createMasterSlice.updateEditMaster());
-          dispatch(
-            userSlice.updateUser({
-              master: true,
-            }),
-          );
-          if (createMasterState.master.subcategories?.length !== 0) {
-            navigate('../gallery');
-          }
-        })
-        .catch(() =>
-          dispatch(
-            notificationSlice.addNotification({
-              id: +new Date(),
-              type: 'error',
-            }),
-          ),
-        );
+      createMaster.mutateAsync().then(() => {
+        if (createMasterState.master.subcategories?.length !== 0) {
+          navigate('../gallery');
+        }
+      });
     }
   };
 
   const handleCancel = () => {
     if (createMasterState.editMode) {
-      dispatch(createMasterSlice.deleteMaster());
-      dispatch(createMasterSlice.updateEditMaster());
+      createMasterStateRefetch();
     } else {
-      navigate('..');
+      navigate('/account');
     }
   };
 
   const handleCityClick = (item: City) => {
-    dispatch(
-      createMasterSlice.editAddress({
-        city: item,
-      }),
-    );
+    editAddress({
+      city: item,
+    });
     setCityValue(item.name);
     setActiveModal('');
   };
@@ -114,31 +73,11 @@ export const EditAddress: React.FC = () => {
     setActiveModal(e.target.value ? 'city' : '');
 
     if (!e.target.value) {
-      dispatch(
-        createMasterSlice.editAddress({
-          city: null,
-        }),
-      );
+      editAddress({
+        city: null,
+      });
     }
   };
-
-  useEffect(() => {
-    if (debouncedCityValue) {
-      getCities(0, 4, debouncedCityValue)
-        .then(res => setCityList(res.content))
-        .catch(() =>
-          dispatch(
-            notificationSlice.addNotification({
-              id: +new Date(),
-              type: 'error',
-            }),
-          ),
-        );
-    } else {
-      setCityList([]);
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [debouncedCityValue]);
 
   useOnClickOutside(cityListRef, () => {
     setCityValue(createMasterState.master.address.city?.name || '');
@@ -190,11 +129,9 @@ export const EditAddress: React.FC = () => {
             placeholder="Street"
             value={address.street || ''}
             onChange={e =>
-              dispatch(
-                createMasterSlice.editAddress({
-                  street: e.target.value || null,
-                }),
-              )
+              editAddress({
+                street: e.target.value || null,
+              })
             }
           />
           <LoginInput
@@ -202,11 +139,9 @@ export const EditAddress: React.FC = () => {
             placeholder="Building"
             value={address.houseNumber || ''}
             onChange={e =>
-              dispatch(
-                createMasterSlice.editAddress({
-                  houseNumber: e.target.value || null,
-                }),
-              )
+              editAddress({
+                houseNumber: e.target.value || null,
+              })
             }
           />
           <Textarea
@@ -216,11 +151,9 @@ export const EditAddress: React.FC = () => {
             autoGrow
             value={address.description || ''}
             onChange={e =>
-              dispatch(
-                createMasterSlice.editAddress({
-                  description: e.target.value || null,
-                }),
-              )
+              editAddress({
+                description: e.target.value || null,
+              })
             }
           />
         </div>

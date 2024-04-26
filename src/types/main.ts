@@ -12,8 +12,6 @@ export interface Page<T> {
   empty: boolean;
 }
 
-export type TypeCard = 'master' | 'service';
-
 export interface ErrorData<T> {
   timestamp: string;
   status: string;
@@ -21,13 +19,6 @@ export interface ErrorData<T> {
   errors?: {
     [key: string]: T;
   };
-}
-
-export interface Notification {
-  id: number;
-  title?: string;
-  description?: string;
-  icon?: string;
 }
 
 export type SearchWithParam = string | number;

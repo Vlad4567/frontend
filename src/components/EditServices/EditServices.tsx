@@ -1,19 +1,12 @@
-import { useEffect, useRef, useState } from 'react';
+import { useRef, useState } from 'react';
 import { NewServiceForm } from '../NewServiceForm/NewServiceForm';
 import { SwitchButtons } from '../SwitchButtons/SwitchButtons';
-import { SubCategory } from '../../types/category';
-import {
-  addNewService,
-  deleteService,
-  getServicesBySubcategory,
-  putService,
-} from '../../api/services';
-import { useAppDispatch, useAppSelector } from '../../app/hooks';
 import { Service } from '../../types/services';
-import * as notificationSlice from '../../features/notificationSlice';
 import { DropDownButton } from '../DropDownButton/DropDownButton';
 import { CreateModal } from '../CreateModal/CreateModal';
 import { ModalEditingService } from '../ModalEditingService/ModalEditingService';
+import { useCreateMaster } from '../../hooks/useCreateMaster';
+import { useServicesBySubcategory } from '../../hooks/useServicesBySubcategory';
 import './EditServices.scss';
 
 interface Props {
@@ -23,74 +16,39 @@ interface Props {
 type Modal = 'Service';
 
 export const EditServices: React.FC<Props> = () => {
-  const createMaster = useAppSelector(state => state.createMasterSlice);
-  const dispatch = useAppDispatch();
+  const {
+    createMasterData: { data: createMaster },
+  } = useCreateMaster();
   const { master } = createMaster;
   const [modal, setModal] = useState<Modal | ''>('');
-  const [services, setServices] = useState<Service[]>([]);
-  const [activeSubcategory, setActiveSubcategory] =
-    useState<SubCategory | null>(
-      master.subcategories ? master.subcategories[0] : null,
-    );
+  const {
+    servicesBySubcategory: { data: services },
+    subcategory,
+    setSubcategory,
+    addService,
+    deleteService,
+    changeService,
+  } = useServicesBySubcategory(
+    createMaster.masterId as number,
+    master.subcategories?.[0],
+  );
   const modalRef = useRef<HTMLFormElement>(null);
 
   const handleModalClose = () => {
     setModal('');
   };
 
-  useEffect(() => {
-    if (createMaster.masterId && activeSubcategory?.id) {
-      getServicesBySubcategory(createMaster.masterId, activeSubcategory.id)
-        .then(res => {
-          setServices(res);
-        })
-        .catch(() =>
-          dispatch(
-            notificationSlice.addNotification({
-              id: +new Date(),
-              type: 'error',
-            }),
-          ),
-        );
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [activeSubcategory?.id, createMaster.masterId]);
-
-  const handleAddService = async (item: Service) => {
-    if (item.photo && activeSubcategory?.id && item.photo?.id) {
-      try {
-        const res = await addNewService({
+  const handleAddService = (item: Service) => {
+    if (subcategory?.id) {
+      return addService
+        .mutateAsync({
           duration: item.duration,
           name: item.name,
           price: item.price,
-          subcategoryId: activeSubcategory.id,
-          photoId: item.photo.id,
-        });
-
-        setServices([
-          ...services,
-          {
-            ...item,
-            subcategoryId: activeSubcategory.id,
-            id: res.id,
-          },
-        ]);
-
-        setModal('');
-
-        return res;
-      } catch (err) {
-        dispatch(
-          notificationSlice.addNotification({
-            id: +new Date(),
-            type: 'error',
-          }),
-        );
-
-        setModal('');
-
-        return err;
-      }
+          subcategoryId: subcategory.id,
+          photoId: item.photo?.id || null,
+        })
+        .then(() => setModal(''));
     }
 
     setModal('');
@@ -99,40 +57,14 @@ export const EditServices: React.FC<Props> = () => {
   };
 
   const handleDeleteService = (id: number) => {
-    deleteService(id)
-      .then(() => {
-        setServices(services.filter(service => service.id !== id));
-      })
-      .catch(() =>
-        dispatch(
-          notificationSlice.addNotification({
-            id: +new Date(),
-            type: 'error',
-          }),
-        ),
-      );
+    deleteService.mutate(id);
   };
 
   const handleChangeService = (item: Service) => {
-    putService({
+    changeService.mutate({
       ...item,
       photoId: item.photo?.id || null,
-    })
-      .then(() => {
-        setServices(c =>
-          c.map(currService =>
-            currService.id === item.id ? item : currService,
-          ),
-        );
-      })
-      .catch(() =>
-        dispatch(
-          notificationSlice.addNotification({
-            id: +new Date(),
-            type: 'error',
-          }),
-        ),
-      );
+    });
   };
 
   return (
@@ -149,8 +81,8 @@ export const EditServices: React.FC<Props> = () => {
       {master.subcategories && (
         <SwitchButtons
           buttons={master.subcategories}
-          activeButton={activeSubcategory || master.subcategories[0]}
-          onClickButton={(_, button) => setActiveSubcategory(button)}
+          activeButton={subcategory}
+          onClickButton={(_, button) => setSubcategory(button)}
         />
       )}
 
@@ -163,13 +95,13 @@ export const EditServices: React.FC<Props> = () => {
       </div>
 
       <ul className="edit-services__services-list">
-        {!!services.length &&
+        {!!services?.length &&
           services.map(service => (
             <li className="edit-services__services-item" key={service.id}>
               <NewServiceForm
                 value={service}
                 onDelete={() => handleDeleteService(service.id)}
-                activeSubcategory={activeSubcategory}
+                activeSubcategory={subcategory}
                 onChange={handleChangeService}
               />
             </li>
@@ -186,7 +118,7 @@ export const EditServices: React.FC<Props> = () => {
               <ModalEditingService
                 ref={modalRef}
                 onAddService={handleAddService}
-                activeSubcategory={activeSubcategory}
+                activeSubcategory={subcategory}
                 onClose={handleModalClose}
               />
             </CreateModal>
@@ -196,7 +128,7 @@ export const EditServices: React.FC<Props> = () => {
         <NewServiceForm
           className="edit-services__services-new-service-form"
           onAddService={handleAddService}
-          activeSubcategory={activeSubcategory}
+          activeSubcategory={subcategory}
         />
       </ul>
     </div>

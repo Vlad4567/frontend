@@ -8,20 +8,20 @@ import {
 } from 'react-router-dom';
 import { Footer } from './components/Footer/Footer';
 import { Header } from './components/Header/Header';
-import { useAppSelector } from './app/hooks';
 import { Notifications } from './components/Notifications/Notifications';
 import globalRouter from './globalRouter';
 import { websiteName } from './helpers/variables';
 import './App.scss';
 import { convertHyphenToSpace } from './helpers/functions';
+import { useApp } from './hooks/useApp';
+import { TypeNotification, useNotification } from './hooks/useNotification';
 
 export const App: React.FC = () => {
-  const { headerShown, headerType, footerShown } = useAppSelector(
-    state => state.appSlice,
-  );
+  const { app } = useApp();
+  const { addNotification } = useNotification();
   const navigate = useNavigate();
   const { pathname } = useLocation();
-  const [searchParams] = useSearchParams();
+  const [searchParams, setSearchParams] = useSearchParams();
   const lastPathName = pathname.split('/').pop();
 
   useDocumentTitle(convertHyphenToSpace(lastPathName || '') || websiteName);
@@ -33,17 +33,29 @@ export const App: React.FC = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [pathname]);
 
+  useEffect(() => {
+    const notification = searchParams.get('notification');
+
+    if (notification) {
+      const params = new URLSearchParams(searchParams);
+
+      params.delete('notification');
+      setSearchParams(params);
+      addNotification(notification as TypeNotification);
+    }
+  }, [addNotification, searchParams, setSearchParams]);
+
   globalRouter.navigate = navigate;
 
   return (
     <>
-      {headerShown && <Header type={headerType} />}
+      {app.headerShown && <Header type={app.headerType} />}
 
       <Outlet />
 
       <Notifications />
 
-      {footerShown && <Footer />}
+      {app.footerShown && <Footer />}
     </>
   );
 };

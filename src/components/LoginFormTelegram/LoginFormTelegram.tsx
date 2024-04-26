@@ -7,13 +7,11 @@ import { SetStateAction, forwardRef, useState } from 'react';
 import { Button } from '../Button/Button';
 import { LoginInput } from '../LoginInput/LoginInput';
 import { UnderlinedSmall } from '../UnderlinedSmall/UnderlinedSmall';
-import { authLoginTelegram, getDeviceToken } from '../../api/login';
 import { TypeModal } from '../../types/account';
-import * as notificationSlice from '../../features/notificationSlice';
 import { ErrorData } from '../../types/main';
 import closeIcon from '../../img/icons/icon-dropdown-close.svg';
+import { useAuth } from '../../hooks/useAuth';
 import './LoginFormTelegram.scss';
-import { useAppDispatch } from '../../app/hooks';
 
 type TypeButton = 'GetTheCode' | 'Confirm';
 type TypeForm = 'form' | 'modal';
@@ -42,7 +40,7 @@ export const LoginFormTelegram = forwardRef<HTMLFormElement, Props>(
     ref,
   ) => {
     const navigate = useNavigate();
-    const dispatch = useAppDispatch();
+    const { authLoginTelegram } = useAuth();
     const [button, setButton] = useState<TypeButton>('GetTheCode');
     const [fieldErrors, setFieldErrors] = useState('');
     const [field, setField] = useState('');
@@ -63,22 +61,9 @@ export const LoginFormTelegram = forwardRef<HTMLFormElement, Props>(
 
     const handleConfirm = () => {
       if (!onSubmit) {
-        getDeviceToken()
-          .then(token => {
-            return authLoginTelegram({
-              code: +field,
-              token,
-            });
-          })
-          .then(res => {
-            localStorage.setItem('token', res.token);
-            localStorage.setItem('refreshToken', `${res.refreshToken}`);
-            dispatch(
-              notificationSlice.addNotification({
-                id: +new Date(),
-                type: 'login',
-              }),
-            );
+        authLoginTelegram
+          .mutateAsync(+field)
+          .then(() => {
             navigate('/account');
           })
           .catch((err: AxiosError<ErrorData<string>>) => {

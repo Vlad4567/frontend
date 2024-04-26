@@ -5,11 +5,8 @@ import {
   useMediaQuery,
   useOnClickOutside,
 } from 'usehooks-ts';
-import { AxiosError } from 'axios';
 import { NavLink, Outlet, useLocation, useNavigate } from 'react-router-dom';
 import classNames from 'classnames';
-import { useAppDispatch, useAppSelector } from '../../app/hooks';
-import * as appSlice from '../../features/appSlice';
 import defaultAvatar from '../../img/default-avatar.svg';
 import avatarEdit from '../../img/icons/icon-pen-edit.svg';
 import { DropDownButton } from '../../components/DropDownButton/DropDownButton';
@@ -17,26 +14,24 @@ import styleVariables from '../../styles/variables.module.scss';
 import { ArrowButton } from '../../components/ArrowButton/ArrowButton';
 import { convertHyphenToSpace } from '../../helpers/functions';
 import { UnderlinedSmall } from '../../components/UnderlinedSmall/UnderlinedSmall';
-import {
-  deleteRefreshToken,
-  disconnectTelegram,
-  getUser,
-  sendProfilePhoto,
-  verificationTelegram,
-} from '../../api/account';
-import * as notificationSlice from '../../features/notificationSlice';
-import * as userSlice from '../../features/userSlice';
 import telegramIcon from '../../img/icons/icon-telegram.svg';
-import './AccountPage.scss';
 import { LoginFormTelegram } from '../../components/LoginFormTelegram/LoginFormTelegram';
 import { CreateModal } from '../../components/CreateModal/CreateModal';
 import { TypeModal } from '../../types/account';
 import { ModalAlertMessage } from '../../components/ModalAlertMessage/ModalAlertMessage';
-import { ErrorData } from '../../types/main';
+import { useApp } from '../../hooks/useApp';
+import { useUser } from '../../hooks/useUser';
+import './AccountPage.scss';
 
 export const AccountPage: React.FC = () => {
-  const dispatch = useAppDispatch();
-  const { user } = useAppSelector(state => state.userSlice);
+  const {
+    queryUser: { data: user },
+    updateProfilePhoto,
+    verificationTelegram,
+    disconnectTelegram,
+    deleteRefreshToken,
+  } = useUser();
+  const { updateApp } = useApp();
   const pathArray = useLocation().pathname.split('/');
   const currentPath = pathArray[pathArray.length - 1];
   const pathAfterAccount =
@@ -45,7 +40,6 @@ export const AccountPage: React.FC = () => {
   const isNotPhone = useMediaQuery(
     `(min-width: ${styleVariables['tablet-min-width']})`,
   );
-  const [isShownTabs, setIsShownTabs] = useState(false);
   const [modal, setModal] = useState<TypeModal | ''>('');
   const modalRef = useRef(null);
 
@@ -58,24 +52,10 @@ export const AccountPage: React.FC = () => {
   }, [isNotPhone, currentPath, navigate]);
 
   useIsomorphicLayoutEffect(() => {
-    dispatch(appSlice.setShownFooter(false));
-
-    getUser()
-      .then(res => {
-        dispatch(userSlice.updateUser(res));
-        setIsShownTabs(true);
-      })
-      .catch(() =>
-        dispatch(
-          notificationSlice.addNotification({
-            id: +new Date(),
-            type: 'error',
-          }),
-        ),
-      );
+    updateApp({ footerShown: false });
 
     return () => {
-      dispatch(appSlice.setShownFooter(true));
+      updateApp({ footerShown: true });
     };
   }, []);
 
@@ -83,42 +63,14 @@ export const AccountPage: React.FC = () => {
     const avatarFile = e.target.files?.item(0);
 
     if (avatarFile) {
-      const formData = new FormData();
-
-      formData.append('file', avatarFile);
-
-      sendProfilePhoto(formData)
-        .then(() => {
-          dispatch(
-            userSlice.updateUser({
-              profilePhoto: URL.createObjectURL(avatarFile),
-            }),
-          );
-        })
-        .catch(() =>
-          dispatch(
-            notificationSlice.addNotification({
-              id: +new Date(),
-              type: 'error',
-            }),
-          ),
-        );
+      updateProfilePhoto.mutate(avatarFile);
     }
   };
 
   const handleTerminateSessions = () => {
-    deleteRefreshToken()
-      .then(() => {
-        navigate('/login');
-      })
-      .catch(() =>
-        dispatch(
-          notificationSlice.addNotification({
-            id: +new Date(),
-            type: 'error',
-          }),
-        ),
-      );
+    deleteRefreshToken.mutateAsync().then(() => {
+      navigate('/login');
+    });
   };
 
   const handleClickOutside = () => {
@@ -128,26 +80,9 @@ export const AccountPage: React.FC = () => {
   useOnClickOutside<HTMLFormElement>([modalRef], handleClickOutside);
 
   const handleConnectTelegram = (code: string) => {
-    verificationTelegram(code)
-      .then(res => {
-        setModal('');
-
-        dispatch(
-          userSlice.updateUser({
-            telegramAccount: {
-              telegramUsername: res,
-            },
-          }),
-        );
-      })
-      .catch(() =>
-        dispatch(
-          notificationSlice.addNotification({
-            id: +new Date(),
-            type: 'error',
-          }),
-        ),
-      );
+    verificationTelegram.mutateAsync(code).then(() => {
+      setModal('');
+    });
   };
 
   const handleOpenModal = () => {
@@ -159,25 +94,9 @@ export const AccountPage: React.FC = () => {
   };
 
   const handleDisconnectTelegram = () => {
-    disconnectTelegram()
-      .then(() => {
-        dispatch(
-          userSlice.updateUser({
-            telegramAccount: null,
-          }),
-        );
-
-        setModal('');
-      })
-      .catch((err: AxiosError<ErrorData<string>>) =>
-        dispatch(
-          notificationSlice.addNotification({
-            id: +new Date(),
-            type: 'error',
-            description: err.response?.data.error,
-          }),
-        ),
-      );
+    disconnectTelegram.mutateAsync().then(() => {
+      setModal('');
+    });
   };
 
   return (
@@ -292,7 +211,7 @@ export const AccountPage: React.FC = () => {
           </aside>
         )}
 
-        {isShownTabs && (
+        {user && (
           <div className="account-page__main-content">
             <div className="account-page__main-title-wrapper">
               <h1 className="account-page__main-title">

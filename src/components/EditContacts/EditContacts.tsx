@@ -8,12 +8,10 @@ import iconTelegram from '../../img/icons/icon-telegram.svg';
 import iconPhone from '../../img/icons/icon-phone.svg';
 import { DropDownButton } from '../DropDownButton/DropDownButton';
 import { Button } from '../Button/Button';
-import { useAppDispatch, useAppSelector } from '../../app/hooks';
-import * as createMasterSlice from '../../features/createMasterSlice';
-import './EditContacts.scss';
-import { putEditMaster } from '../../api/master';
-import * as notificationSlice from '../../features/notificationSlice';
 import { linkValidation } from '../../helpers/variables';
+import { useUser } from '../../hooks/useUser';
+import { useCreateMaster } from '../../hooks/useCreateMaster';
+import './EditContacts.scss';
 
 const getFormattedInputValue = (value: string) => {
   const digitsOnly = value.replace(/\D/g, '').slice(0, 12);
@@ -45,21 +43,29 @@ const getFormattedInputValue = (value: string) => {
 
 export const EditContacts: React.FC = () => {
   const navigate = useNavigate();
-  const dispatch = useAppDispatch();
-  const { user } = useAppSelector(state => state.userSlice);
-  const createMaster = useAppSelector(state => state.createMasterSlice);
   const {
-    master: {
-      contacts: { instagram, facebook, telegram, phone },
+    queryUser: { data: user },
+  } = useUser();
+  const {
+    createMasterData: { data: createMaster, refetch: createMasterRefetch },
+    editContacts,
+    saveChanges,
+  } = useCreateMaster();
+  const {
+    createMasterData: {
+      data: {
+        master: {
+          contacts: { instagram, facebook, telegram, phone },
+        },
+      },
     },
-  } = useAppSelector(state => state.createMasterSlice);
+  } = useCreateMaster();
 
   const handleCancel = () => {
     if (createMaster.editMode) {
-      dispatch(createMasterSlice.deleteMaster());
-      dispatch(createMasterSlice.updateEditMaster());
+      createMasterRefetch();
     } else {
-      navigate('..');
+      navigate('/account');
     }
   };
 
@@ -79,45 +85,19 @@ export const EditContacts: React.FC = () => {
       }
     });
 
-    dispatch(createMasterSlice.editContacts(contacts));
+    editContacts(contacts);
 
     if (createMaster.editMode) {
-      putEditMaster({
-        ...createMaster.master,
-        contacts,
-        address: {
-          ...createMaster.master.address,
-          cityId: createMaster.master.address.city?.id || null,
-        },
-        subcategories:
-          createMaster.master.subcategories?.map(item => item.id) || null,
-      })
-        .then(() => {
-          dispatch(
-            createMasterSlice.editOptions({
-              editMode: false,
-            }),
-          );
-        })
-        .catch(() =>
-          dispatch(
-            notificationSlice.addNotification({
-              id: +new Date(),
-              type: 'error',
-            }),
-          ),
-        );
+      saveChanges.mutate();
     } else {
       navigate('../address');
     }
   };
 
   const handleSetPhoneValue = (e: React.ChangeEvent<HTMLInputElement>) => {
-    dispatch(
-      createMasterSlice.editContacts({
-        phone: e.target.value.replace(/\D/g, '') || null,
-      }),
-    );
+    editContacts({
+      phone: e.target.value.replace(/\D/g, '') || null,
+    });
   };
 
   return (
@@ -149,11 +129,9 @@ export const EditContacts: React.FC = () => {
               placeholder="Instagram link"
               value={instagram || ''}
               onChange={e =>
-                dispatch(
-                  createMasterSlice.editContacts({
-                    instagram: e.target.value || null,
-                  }),
-                )
+                editContacts({
+                  instagram: e.target.value || null,
+                })
               }
             />
           </label>
@@ -172,11 +150,9 @@ export const EditContacts: React.FC = () => {
               placeholder="Facebook link"
               value={facebook || ''}
               onChange={e =>
-                dispatch(
-                  createMasterSlice.editContacts({
-                    facebook: e.target.value || null,
-                  }),
-                )
+                editContacts({
+                  facebook: e.target.value || null,
+                })
               }
             />
           </label>
@@ -195,11 +171,9 @@ export const EditContacts: React.FC = () => {
               placeholder="Telegram username"
               value={telegram || ''}
               onChange={e =>
-                dispatch(
-                  createMasterSlice.editContacts({
-                    telegram: e.target.value || null,
-                  }),
-                )
+                editContacts({
+                  telegram: e.target.value || null,
+                })
               }
             />
           </label>

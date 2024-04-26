@@ -1,57 +1,38 @@
 import { useNavigate, useParams } from 'react-router-dom';
-import { useEffect } from 'react';
 import { ArrowButton } from '../../components/ArrowButton/ArrowButton';
 import { MasterGallery } from '../../components/MasterGallery/MasterGallery';
-import './MasterGalleryPage.scss';
-import { getMaster } from '../../api/master';
-import * as publicMasterSlice from '../../features/publicMasterSlice';
-import { useAppDispatch, useAppSelector } from '../../app/hooks';
-import * as notificationSlice from '../../features/notificationSlice';
 import { ConnectWithMasterSection } from '../../components/ConnectWithMasterSection/ConnectWithMasterSection';
+import './MasterGalleryPage.scss';
+import { useMaster } from '../../hooks/useMaster';
 
 export const MasterGalleryPage: React.FC = () => {
-  const urlParams = useParams();
-  const dispatch = useAppDispatch();
-  const publicMaster = useAppSelector(state => state.publicMasterSlice);
+  const { id } = useParams();
   const navigate = useNavigate();
-
-  useEffect(() => {
-    if (publicMaster.master.id.toString() !== urlParams.id && urlParams.id) {
-      getMaster(+urlParams.id)
-        .then(res => {
-          dispatch(publicMasterSlice.updateMaster(res));
-        })
-        .catch(() =>
-          dispatch(
-            notificationSlice.addNotification({
-              id: +new Date(),
-              type: 'error',
-            }),
-          ),
-        );
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  const {
+    master: { data: master },
+  } = useMaster(+(id as string));
 
   return (
-    <main className="master-gallery-page">
-      <div className="master-gallery-page__back">
-        <ArrowButton
-          className="master-gallery-page__back-button"
-          position="left"
-          onClick={() => navigate(`/master/${urlParams.id}`)}
+    master && (
+      <main className="master-gallery-page">
+        <div className="master-gallery-page__back">
+          <ArrowButton
+            className="master-gallery-page__back-button"
+            position="left"
+            onClick={() => navigate(`/master/${id}`)}
+          />
+          <h3 className="master-gallery-page__back-title">Portfolio</h3>
+        </div>
+        <MasterGallery
+          subcategories={master.subcategories || []}
+          className="master-gallery-page__gallery"
+          type="portfolio"
         />
-        <h3 className="master-gallery-page__back-title">Portfolio</h3>
-      </div>
-      <MasterGallery
-        subcategories={publicMaster.master.subcategories || []}
-        className="master-gallery-page__gallery"
-        type="portfolio"
-      />
-      <ConnectWithMasterSection
-        name={`${publicMaster.master.firstName} ${publicMaster.master.lastName}`}
-        contacts={publicMaster.master.contacts}
-      />
-    </main>
+        <ConnectWithMasterSection
+          name={`${master.firstName} ${master.lastName}`}
+          contacts={master.contacts}
+        />
+      </main>
+    )
   );
 };

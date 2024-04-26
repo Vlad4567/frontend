@@ -1,14 +1,14 @@
 /* eslint-disable jsx-a11y/control-has-associated-label */
-import { useEffect, useState } from 'react';
+import { useEffect } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import { Category } from '../../types/category';
 import { DropDownButton } from '../DropDownButton/DropDownButton';
 import { RoundButton } from '../RoundButton/RoundButton';
-import { getCategories } from '../../api/categories';
 import { FilterSearchInput } from '../FilterSearchInput/FilterSearchInput';
 import { SearchWithParams } from '../../types/main';
 import { getSearchWith } from '../../helpers/functions';
 import './HomeFilter.scss';
+import { useCategories } from '../../hooks/useCategories';
 
 interface Props {
   className?: string;
@@ -17,14 +17,7 @@ interface Props {
 export const HomeFilter: React.FC<Props> = ({ className = '' }) => {
   const navigate = useNavigate();
   const [searchParams, setSearchParams] = useSearchParams();
-  const [activeCategory, setActiveCategory] = useState<Category | null>(null);
-  const [categories, setCategories] = useState<Category[]>([]);
-
-  useEffect(() => {
-    getCategories().then(response => {
-      setCategories(response);
-    });
-  }, []);
+  const { categories, selectedCategory, setSelectedCategory } = useCategories();
 
   useEffect(() => {
     const keys = Array.from(searchParams.entries());
@@ -46,14 +39,14 @@ export const HomeFilter: React.FC<Props> = ({ className = '' }) => {
   };
 
   const handleCategoryOnClick = (category: Category) => {
-    if (activeCategory !== category) {
-      setActiveCategory(category);
+    if (selectedCategory !== category) {
+      setSelectedCategory(category);
       setSearchWith({
-        subCategories: category.subcategories.map(item => item.id),
+        subcategories: category.subcategories.map(item => item.id),
       });
     } else {
-      setActiveCategory(null);
-      setSearchWith({ subCategories: null });
+      setSelectedCategory(null);
+      setSearchWith({ subcategories: null });
     }
   };
 
@@ -66,7 +59,7 @@ export const HomeFilter: React.FC<Props> = ({ className = '' }) => {
   return (
     <form onSubmit={handleOnSubmit} className={`home-filter ${className}`}>
       <div className="home-filter__categories">
-        {categories.map(category => (
+        {categories.data.map(category => (
           <DropDownButton
             placeholder={category.name}
             size="small"
@@ -74,7 +67,7 @@ export const HomeFilter: React.FC<Props> = ({ className = '' }) => {
             onClick={() => {
               handleCategoryOnClick(category);
             }}
-            active={activeCategory?.id === category.id}
+            active={selectedCategory?.id === category.id}
             className="home-filter__category"
           />
         ))}

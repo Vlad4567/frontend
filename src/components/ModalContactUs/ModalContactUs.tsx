@@ -7,13 +7,11 @@ import classNames from 'classnames';
 import { LoginInput } from '../LoginInput/LoginInput';
 import { Textarea } from '../Textarea/Textarea';
 import { Button } from '../Button/Button';
-import { sendContactUs } from '../../api/main';
 import closeIcon from '../../img/icons/icon-dropdown-close.svg';
-import * as notificationSlice from '../../features/notificationSlice';
 import { ErrorData } from '../../types/main';
 import { objectKeys } from '../../helpers/functions';
+import { useContactUs } from '../../hooks/useContactUs';
 import './ModalContactUs.scss';
-import { useAppDispatch } from '../../app/hooks';
 
 interface Props {
   className?: string;
@@ -28,7 +26,7 @@ const initialForm = {
 
 export const ModalContactUs = React.forwardRef<HTMLFormElement, Props>(
   ({ className = '', onClose = () => {} }, ref) => {
-    const dispatch = useAppDispatch();
+    const { sendContactUs } = useContactUs();
     const [form, setForm] = useState(initialForm);
     const [formErrors, setFormErrors] = useState(initialForm);
 
@@ -47,15 +45,10 @@ export const ModalContactUs = React.forwardRef<HTMLFormElement, Props>(
     };
 
     const handleSubmit = () => {
-      sendContactUs(form)
+      sendContactUs
+        .mutateAsync(form)
         .then(() => {
           setForm(initialForm);
-          dispatch(
-            notificationSlice.addNotification({
-              id: +new Date(),
-              type: 'contactUs',
-            }),
-          );
         })
         .catch((error: AxiosError<ErrorData<Partial<typeof initialForm>>>) => {
           if (error.response?.data.errors) {
@@ -65,12 +58,6 @@ export const ModalContactUs = React.forwardRef<HTMLFormElement, Props>(
                 [key]: error.response?.data.errors?.[key] || '',
               }));
             });
-            dispatch(
-              notificationSlice.addNotification({
-                id: +new Date(),
-                type: 'error',
-              }),
-            );
           }
         });
     };
