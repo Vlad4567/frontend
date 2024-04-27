@@ -1,0 +1,142 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  input:-webkit-autofill,
+  input:-webkit-autofill:hover,
+  input:-webkit-autofill:focus,
+  input:-webkit-autofill:active {
+    -webkit-box-shadow: 0 0 0 30px white inset !important;
+  }
+
+  input,
+  textarea,
+  button,
+  select,
+  a {
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  :root {
+    --on-phone-header-height: 47px;
+    --on-tablet-header-height: 65px;
+    --content-padding: 20px;
+    --content-padding-top: 20px;
+    --content-padding-bottom: 20px;
+  }
+
+  * {
+    @apply box-border scroll-smooth;
+  }
+
+  main {
+    @apply relative flex flex-1 flex-col;
+  }
+
+  #root {
+    @apply flex w-full flex-1 flex-col;
+  }
+
+  button {
+    @apply text-gray-10 font-urbanist text-base transition-[background];
+  }
+
+  h1 {
+    @apply font-kharkivTone text-6xl;
+  }
+
+  h2 {
+    @apply font-kharkivTone text-5xl;
+  }
+
+  h3 {
+    @apply font-urbanist text-2xl;
+  }
+
+  h4 {
+    @apply font-kharkivTone text-xl;
+  }
+
+  body {
+    @apply font-urbanist text-base content-padding flex min-h-screen max-w-xl bg-[url(./img/bg.png)];
+  }
+
+  small {
+    @apply font-urbanist text-xs;
+  }
+
+  p {
+    @apply font-urbanist text-base;
+  }
+
+  @font-face {
+    font-family: Kharkiv-Tone;
+    src: url(./fonts/Kharkiv-Tone/Kharkiv-Tone.ttf);
+    font-weight: 400;
+  }
+
+  @font-face {
+    font-family: Urbanist;
+    src: url(./fonts/Urbanist/Urbanist-Regular.ttf);
+    font-weight: 400;
+  }
+
+  @font-face {
+    font-family: Urbanist;
+    src: url(./fonts/Urbanist/Urbanist-Medium.ttf);
+    font-weight: 500;
+  }
+
+  @font-face {
+    font-family: Urbanist;
+    src: url(./fonts/Urbanist/Urbanist-Medium.ttf);
+    font-weight: medium;
+  }
+
+  @font-face {
+    font-family: Urbanist;
+    src: url(./fonts/Urbanist/Urbanist-Bold.ttf);
+    font-weight: 700;
+  }
+
+  @font-face {
+    font-family: Urbanist;
+    src: url(./fonts/Urbanist/Urbanist-Bold.ttf);
+    font-weight: bold;
+  }
+
+  @font-face {
+    font-family: Urbanist;
+    src: url(./Urbanist-Black.ttf);
+    font-weight: 900;
+  }
+}
+
+@layer components {
+  .content-padding {
+    padding-block-start: var(--content-padding-top);
+    padding-block-end: var(--content-padding-bottom);
+    padding-inline: var(--content-padding);
+
+    @apply @screen lg px-[var(--content-padding)]
+
+    pb-[var(--content-padding-bottom)] pt-[var(--content-padding-top)] {
+      --content-padding: 40px;
+      --content-padding-top: 25px;
+      --content-padding-bottom: 15px;
+    }
+
+    @screen xl {
+      @apply mx-auto;
+
+      --content-padding: 80px;
+      --content-padding-top: 30px;
+      --content-padding-bottom: 30px;
+    }
+  }
+
+  .full-width {
+    @apply ml-[calc(var(--content-padding)*-1)] w-[calc(var(--content-padding)*2+100%)];
+  }
+}

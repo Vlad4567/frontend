@@ -4,9 +4,9 @@
 import { useEffect, useRef, useState } from 'react';
 import { useDebounce, useOnClickOutside } from 'usehooks-ts';
 import classNames from 'classnames';
-import { Button } from '../Button/Button';
+import { Button } from '../Button';
 import { LoginInput } from '../LoginInput/LoginInput';
-import { CreateModal } from '../CreateModal/CreateModal';
+import { CreateModal } from '../CreateModal';
 import { MasterGallery } from '../MasterGallery/MasterGallery';
 import photoPlus from '../../img/icons/tabler-photo-plus.svg';
 import deleteBasket from '../../img/icons/delete-basket.svg';

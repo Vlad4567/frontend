@@ -4,8 +4,8 @@
 import React, { useState } from 'react';
 import { AxiosError } from 'axios';
 import { useNavigate } from 'react-router-dom';
-import { Button } from '../Button/Button';
-import { Checkbox } from '../Checkbox/Checkbox';
+import { Button } from '../Button';
+import { Checkbox } from '../Checkbox';
 import { LoginInput } from '../LoginInput/LoginInput';
 import { LoginHeaderForm } from '../LoginHeaderForm/LoginHeaderForm';
 import { objectKeys } from '../../helpers/functions';

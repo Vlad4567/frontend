@@ -4,7 +4,7 @@
 import React from 'react';
 import { useIsomorphicLayoutEffect } from 'usehooks-ts';
 import { Outlet, useLocation, useNavigate } from 'react-router-dom';
-import { ArrowButton } from '../../components/ArrowButton/ArrowButton';
+import { ArrowButton } from '../../components/ArrowButton';
 import { LoginHeaderForm } from '../../components/LoginHeaderForm/LoginHeaderForm';
 import { useApp } from '../../hooks/useApp';
 import './LoginPage.scss';

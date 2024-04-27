@@ -1,12 +1,12 @@
 import { Link } from 'react-router-dom';
-import { DropDownButton } from '../DropDownButton/DropDownButton';
-import { Stars } from '../Stars/Stars';
+import { DropDownButton } from './DropDownButton/DropDownButton';
+import { Stars } from './Stars/Stars';
 import instagramIcon from '../../img/icons/icon-instagram.svg';
 import facebookIcon from '../../img/icons/icon-facebook.svg';
 import telegramIcon from '../../img/icons/icon-telegram.svg';
 import phoneIcon from '../../img/icons/icon-phone.svg';
-import { fixUrl } from '../../helpers/functions';
-import './ConnectWithMasterSection.scss';
+import { fixUrl } from '../helpers/functions';
+import { twMerge } from 'tailwind-merge';
 
 interface Props {
   className?: string;
@@ -85,28 +85,33 @@ export const ConnectWithMasterSection: React.FC<Props> = ({
   };
 
   return (
-    <section className={`connect-with-master-section ${className}`}>
-      <h1 className="connect-with-master-section__title">
+    <section
+      className={twMerge(
+        `lg:gap-7.5 flex flex-col items-center justify-center gap-10 xl:gap-10`,
+        className,
+      )}
+    >
+      <h1
+        className="flex w-fit flex-wrap items-center
+      justify-center text-center"
+      >
         Connect with&#160;
-        <span className="connect-with-master-section__title-span">
+        <span className="text-primary-100 relative">
           {name}
           <Stars size="large" type="dark" />
         </span>
       </h1>
-      <article className="connect-with-master-section__contacts">
+      <article className="flex w-full flex-wrap justify-center gap-2.5">
         {Object.entries(contacts).map(
           contact =>
             contact[1] && (
               <Link
                 key={contact[0]}
                 target="_blank"
-                className="connect-with-master-section__contacts-item-link"
+                className="text-gray-100 no-underline"
                 to={renderContactLink([contact[0], contact[1]])}
               >
-                <DropDownButton
-                  className="connect-with-master-section__contacts-item"
-                  size="large"
-                >
+                <DropDownButton className="w-fit" size="large">
                   {showContactInfo(contact)}
                 </DropDownButton>
               </Link>

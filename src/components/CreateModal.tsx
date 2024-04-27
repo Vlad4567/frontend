@@ -1,8 +1,8 @@
 import React from 'react';
 import { createPortal } from 'react-dom';
 import { useMediaQuery } from 'usehooks-ts';
-import variables from '../../styles/variables.module.scss';
-import './CreateModal.scss';
+import { tailwindConfig } from '../helpers/variables';
+import { twMerge } from 'tailwind-merge';
 
 interface Props {
   children: React.ReactNode;
@@ -24,10 +24,10 @@ export const CreateModal: React.FC<Props> = ({
   },
 }) => {
   const onTablet = useMediaQuery(
-    `(min-width: ${variables['tablet-min-width']})`,
+    `(min-width: ${tailwindConfig.theme.screens.lg})`,
   );
   const onDesktop = useMediaQuery(
-    `(min-width: ${variables['desktop-min-width']})`,
+    `(min-width: ${tailwindConfig.theme.screens.xl})`,
   );
   const onPhone = !(onTablet || onDesktop);
 
@@ -38,7 +38,16 @@ export const CreateModal: React.FC<Props> = ({
 
   return checkMedia ? (
     createPortal(
-      <div className={`modal ${className}`}>{children}</div>,
+      <div
+        className={twMerge(
+          `fixed inset-0 z-[9999] translate-x-[max(-50%,-50vw)] translate-y-[max(-50%,-50vh)]
+          overflow-auto shadow-[-1px,4px,15px,0,rgba(0,0,0,0.25)] backdrop-blur-md [&>*]:absolute [&>*]:left-1/2 [&>*]:top-1/2
+          [&>*]:h-fit`,
+          className,
+        )}
+      >
+        {children}
+      </div>,
       document.body,
     )
   ) : (

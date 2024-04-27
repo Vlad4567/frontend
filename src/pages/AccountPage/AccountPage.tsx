@@ -10,13 +10,13 @@ import classNames from 'classnames';
 import defaultAvatar from '../../img/default-avatar.svg';
 import avatarEdit from '../../img/icons/icon-pen-edit.svg';
 import { DropDownButton } from '../../components/DropDownButton/DropDownButton';
-import styleVariables from '../../styles/variables.module.scss';
-import { ArrowButton } from '../../components/ArrowButton/ArrowButton';
+import { tailwindConfig } from '../../helpers/variables';
+import { ArrowButton } from '../../components/ArrowButton';
 import { convertHyphenToSpace } from '../../helpers/functions';
 import { UnderlinedSmall } from '../../components/UnderlinedSmall/UnderlinedSmall';
 import telegramIcon from '../../img/icons/icon-telegram.svg';
 import { LoginFormTelegram } from '../../components/LoginFormTelegram/LoginFormTelegram';
-import { CreateModal } from '../../components/CreateModal/CreateModal';
+import { CreateModal } from '../../components/CreateModal';
 import { TypeModal } from '../../types/account';
 import { ModalAlertMessage } from '../../components/ModalAlertMessage/ModalAlertMessage';
 import { useApp } from '../../hooks/useApp';
@@ -38,7 +38,7 @@ export const AccountPage: React.FC = () => {
     pathArray[pathArray.findIndex(path => path === 'account') + 1] || '';
   const navigate = useNavigate();
   const isNotPhone = useMediaQuery(
-    `(min-width: ${styleVariables['tablet-min-width']})`,
+    `(min-width: ${tailwindConfig.theme.screens.lg})`,
   );
   const [modal, setModal] = useState<TypeModal | ''>('');
   const modalRef = useRef(null);

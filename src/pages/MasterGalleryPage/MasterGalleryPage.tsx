@@ -1,7 +1,7 @@
 import { useNavigate, useParams } from 'react-router-dom';
-import { ArrowButton } from '../../components/ArrowButton/ArrowButton';
+import { ArrowButton } from '../../components/ArrowButton';
 import { MasterGallery } from '../../components/MasterGallery/MasterGallery';
-import { ConnectWithMasterSection } from '../../components/ConnectWithMasterSection/ConnectWithMasterSection';
+import { ConnectWithMasterSection } from '../../components/ConnectWithMasterSection';
 import './MasterGalleryPage.scss';
 import { useMaster } from '../../hooks/useMaster';
 

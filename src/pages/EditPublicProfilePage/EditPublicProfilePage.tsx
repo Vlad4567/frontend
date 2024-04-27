@@ -6,10 +6,10 @@ import { useMediaQuery, useOnClickOutside } from 'usehooks-ts';
 import { Transition } from 'history';
 import { convertSpaceToHyphen } from '../../helpers/functions';
 import { DropDownButton } from '../../components/DropDownButton/DropDownButton';
-import styleVariables from '../../styles/variables.module.scss';
+import { tailwindConfig } from '../../helpers/variables';
 import iconBasket from '../../img/icons/icon-basket.svg';
-import { Button } from '../../components/Button/Button';
-import { CreateModal } from '../../components/CreateModal/CreateModal';
+import { Button } from '../../components/Button';
+import { CreateModal } from '../../components/CreateModal';
 import { ModalAlertMessage } from '../../components/ModalAlertMessage/ModalAlertMessage';
 import { browserHistory } from '../../utils/history';
 import { useUser } from '../../hooks/useUser';
@@ -39,7 +39,7 @@ export const EditPublicProfilePage: React.FC = () => {
   } = useCreateMaster();
   const navigate = useNavigate();
   const isDesktop = useMediaQuery(
-    `(min-width: ${styleVariables['desktop-min-width']})`,
+    `(min-width: ${tailwindConfig.theme.screens.xl})`,
   );
   const [activeNavButton, setActiveNavButton] = useState(navButtons[0]);
   const [activeModal, setActiveModal] = useState<ActiveModal>('');

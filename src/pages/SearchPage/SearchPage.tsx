@@ -4,15 +4,15 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { useMediaQuery, useOnClickOutside } from 'usehooks-ts';
 import { useSearchParams } from 'react-router-dom';
-import { Button } from '../../components/Button/Button';
-import { CreateModal } from '../../components/CreateModal/CreateModal';
+import { Button } from '../../components/Button';
+import { CreateModal } from '../../components/CreateModal';
 import { DropDownButton } from '../../components/DropDownButton/DropDownButton';
-import { DropDownSortButton } from '../../components/DropDownSortButton/DropDownSortButton';
+import { DropDownSortButton } from '../../components/DropDownSortButton';
 import { FilterSearchInput } from '../../components/FilterSearchInput/FilterSearchInput';
 import { RadioInput } from '../../components/RadioInput/RadioInput';
 import closeIcon from '../../img/icons/icon-dropdown-close.svg';
 import { Category, SubCategory } from '../../types/category';
-import variables from '../../styles/variables.module.scss';
+import { tailwindConfig } from '../../helpers/variables';
 import {
   getFilteredMasterCards,
   getFilteredServiceCards,
@@ -49,7 +49,7 @@ export const SearchPage: React.FC = () => {
   const [searchBy, setSearchBy] = useState<TypeCard>('service');
 
   const isShownModalCityInput = useMediaQuery(
-    `(max-width: ${variables['tablet-min-width']})`,
+    `(max-width: ${tailwindConfig.theme.screens.lg})`,
   );
 
   const cityInputRef = useRef<HTMLInputElement>(null);

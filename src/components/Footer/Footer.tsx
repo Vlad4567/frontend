@@ -5,7 +5,7 @@ import { RectangleButton } from '../RectangleButton/RectangleButton';
 import { websiteName } from '../../helpers/variables';
 import { ScrollUpButton } from '../ScrollUpButton/ScrollUpButton';
 import { ModalContactUs } from '../ModalContactUs/ModalContactUs';
-import { CreateModal } from '../CreateModal/CreateModal';
+import { CreateModal } from '../CreateModal';
 import './Footer.scss';
 
 type Modal = 'contactUs';

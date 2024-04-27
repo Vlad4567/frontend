@@ -2,7 +2,7 @@
 import React, { useEffect, useState } from 'react';
 import { AxiosError } from 'axios';
 import { useNavigate } from 'react-router-dom';
-import { Button } from '../Button/Button';
+import { Button } from '../Button';
 import { LoginInput } from '../LoginInput/LoginInput';
 import { LoginHeaderForm } from '../LoginHeaderForm/LoginHeaderForm';
 import { changeObjectStateKey, objectKeys } from '../../helpers/functions';

@@ -3,8 +3,8 @@
 import React, { forwardRef, useEffect } from 'react';
 import classNames from 'classnames';
 import { DropDownButton } from '../DropDownButton/DropDownButton';
-import { Checkbox } from '../Checkbox/Checkbox';
-import { Button } from '../Button/Button';
+import { Checkbox } from '../Checkbox';
+import { Button } from '../Button';
 import { Category, SubCategory } from '../../types/category';
 import { useCategories } from '../../hooks/useCategories';
 import './ModalCategories.scss';

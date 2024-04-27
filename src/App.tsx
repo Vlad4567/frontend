@@ -11,7 +11,6 @@ import { Header } from './components/Header/Header';
 import { Notifications } from './components/Notifications/Notifications';
 import globalRouter from './globalRouter';
 import { websiteName } from './helpers/variables';
-import './App.scss';
 import { convertHyphenToSpace } from './helpers/functions';
 import { useApp } from './hooks/useApp';
 import { TypeNotification, useNotification } from './hooks/useNotification';

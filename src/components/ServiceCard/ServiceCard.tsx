@@ -2,7 +2,7 @@ import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import * as types from '../../types/master';
 import starRate from '../../img/icons/icon-star-rate.svg';
-import { Button } from '../Button/Button';
+import { Button } from '../Button';
 import { DropDownButton } from '../DropDownButton/DropDownButton';
 import defaultAvatar from '../../img/default-avatar.svg';
 import './ServiceCard.scss';

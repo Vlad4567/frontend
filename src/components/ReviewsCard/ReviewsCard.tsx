@@ -5,7 +5,7 @@ import { useOnClickOutside, useResizeObserver } from 'usehooks-ts';
 import AvatarUser from '../../img/default-avatar.svg';
 import { RatingStars } from '../RatingStars/RatingStars';
 import closeIcon from '../../img/icons/icon-dropdown-close.svg';
-import { CreateModal } from '../CreateModal/CreateModal';
+import { CreateModal } from '../CreateModal';
 import { MasterReviewsCard } from '../../types/reviews';
 import './ReviewsCard.scss';
 

@@ -3,7 +3,7 @@ import { NewServiceForm } from '../NewServiceForm/NewServiceForm';
 import { SwitchButtons } from '../SwitchButtons/SwitchButtons';
 import { Service } from '../../types/services';
 import { DropDownButton } from '../DropDownButton/DropDownButton';
-import { CreateModal } from '../CreateModal/CreateModal';
+import { CreateModal } from '../CreateModal';
 import { ModalEditingService } from '../ModalEditingService/ModalEditingService';
 import { useCreateMaster } from '../../hooks/useCreateMaster';
 import { useServicesBySubcategory } from '../../hooks/useServicesBySubcategory';

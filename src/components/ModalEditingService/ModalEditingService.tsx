@@ -2,10 +2,10 @@
 /* eslint-disable jsx-a11y/click-events-have-key-events */
 import { forwardRef, useState } from 'react';
 import { LoginInput } from '../LoginInput/LoginInput';
-import { Button } from '../Button/Button';
+import { Button } from '../Button';
 import { DropDownButton } from '../DropDownButton/DropDownButton';
 import { MasterGallery } from '../MasterGallery/MasterGallery';
-import { CreateModal } from '../CreateModal/CreateModal';
+import { CreateModal } from '../CreateModal';
 import { SubCategory } from '../../types/category';
 import deleteBasket from '../../img/icons/delete-basket.svg';
 import closeIcon from '../../img/icons/icon-dropdown-close.svg';

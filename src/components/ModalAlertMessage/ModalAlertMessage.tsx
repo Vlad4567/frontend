@@ -3,7 +3,7 @@
 import React, { forwardRef } from 'react';
 import closeIcon from '../../img/icons/icon-dropdown-close.svg';
 import { DropDownButton } from '../DropDownButton/DropDownButton';
-import { Button } from '../Button/Button';
+import { Button } from '../Button';
 import './ModalAlertMessage.scss';
 
 interface Props extends React.HTMLAttributes<HTMLDivElement> {

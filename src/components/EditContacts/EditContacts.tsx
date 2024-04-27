@@ -7,7 +7,7 @@ import iconFacebook from '../../img/icons/icon-facebook.svg';
 import iconTelegram from '../../img/icons/icon-telegram.svg';
 import iconPhone from '../../img/icons/icon-phone.svg';
 import { DropDownButton } from '../DropDownButton/DropDownButton';
-import { Button } from '../Button/Button';
+import { Button } from '../Button';
 import { linkValidation } from '../../helpers/variables';
 import { useUser } from '../../hooks/useUser';
 import { useCreateMaster } from '../../hooks/useCreateMaster';

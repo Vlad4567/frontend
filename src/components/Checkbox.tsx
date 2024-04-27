@@ -1,5 +1,5 @@
 import React from 'react';
-import './Checkbox.scss';
+import { twMerge } from 'tailwind-merge';
 
 interface Props extends React.InputHTMLAttributes<HTMLInputElement> {
   className?: string;
@@ -7,11 +7,26 @@ interface Props extends React.InputHTMLAttributes<HTMLInputElement> {
 
 export const Checkbox: React.FC<Props> = ({ className = '', ...rest }) => {
   return (
-    <div className={`checkbox ${className}`}>
-      <input type="checkbox" className="checkbox__checkbox" {...rest} />
-      <span className="checkbox__checkbox-view">
+    <div
+      className={twMerge(
+        'relative flex cursor-pointer items-center text-base',
+        className,
+      )}
+    >
+      <input
+        type="checkbox"
+        className="absolute appearance-none
+        [&+*>*:first-child]:checked:opacity-100
+        [&+*]:checked:border-[#ffffff00] [&+*]:checked:bg-pink"
+        {...rest}
+      />
+      <span
+        className="w-6.25 h-6.25 border-lineWidth mr-2.5 flex
+      items-center justify-center rounded-[6px] border-solid
+      border-gray-10 bg-gray-100 transition-all"
+      >
         <svg
-          className="checkbox__checkbox-icon"
+          className="opacity-0 transition-all"
           width="14"
           viewBox="0 0 511.985 511.985"
         >

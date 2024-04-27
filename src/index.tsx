@@ -1,6 +1,4 @@
-import 'reset-css';
-import 'normalize.css';
-import './index.scss';
+import './index.css';
 import { createRoot } from 'react-dom/client';
 import { Router } from './Router';
 

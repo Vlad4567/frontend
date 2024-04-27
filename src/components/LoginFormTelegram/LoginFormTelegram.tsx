@@ -4,7 +4,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import classNames from 'classnames';
 import { AxiosError } from 'axios';
 import { SetStateAction, forwardRef, useState } from 'react';
-import { Button } from '../Button/Button';
+import { Button } from '../Button';
 import { LoginInput } from '../LoginInput/LoginInput';
 import { UnderlinedSmall } from '../UnderlinedSmall/UnderlinedSmall';
 import { TypeModal } from '../../types/account';

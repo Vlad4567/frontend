@@ -3,7 +3,7 @@
 import React, { useRef, useState } from 'react';
 import { useOnClickOutside } from 'usehooks-ts';
 import { useNavigate } from 'react-router-dom';
-import { Button } from '../Button/Button';
+import { Button } from '../Button';
 import { DropDownButton } from '../DropDownButton/DropDownButton';
 import { LoginInput } from '../LoginInput/LoginInput';
 import { Textarea } from '../Textarea/Textarea';

@@ -1,6 +1,6 @@
 import React, { useMemo } from 'react';
 import { getPaginationItems } from '../../helpers/functions';
-import { ArrowButton } from '../ArrowButton/ArrowButton';
+import { ArrowButton } from '../ArrowButton';
 import { PaginationPageLink } from '../PaginationPageLink/PaginationPageLink';
 import './Pagination.scss';
 

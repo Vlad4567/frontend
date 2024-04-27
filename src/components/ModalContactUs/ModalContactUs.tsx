@@ -6,7 +6,7 @@ import { AxiosError } from 'axios';
 import classNames from 'classnames';
 import { LoginInput } from '../LoginInput/LoginInput';
 import { Textarea } from '../Textarea/Textarea';
-import { Button } from '../Button/Button';
+import { Button } from '../Button';
 import closeIcon from '../../img/icons/icon-dropdown-close.svg';
 import { ErrorData } from '../../types/main';
 import { objectKeys } from '../../helpers/functions';
