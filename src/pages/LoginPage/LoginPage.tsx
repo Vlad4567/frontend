@@ -8,6 +8,7 @@ import { ArrowButton } from '../../components/ArrowButton/ArrowButton';
 import { LoginHeaderForm } from '../../components/LoginHeaderForm/LoginHeaderForm';
 import { useApp } from '../../hooks/useApp';
 import './LoginPage.scss';
+import { useToken } from '../../hooks/useToken';
 
 const renderLoginHeaderForm = (
   pathName: string,
@@ -55,8 +56,10 @@ export const LoginPage: React.FC = () => {
   const navigate = useNavigate();
   const pathArray = useLocation().pathname.split('/');
   const currentPathName = pathArray[pathArray.length - 1];
-  const token = localStorage.getItem('token');
-  const refreshToken = localStorage.getItem('refreshToken');
+  const {
+    tokenStorage: [token],
+    refreshTokenStorage: [refreshToken],
+  } = useToken();
 
   useIsomorphicLayoutEffect(() => {
     updateApp({ footerShown: false });

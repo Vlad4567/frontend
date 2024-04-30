@@ -1,28 +1,22 @@
 import { useEffect } from 'react';
 import { useDocumentTitle } from 'usehooks-ts';
-import {
-  Outlet,
-  useLocation,
-  useNavigate,
-  useSearchParams,
-} from 'react-router-dom';
+import { Outlet, useLocation, useSearchParams } from 'react-router-dom';
 import { Footer } from './components/Footer/Footer';
 import { Header } from './components/Header/Header';
 import { Notifications } from './components/Notifications/Notifications';
-import globalRouter from './globalRouter';
 import { websiteName } from './helpers/variables';
-import './App.scss';
 import { convertHyphenToSpace } from './helpers/functions';
 import { useApp } from './hooks/useApp';
 import { TypeNotification, useNotification } from './hooks/useNotification';
+import './App.scss';
 
 export const App: React.FC = () => {
   const { app } = useApp();
   const { addNotification } = useNotification();
-  const navigate = useNavigate();
   const { pathname } = useLocation();
+  const pathnameArray = pathname.split('/');
   const [searchParams, setSearchParams] = useSearchParams();
-  const lastPathName = pathname.split('/').pop();
+  const lastPathName = pathnameArray.pop();
 
   useDocumentTitle(convertHyphenToSpace(lastPathName || '') || websiteName);
 
@@ -44,8 +38,6 @@ export const App: React.FC = () => {
       addNotification(notification as TypeNotification);
     }
   }, [addNotification, searchParams, setSearchParams]);
-
-  globalRouter.navigate = navigate;
 
   return (
     <>

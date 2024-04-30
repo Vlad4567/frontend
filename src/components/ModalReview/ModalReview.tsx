@@ -11,6 +11,7 @@ import { RatingStars } from '../RatingStars/RatingStars';
 import { ErrorData } from '../../types/main';
 import { useReviewsMaster } from '../../hooks/useReviewsMaster';
 import './ModalReview.scss';
+import { useToken } from '../../hooks/useToken';
 
 interface Review {
   grade: number;
@@ -33,8 +34,10 @@ export const ModalReview = React.forwardRef<HTMLFormElement, Props>(
     const { id } = useParams();
     const { addNewReview } = useReviewsMaster(+(id as string));
     const [review, setReview] = useState(initialReview);
-    const token = localStorage.getItem('token');
-    const refreshToken = localStorage.getItem('refreshToken');
+    const {
+      tokenStorage: [token],
+      refreshTokenStorage: [refreshToken],
+    } = useToken();
     const [formError, setFormError] = useState('');
     const { grade, comment } = review;
 
