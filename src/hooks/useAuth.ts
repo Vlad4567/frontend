@@ -9,9 +9,14 @@ import {
   getDeviceToken,
 } from '../api/login';
 import { useNotification } from './useNotification';
+import { useToken } from './useToken';
 
 export const useAuth = () => {
   const { addNotification } = useNotification();
+  const {
+    tokenStorage: [, setToken],
+    refreshTokenStorage: [, setRefreshToken],
+  } = useToken();
 
   const authLoginTelegram = useMutation({
     mutationFn: async (code: number) => {
@@ -23,8 +28,8 @@ export const useAuth = () => {
       });
     },
     onSuccess: data => {
-      localStorage.setItem('token', data.token);
-      localStorage.setItem('refreshToken', `${data.refreshToken}`);
+      setToken(data.token);
+      setRefreshToken(`${data.refreshToken}`);
       addNotification('login');
     },
     onError: () => addNotification('error'),
@@ -39,8 +44,8 @@ export const useAuth = () => {
   const loginUser = useMutation({
     mutationFn: apiLoginUser,
     onSuccess: data => {
-      localStorage.setItem('token', data.token);
-      localStorage.setItem('refreshToken', `${data.refreshToken}`);
+      setToken(data.token);
+      setRefreshToken(`${data.refreshToken}`);
       addNotification('login');
     },
   });

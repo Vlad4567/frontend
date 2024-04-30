@@ -7,6 +7,7 @@ import { DropDownButton } from '../DropDownButton/DropDownButton';
 import lightAccountIcon from '../../img/icons/account-icon-light.svg';
 import darkAccountIcon from '../../img/icons/account-icon-dark.svg';
 import './Header.scss';
+import { useToken } from '../../hooks/useToken';
 
 interface Props {
   type: 'light' | 'dark';
@@ -14,8 +15,10 @@ interface Props {
 }
 
 export const Header: React.FC<Props> = ({ type, className = '' }) => {
-  const token = localStorage.getItem('token');
-  const refreshToken = localStorage.getItem('refreshToken');
+  const {
+    tokenStorage: [token],
+    refreshTokenStorage: [refreshToken],
+  } = useToken();
 
   return (
     <header className={`header header--${type} ${className}`}>
