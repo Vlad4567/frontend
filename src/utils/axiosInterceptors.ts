@@ -2,7 +2,7 @@ import axios from 'axios';
 import globalRouter from '../globalRouter';
 /* eslint-disable no-param-reassign */
 const instance = axios.create({
-  baseURL: '/api',
+  baseURL: 'http://87.205.233.120:8080/api',
 });
 
 const redirectToLogin = () => {

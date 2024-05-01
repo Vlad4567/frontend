@@ -4,7 +4,10 @@ import classNames from 'classnames';
 import { createPortal } from 'react-dom';
 import { useMediaQuery, useOnClickOutside } from 'usehooks-ts';
 import { Transition } from 'history';
-import { convertSpaceToHyphen } from '../../helpers/functions';
+import {
+  convertHyphenToSpace,
+  convertSpaceToHyphen,
+} from '../../helpers/functions';
 import { DropDownButton } from '../../components/DropDownButton/DropDownButton';
 import styleVariables from '../../styles/variables.module.scss';
 import iconBasket from '../../img/icons/icon-basket.svg';
@@ -38,6 +41,7 @@ export const EditPublicProfilePage: React.FC = () => {
     saveChanges,
   } = useCreateMaster();
   const navigate = useNavigate();
+  const { pathname } = useLocation();
   const isDesktop = useMediaQuery(
     `(min-width: ${styleVariables['desktop-min-width']})`,
   );
@@ -53,7 +57,7 @@ export const EditPublicProfilePage: React.FC = () => {
     '.account-page__main-title-wrapper',
   );
   const alertRef = useRef<HTMLDivElement>(null);
-  const pathArray = useLocation().pathname.split('/');
+  const pathArray = pathname.split('/');
   const pathAfterEditPublicProfile =
     pathArray[
       pathArray.findIndex(path => path === 'edit-public-profile') + 1
@@ -139,11 +143,13 @@ export const EditPublicProfilePage: React.FC = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  const setNavLinkClassName = (isActive: boolean, button: string) => {
-    if (isActive) {
-      setActiveNavButton(button);
-    }
+  useEffect(() => {
+    const button = convertHyphenToSpace(pathAfterEditPublicProfile);
 
+    setActiveNavButton(button);
+  }, [pathAfterEditPublicProfile]);
+
+  const setNavLinkClassName = (isActive: boolean) => {
     return classNames('edit-public-profile-page__nav-link', {
       'edit-public-profile-page__nav-link--active': isActive,
     });
@@ -273,7 +279,7 @@ export const EditPublicProfilePage: React.FC = () => {
           <React.Fragment key={button}>
             <NavLink
               className={({ isActive }) => {
-                return setNavLinkClassName(isActive, button);
+                return setNavLinkClassName(isActive);
               }}
               to={`./${convertSpaceToHyphen(button)}`}
               style={
