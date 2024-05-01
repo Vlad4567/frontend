@@ -1,7 +1,7 @@
 import axios from 'axios';
 /* eslint-disable no-param-reassign */
 const instance = axios.create({
-  baseURL: '/api',
+  baseURL: 'http://87.205.233.120:8080/api',
 });
 
 instance.interceptors.response.use(

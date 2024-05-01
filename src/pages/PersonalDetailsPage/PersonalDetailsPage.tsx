@@ -327,8 +327,7 @@ export const PersonalDetailsPage: React.FC = () => {
             </h3>
             <p
               className="
-              personal-details-page__main-password-header-paragraph
-              "
+                personal-details-page__main-password-header-paragraph"
             >
               Enter your password you used to register earlier to change a
               password

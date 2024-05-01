@@ -28,12 +28,12 @@ export const RatingStars: React.FC<Props> = ({
 }) => {
   return (
     <div className={`rating-stars ${className}`}>
-      {[...Array(stars)].map((star, index) => {
+      {[...Array(stars)].map((_, index) => {
         const currentRating = index + 1;
 
         return (
           <div
-            key={star}
+            key={currentRating}
             className={classNames('rating-stars__star', {
               'rating-stars__star--selected': type === 'select',
               'rating-stars__star--ready': type === 'ready',

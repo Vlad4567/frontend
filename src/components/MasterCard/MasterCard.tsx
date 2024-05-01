@@ -44,7 +44,7 @@ export const MasterCard: React.FC<Props> = ({ className = '', master }) => {
               {subcategories.map((subcategory, index) => (
                 <div
                   className="master-card__info-subcategory"
-                  key={subcategory.categoryId}
+                  key={subcategory.name}
                 >
                   {subcategories.length === index + 1
                     ? `${subcategory.name}`

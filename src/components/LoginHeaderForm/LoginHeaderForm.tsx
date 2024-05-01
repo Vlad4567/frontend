@@ -26,12 +26,12 @@ export const LoginHeaderForm: React.FC<Props> = ({
           {description && <>{description} </>}
 
           {textLink && (
-            <p
+            <small
               className="login-header-form__description-link"
               onClick={onClick}
             >
               {textLink}
-            </p>
+            </small>
           )}
         </p>
       )}
