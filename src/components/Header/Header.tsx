@@ -16,8 +16,8 @@ interface Props {
 
 export const Header: React.FC<Props> = ({ type, className = '' }) => {
   const {
-    tokenStorage: [token],
-    refreshTokenStorage: [refreshToken],
+    tokenStorage: { token },
+    refreshTokenStorage: { refreshToken },
   } = useToken();
 
   return (
@@ -39,7 +39,7 @@ export const Header: React.FC<Props> = ({ type, className = '' }) => {
             <li className="header__nav-item">
               <Link
                 className="header__nav-item-link"
-                to={token ? '/account' : '/login'}
+                to={token || refreshToken ? '/account' : '/login'}
               >
                 {token || refreshToken ? (
                   <DropDownButton
