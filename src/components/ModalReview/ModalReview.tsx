@@ -35,8 +35,8 @@ export const ModalReview = React.forwardRef<HTMLFormElement, Props>(
     const { addNewReview } = useReviewsMaster(+(id as string));
     const [review, setReview] = useState(initialReview);
     const {
-      tokenStorage: [token],
-      refreshTokenStorage: [refreshToken],
+      tokenStorage: { token },
+      refreshTokenStorage: { refreshToken },
     } = useToken();
     const [formError, setFormError] = useState('');
     const { grade, comment } = review;
