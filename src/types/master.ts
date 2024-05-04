@@ -18,6 +18,7 @@ export interface MasterCard {
   subcategories: MasterSubcategory[] | null;
   rating: number;
   mainPhoto: string | null;
+  favorite: boolean;
 }
 
 export interface ServiceCard {

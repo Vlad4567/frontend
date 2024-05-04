@@ -43,6 +43,23 @@
     left: 25px;
   }
 
+  &__favorite {
+    padding: 8px;
+    background-color: mixin.$gray100;
+    border: none;
+    border-radius: 30px;
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    position: absolute;
+    top: 25px;
+    right: 25px;
+
+    cursor: pointer;
+  }
+
   &__info-name {
     font-size: 24px;
     line-height: 28px;

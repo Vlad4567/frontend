@@ -21,6 +21,7 @@ import { MasterPage } from './pages/MasterPage/MasterPage';
 import { MasterGalleryPage } from './pages/MasterGalleryPage/MasterGalleryPage';
 import { LoginFormTelegram } from './components/LoginFormTelegram/LoginFormTelegram';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+import { SavedPage } from './pages/SavedPage/SavedPage';
 
 const queryClient = new QueryClient();
 
@@ -55,6 +56,7 @@ export const Router = () => {
                 path="personal-details"
                 element={<PersonalDetailsPage />}
               />
+              <Route path="saved" element={<SavedPage />} />
               <Route
                 path="edit-public-profile"
                 element={<EditPublicProfilePage />}

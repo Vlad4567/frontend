@@ -1,11 +1,15 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import * as types from '../../types/master';
 import starRate from '../../img/icons/icon-star-rate.svg';
 import { Button } from '../Button/Button';
 import { DropDownButton } from '../DropDownButton/DropDownButton';
 import defaultAvatar from '../../img/default-avatar.svg';
+import { useFavorite } from '../../hooks/useFavorite';
+import heart from '../../img/icons/heart.svg';
+import redHeart from '../../img/icons/red-heart.svg';
 import './MasterCard.scss';
+import { useToken } from '../../hooks/useToken';
 
 interface Props {
   className?: string;
@@ -14,9 +18,23 @@ interface Props {
 
 export const MasterCard: React.FC<Props> = ({ className = '', master }) => {
   const navigate = useNavigate();
+  const [favorite, setFavorite] = useState(master.favorite);
+  const { addFavorite, removeFavorite } = useFavorite();
+  const {
+    tokenStorage: { token },
+    refreshTokenStorage: { refreshToken },
+  } = useToken();
 
   const { firstName, lastName, subcategories, mainPhoto, address, rating, id } =
     master;
+
+  const toggleFavorite = () => {
+    (favorite ? removeFavorite : addFavorite)
+      .mutateAsync(master.id)
+      .then(() => {
+        setFavorite(c => !c);
+      });
+  };
 
   return (
     <article className={`master-card ${className}`}>
@@ -30,6 +48,15 @@ export const MasterCard: React.FC<Props> = ({ className = '', master }) => {
         <img src={starRate} alt="Star rate" className="master-card__img-star" />
         {rating.toFixed(1)}
       </div>
+      {(token || refreshToken) && (
+        <button className="master-card__favorite" onClick={toggleFavorite}>
+          <img
+            src={favorite ? redHeart : heart}
+            alt="Favorite heart"
+            className="master-card__img-heart"
+          />
+        </button>
+      )}
 
       {(firstName || lastName) && (
         <div className="master-card__info">

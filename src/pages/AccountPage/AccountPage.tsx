@@ -165,6 +165,23 @@ export const AccountPage: React.FC = () => {
                     />
                   </NavLink>
                 </li>
+                <li className="account-page__menu-nav-item">
+                  <NavLink
+                    to="./saved"
+                    className={({ isActive }) => {
+                      return classNames('account-page__menu-nav-link', {
+                        'account-page__menu-nav-link--active': isActive,
+                      });
+                    }}
+                  >
+                    <DropDownButton
+                      className="account-page__menu-nav-button"
+                      size="small"
+                      placeholder="Saved"
+                      active={pathAfterAccount === 'saved'}
+                    />
+                  </NavLink>
+                </li>
                 {(user.master ||
                   pathAfterAccount === 'edit-public-profile') && (
                   <li className="account-page__menu-nav-item">
